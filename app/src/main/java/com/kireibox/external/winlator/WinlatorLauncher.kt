@@ -67,7 +67,7 @@ object WinlatorLauncher {
         return try {
             val packageName = readyPackage(app)
             val dir = directoryOf(game)
-            val exe = resolveExe(dir, game.launchTarget) ?: blocked("找不到启动文件 ${game.launchTarget.orEmpty().ifBlank { ".exe" }}")
+            val exe = resolveExe(dir, game.launchTarget) ?: blocked("Launch file not found ${game.launchTarget.orEmpty().ifBlank {".exe" }}")
             app.startActivity(buildIntent(packageName, dir.absolutePath, exe, "kireibox-$sessionId", settings))
             WinlatorLaunchResult.Started(packageName)
         } catch (stop: LaunchBlocked) {
@@ -75,7 +75,7 @@ object WinlatorLauncher {
         } catch (_: ActivityNotFoundException) {
             WinlatorLaunchResult.Failed(statusMessage(WinlatorAvailability.UNSUPPORTED))
         } catch (_: SecurityException) {
-            WinlatorLaunchResult.Failed("系统拒绝了对 Winlator 的跳转，请检查它是否被停用或限制。")
+            WinlatorLaunchResult.Failed("Redirect to Winlator was denied, please check if it is disabled or restricted.")
         }
     }
 
@@ -92,8 +92,8 @@ object WinlatorLauncher {
     fun statusMessage(availability: WinlatorAvailability): String =
         when (availability) {
             WinlatorAvailability.READY -> ""
-            WinlatorAvailability.NOT_INSTALLED -> "未安装 Winlator，请在「Winlator 引擎设置」中下载"
-            WinlatorAvailability.UNSUPPORTED -> "Winlator 版本过旧，不支持外置启动，请更新（需含外置启动功能的 winlator-cn）"
+            WinlatorAvailability.NOT_INSTALLED -> "Winlator is not installed, please download it in \"Winlator Engine Settings\""
+            WinlatorAvailability.UNSUPPORTED -> "The Winlator version is too old and does not support external startup. Please update (requires winlator-cn with external startup function)"
         }
 
     internal fun buildIntent(
@@ -122,8 +122,8 @@ object WinlatorLauncher {
         }
 
     private fun directoryOf(game: Game): File {
-        val path = ScriptEngineLaunchers.uriToFilePath(game.rootUri)?.takeIf { it.startsWith("/") } ?: blocked("无法读取游戏目录的真实路径，请用内置文件浏览器重新添加这个游戏。")
-        return File(path).takeIf { it.isDirectory } ?: blocked("无法读取游戏目录，可能需要「所有文件访问」权限，或游戏已被移动。")
+        val path = ScriptEngineLaunchers.uriToFilePath(game.rootUri)?.takeIf { it.startsWith("/") } ?: blocked("Unable to read the real path of the game directory, please use the built-in file browser to add the game again.")
+        return File(path).takeIf { it.isDirectory } ?: blocked("The game directory cannot be read, either \"All File Access\" permission is required or the game has been moved.")
     }
 
     /** The exe relative to the mounted folder: the stored target, or the only .exe the folder has. */

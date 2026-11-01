@@ -26,15 +26,15 @@ internal fun LauncherActivity.launchGame(game: Game) {
                 pendingShizukuLaunch = game
                 shortcutGateway.requestPermission().onFailure {
                     pendingShizukuLaunch = null
-                    showMessage("无法授权 Shizuku", it.message ?: "Shizuku 权限请求失败。")
+                    showMessage("Unable to authorize Shizuku", it.message ?: "Shizuku permission request failed.")
                 }
                 return
             }
             else -> {
                 val message =
                     shortcutGateway.requestPermission().exceptionOrNull()?.message
-                        ?: "Shizuku 快捷方式服务不可用。"
-                showMessage("无法启动快捷方式", message)
+                        ?: "Shizuku shortcut service is unavailable."
+                showMessage("Can't launch shortcut", message)
                 return
             }
         }
@@ -54,15 +54,15 @@ internal fun LauncherActivity.consumeDesktopGameIntent(source: Intent?) {
     source.action = Intent.ACTION_MAIN
     source.removeExtra(DesktopGameShortcutFactory.EXTRA_GAME_ID)
     if (gameId <= 0L) {
-        showMessage("快捷方式已失效", "桌面快捷方式没有有效的游戏 ID。")
+        showMessage("Shortcut no longer works", "Desktop shortcut does not have a valid game ID.")
         return
     }
     lifecycleScope.launch(Dispatchers.IO) {
         val game = GameRepository(applicationContext).findById(gameId)
         withContext(Dispatchers.Main) {
             when {
-                game == null -> showMessage("快捷方式已失效", "游戏已不在 KireiBox 游戏库中。")
-                game.hidden -> showMessage("快捷方式已失效", "该游戏已从 KireiBox 游戏库隐藏。")
+                game == null -> showMessage("Shortcut no longer works", "The game is no longer in the KireiBox game library.")
+                game.hidden -> showMessage("Shortcut no longer works", "This game has been hidden from the KireiBox game library.")
                 else -> launchGame(game)
             }
         }
@@ -72,11 +72,11 @@ internal fun LauncherActivity.consumeDesktopGameIntent(source: Intent?) {
 internal fun LauncherActivity.pinGameShortcut(game: Game) {
     val result = DesktopGameShortcutFactory.requestPin(this, game)
     if (result.isFailure) {
-        showMessage("无法添加到桌面", result.exceptionOrNull()?.message ?: "桌面快捷方式创建失败。")
+        showMessage("Can't add to desktop", result.exceptionOrNull()?.message ?: "Desktop shortcut creation failed.")
     } else if (result.getOrNull() == DesktopGameShortcutFactory.PinOutcome.UPDATED) {
-        viewModel.showNotice("已更新桌面快捷方式")
+        viewModel.showNotice("Desktop shortcut updated")
     } else {
-        viewModel.showNotice("请在系统弹窗中确认添加到桌面")
+        viewModel.showNotice("Please confirm in the system pop-up window to add to the desktop")
     }
 }
 
@@ -110,7 +110,7 @@ internal fun LauncherActivity.launchPreparedGame(game: Game) {
                     pendingNativeLaunch = game
                     showNativeFileAccessDialog(hint = result.message)
                 } else {
-                    showMessage("无法启动", result.message)
+                    showMessage("Unable to start", result.message)
                 }
             }
         }
@@ -141,7 +141,7 @@ internal fun LauncherActivity.openKrkrNativeShell() {
             )
         }
     if (result.isFailure) {
-        showMessage("无法启动", result.exceptionOrNull()?.message ?: "KRKR 原生引擎启动失败")
+        showMessage("Unable to start", result.exceptionOrNull()?.message ?: "KRKR native engine failed to start")
     }
 }
 
@@ -149,9 +149,9 @@ internal fun LauncherActivity.isPermissionLaunchFailure(message: String?): Boole
     if (message.isNullOrBlank()) return false
     return message.contains("EACCES", ignoreCase = true) ||
         message.contains("Permission denied", ignoreCase = true) ||
-        message.contains("所有文件访问", ignoreCase = true) ||
-        message.contains("无法创建 savedata", ignoreCase = true) ||
-        message.contains("savedata 无法写入", ignoreCase = true) ||
-        message.contains("只读目录", ignoreCase = true) ||
-        message.contains("写入检查失败", ignoreCase = true)
+        message.contains("All file access", ignoreCase = true) ||
+        message.contains("Unable to create savedata", ignoreCase = true) ||
+        message.contains("Savedata cannot be written", ignoreCase = true) ||
+        message.contains("Read-only directory", ignoreCase = true) ||
+        message.contains("Write check failed", ignoreCase = true)
 }

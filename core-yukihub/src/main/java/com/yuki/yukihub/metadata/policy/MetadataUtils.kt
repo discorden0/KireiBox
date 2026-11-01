@@ -26,7 +26,7 @@ internal object MetadataUtils {
         if (s == null) return ""
         val x =
             s.replace("[\\[\\]【】（）()].*".toRegex(), " ")
-                .replace("(?i)complete|汉化|中文版|日文版|体验版|trial|patch".toRegex(), " ")
+                .replace("(?i)complete|Chinese|Chinese version|Japanese version|Trial version|trial|patch".toRegex(), " ")
                 .replace('_', ' ')
                 .trim()
         return if (x.isEmpty()) s.trim() else x

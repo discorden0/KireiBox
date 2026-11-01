@@ -29,22 +29,22 @@ object LibraryOverviewPolicy {
 
     /** "45 分钟" / "12.5 小时": the overview sheet's play time, same units as [summaryPlayTime] plus one decimal. */
     fun compactPlayTime(milliseconds: Long): String {
-        if (milliseconds <= 0L) return "0 分钟"
+        if (milliseconds <= 0L) return "0 minutes"
         if (milliseconds < MILLIS_PER_HOUR) {
-            return "${max(1L, milliseconds / MILLIS_PER_MINUTE)} 分钟"
+            return "${max(1L, milliseconds / MILLIS_PER_MINUTE)} minutes"
         }
         val tenthsOfHour = (milliseconds * 10L + MILLIS_PER_HOUR / 2L) / MILLIS_PER_HOUR
         return if (tenthsOfHour % 10L == 0L) {
-            "${tenthsOfHour / 10L} 小时"
+            "${tenthsOfHour / 10L} hours"
         } else {
-            "${tenthsOfHour / 10L}.${tenthsOfHour % 10L} 小时"
+            "${tenthsOfHour / 10L}.${tenthsOfHour % 10L} hours"
         }
     }
 
     fun summaryPlayTime(milliseconds: Long): String {
         val safeMilliseconds = milliseconds.coerceAtLeast(0L)
         return if (safeMilliseconds < MILLIS_PER_HOUR) {
-            "${safeMilliseconds / MILLIS_PER_MINUTE} 分钟"
+            "${safeMilliseconds / MILLIS_PER_MINUTE} minutes"
         } else {
             "${safeMilliseconds / MILLIS_PER_HOUR} 小时"
         }
@@ -52,16 +52,16 @@ object LibraryOverviewPolicy {
 
     fun immersivePlayTime(milliseconds: Long): String {
         val safeMilliseconds = milliseconds.coerceAtLeast(0L)
-        if (safeMilliseconds == 0L) return "尚未游玩"
-        if (safeMilliseconds < MILLIS_PER_MINUTE) return "不足 1 分钟"
+        if (safeMilliseconds == 0L) return "Not played yet"
+        if (safeMilliseconds < MILLIS_PER_MINUTE) return "Less than 1 minute"
         val totalMinutes = safeMilliseconds / MILLIS_PER_MINUTE
-        if (totalMinutes < 60L) return "已游玩 $totalMinutes 分钟"
+        if (totalMinutes < 60L) return "Played $totalMinutes minutes"
         val hours = totalMinutes / 60L
         val minutes = totalMinutes % 60L
         return if (minutes == 0L) {
-            "已游玩 $hours 小时"
+            "Played $hours hours"
         } else {
-            "已游玩 $hours 小时 $minutes 分钟"
+            "Played $hours hours $minutes minutes"
         }
     }
 

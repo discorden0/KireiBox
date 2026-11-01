@@ -99,7 +99,7 @@ private class FileStorageNode(private val file: File) : StorageNode {
 
 private class DocumentStorageNode(private val document: DocumentFile) : StorageNode {
     override val uri: Uri get() = document.uri
-    override val name: String get() = document.name.orEmpty().ifBlank { "未命名" }
+    override val name: String get() = document.name.orEmpty().ifBlank { "Unnamed" }
     override val isDirectory: Boolean get() = runCatching { document.isDirectory }.getOrDefault(false)
     override val isFile: Boolean get() = runCatching { document.isFile }.getOrDefault(false)
     override val size: Long get() = runCatching { document.length() }.getOrDefault(0L).coerceAtLeast(0L)

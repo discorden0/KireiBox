@@ -17,13 +17,13 @@ internal fun LibraryAddGameSheet(
     onSingle: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    KireiActionSheet("添加游戏", colors, onDismiss, grouped = true) {
+    KireiActionSheet("add game", colors, onDismiss, grouped = true) {
         SheetRowGroup(colors) {
             item {
                 SheetActionRow(
                     Icons.Rounded.CreateNewFolder,
-                    "批量添加",
-                    "选择多个文件夹，逐个确认引擎和启动文件",
+                    "Add in batches",
+                    "Select multiple folders and confirm the engine and startup files one by one",
                     colors,
                     tile = KireiTileColor.BLUE,
                 ) {
@@ -34,8 +34,8 @@ internal fun LibraryAddGameSheet(
             item {
                 SheetActionRow(
                     Icons.Rounded.SportsEsports,
-                    "添加单个游戏",
-                    "识别游戏目录，或选择引擎、应用、快捷方式",
+                    "Add a single game",
+                    "Identify the game directory, or select engine, application, shortcut",
                     colors,
                     tile = KireiTileColor.ORANGE,
                 ) {

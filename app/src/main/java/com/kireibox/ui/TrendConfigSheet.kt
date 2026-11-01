@@ -41,35 +41,35 @@ internal fun TrendConfigSheet(
     var draft by remember(spec.instanceId, spec.trendMetric, spec.trendRange, spec.trendVisualStyle) {
         mutableStateOf(TrendConfigDraft(spec.trendMetric, spec.trendRange, spec.trendVisualStyle))
     }
-    KireiActionSheet("趋势图设置", colors, onDismiss, expanded = true) {
+    KireiActionSheet("Trend chart settings", colors, onDismiss, expanded = true) {
         TrendConfigSection(
-            "指标",
+            "Index",
             colors,
             listOf(
-                TrendMetric.PLAY_TIME to "游玩时长",
-                TrendMetric.GAME_OPENS to "打开游戏数",
+                TrendMetric.PLAY_TIME to "Play time",
+                TrendMetric.GAME_OPENS to "Number of open games",
             ),
             draft.metric
         ) { draft = draft.copy(metric = it) }
         TrendConfigSection(
-            "范围",
+            "Scope",
             colors,
             listOf(
-                TrendRange.DAYS_7 to "7 天",
-                TrendRange.DAYS_30 to "30 天",
+                TrendRange.DAYS_7 to "7 days",
+                TrendRange.DAYS_30 to "30 days",
             ),
             draft.range
         ) { draft = draft.copy(range = it) }
         TrendConfigSection(
-            "外观",
+            "Appearance",
             colors,
             listOf(
-                TrendVisualStyle.LINE to "折线",
-                TrendVisualStyle.AREA to "面积折线",
+                TrendVisualStyle.LINE to "Polyline",
+                TrendVisualStyle.AREA to "Area polyline",
             ),
             draft.visualStyle
         ) { draft = draft.copy(visualStyle = it) }
-        Text("预览", color = colors.secondary, style = AppleTypography.bodySmall, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+        Text("Preview", color = colors.secondary, style = AppleTypography.bodySmall, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
         DashboardTrendWidget(
             points = points,
             spec = spec.copy(trendMetric = draft.metric, trendRange = draft.range, trendVisualStyle = draft.visualStyle),
@@ -82,9 +82,9 @@ internal fun TrendConfigSheet(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TextButton(onClick = onDismiss) { Text("取消", color = colors.secondary) }
+            TextButton(onClick = onDismiss) { Text("Cancel", color = colors.secondary) }
             Spacer(Modifier.width(8.dp))
-            TextButton(onClick = { onComplete(draft) }) { Text("完成", color = colors.accent) }
+            TextButton(onClick = { onComplete(draft) }) { Text("Done", color = colors.accent) }
         }
     }
 }
@@ -104,7 +104,7 @@ private fun <T> TrendConfigSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(label, color = colors.text, style = AppleTypography.bodyLargeEmphasis, modifier = Modifier.weight(1f))
-            if (selected == value) Icon(Icons.Rounded.Check, "已选择", tint = colors.accent, modifier = Modifier.size(20.dp))
+            if (selected == value) Icon(Icons.Rounded.Check, "Selected", tint = colors.accent, modifier = Modifier.size(20.dp))
         }
     }
 }

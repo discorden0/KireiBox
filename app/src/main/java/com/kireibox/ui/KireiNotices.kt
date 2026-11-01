@@ -95,15 +95,15 @@ internal object NoticeTonePolicy {
         tag: NoticeToneTag?,
     ): NoticeTone = tag?.takeIf { it.message == message }?.tone ?: infer(message)
 
-    private val errorWords = listOf("失败", "无法", "不支持", "错误")
-    private val successWords = listOf("已保存", "已更新", "已连接", "已断开", "已开启", "已关闭", "已设为", "已添加", "已导入", "已恢复", "已清除")
+    private val errorWords = listOf("Failed", "Unable", "Not supported", "Error")
+    private val successWords = listOf("Saved", "Updated", "Connected", "Disconnected", "Already turned on", "Closed", "Already set to", "Added", "Imported", "Restored", "Cleared")
 
     fun infer(message: String): NoticeTone {
         val text = message.trim()
         return when {
             errorWords.any(text::contains) -> NoticeTone.ERROR
-            text.startsWith("请") -> NoticeTone.WARNING
-            text.startsWith("已") || successWords.any(text::contains) -> NoticeTone.SUCCESS
+            text.startsWith("Please") -> NoticeTone.WARNING
+            text.startsWith("Already") || successWords.any(text::contains) -> NoticeTone.SUCCESS
             else -> NoticeTone.INFO
         }
     }
@@ -129,9 +129,9 @@ private fun NoticeTone.color(colors: KireiColors): Color =
 private fun NoticeTone.spokenLabel(): String? =
     when (this) {
         NoticeTone.INFO -> null
-        NoticeTone.SUCCESS -> "成功"
-        NoticeTone.WARNING -> "注意"
-        NoticeTone.ERROR -> "错误"
+        NoticeTone.SUCCESS -> "Success"
+        NoticeTone.WARNING -> "Notice"
+        NoticeTone.ERROR -> "Error"
     }
 
 /**
@@ -252,7 +252,7 @@ internal fun Notice(
                         style = AppleTypography.bodyMedium,
                         modifier = Modifier.weight(1f).padding(start = KireiSpacing.sm, end = KireiSpacing.xs),
                     )
-                    Icon(Icons.Rounded.Close, "关闭", tint = colors.tertiary, modifier = Modifier.size(18.dp))
+                    Icon(Icons.Rounded.Close, "Close", tint = colors.tertiary, modifier = Modifier.size(18.dp))
                 }
             }
         }
@@ -300,7 +300,7 @@ internal fun UndoRemovalNotice(
                     NoticeToneIcon(NoticeTone.INFO, colors)
                     Spacer(Modifier.width(KireiSpacing.sm))
                     Text(
-                        "已移出 $title",
+                        "Moved out $title",
                         color = colors.text,
                         style = AppleTypography.bodyMedium,
                         maxLines = 1,
@@ -308,7 +308,7 @@ internal fun UndoRemovalNotice(
                         modifier = Modifier.weight(1f),
                     )
                     KireiButton(
-                        "撤销",
+                        "Cancel",
                         colors,
                         options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL),
                     ) {
@@ -381,7 +381,7 @@ internal fun ActionNotice(
                         onClick = onAction,
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Rounded.Close, "关闭提示", tint = colors.tertiary, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Rounded.Close, "Close prompt", tint = colors.tertiary, modifier = Modifier.size(18.dp))
                     }
                 }
             }

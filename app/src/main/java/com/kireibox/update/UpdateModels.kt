@@ -70,15 +70,15 @@ internal object UpdateManifestCodec {
 
     fun parse(json: String): UpdateManifest {
         val value = JSONObject(json)
-        require(value.optInt("schemaVersion", -1) == 1) { "不支持的更新清单版本" }
+        require(value.optInt("schemaVersion", -1) == 1) { "Unsupported update manifest version" }
         val packageName = value.getString("packageName").trim()
-        require(packageName == KIREIBOX_PACKAGE_NAME) { "更新包名不匹配" }
+        require(packageName == KIREIBOX_PACKAGE_NAME) { "Update package name does not match" }
         val versionCode = value.getInt("versionCode")
-        require(versionCode > 0) { "更新版本号无效" }
+        require(versionCode > 0) { "The update version number is invalid" }
         val versionName = value.getString("versionName").trim()
-        require(versionName.isNotEmpty()) { "更新版本名称为空" }
+        require(versionName.isNotEmpty()) { "Update version name is empty" }
         val minSdk = value.getInt("minSdk")
-        require(minSdk >= 1) { "更新最低系统版本无效" }
+        require(minSdk >= 1) { "Updating the minimum system version is invalid" }
         val abiArray = value.getJSONArray("abis")
         val abis =
             buildList {
@@ -86,15 +86,15 @@ internal object UpdateManifestCodec {
                     abiArray.optString(index).trim().takeIf(String::isNotEmpty)?.let(::add)
                 }
             }.distinct()
-        require(abis.isNotEmpty()) { "更新 ABI 为空" }
+        require(abis.isNotEmpty()) { "Update ABI is empty" }
         val apkAsset = value.getString("apkAsset").trim()
         require(apkAsset.endsWith(".apk", ignoreCase = true) && '/' !in apkAsset && '\\' !in apkAsset) {
-            "更新 APK 资产名称无效"
+            "Update APK asset name is invalid"
         }
         val sha256 = normalizeDigest(value.getString("sha256"))
-        require(sha256Pattern.matches(sha256)) { "更新 APK SHA-256 无效" }
+        require(sha256Pattern.matches(sha256)) { "Update APK SHA-256 invalid" }
         val signer = normalizeDigest(value.getString("signingCertSha256"))
-        require(sha256Pattern.matches(signer)) { "更新签名 SHA-256 无效" }
+        require(sha256Pattern.matches(signer)) { "Update signature SHA-256 is invalid" }
         return UpdateManifest(
             packageName = packageName,
             versionCode = versionCode,

@@ -54,12 +54,12 @@ class ShizukuShortcutGateway(context: Context) {
             when (status()) {
                 ShortcutServiceStatus.READY -> Unit
                 ShortcutServiceStatus.PERMISSION_REQUIRED -> Shizuku.requestPermission(requestCode)
-                ShortcutServiceStatus.PERMISSION_DENIED -> error("Shizuku 已拒绝 KireiBox，请在 Shizuku 的授权应用中重新允许。")
-                ShortcutServiceStatus.NOT_INSTALLED -> error("请先安装 Shizuku。")
-                ShortcutServiceStatus.NOT_RUNNING -> error("请先在 Shizuku 中完成无线调试配对并启动服务。")
-                ShortcutServiceStatus.UNSUPPORTED_VERSION -> error("需要 Shizuku 13.1.5 或更新版本。")
-                ShortcutServiceStatus.UNSUPPORTED_IDENTITY -> error("快捷方式功能只支持无线调试启动的 Shizuku（shell 模式）。")
-                else -> error("Shizuku 快捷方式服务暂不可用。")
+                ShortcutServiceStatus.PERMISSION_DENIED -> error("KireiBox has been denied by Shizuku, please re-allow it in Shizuku's authorized application.")
+                ShortcutServiceStatus.NOT_INSTALLED -> error("Please install Shizuku first.")
+                ShortcutServiceStatus.NOT_RUNNING -> error("Please complete wireless debugging pairing and start the service in Shizuku first.")
+                ShortcutServiceStatus.UNSUPPORTED_VERSION -> error("Requires Shizuku 13.1.5 or newer.")
+                ShortcutServiceStatus.UNSUPPORTED_IDENTITY -> error("The shortcut function only supports Shizuku enabled by wireless debugging (shell mode).")
+                else -> error("Shizuku shortcut service is temporarily unavailable.")
             }
         }
 
@@ -67,14 +67,14 @@ class ShizukuShortcutGateway(context: Context) {
         runCatching {
             ensureReady()
             check(service().canReadPinnedShortcuts(currentUserId())) {
-                "当前系统没有授予 shell 读取桌面快捷方式的权限。"
+                "The current system does not grant the shell permission to read desktop shortcuts."
             }
         }
 
     fun scan(userId: Int = currentUserId()): Result<List<ExternalShortcutDescriptor>> =
         withRemote { remote ->
             if (!remote.canReadPinnedShortcuts(userId)) {
-                error("当前系统没有授予 shell 读取桌面快捷方式的权限。")
+                error("The current system does not grant the shell permission to read desktop shortcuts.")
             }
             val values =
                 remote.scan(userId).mapNotNull { bundle ->
@@ -113,7 +113,7 @@ class ShizukuShortcutGateway(context: Context) {
     fun launch(identity: ExternalShortcutIdentity.Parsed): Result<Unit> =
         withRemote { remote ->
             if (!remote.canReadPinnedShortcuts(identity.userId)) {
-                error("当前系统没有授予 shell 启动桌面快捷方式的权限。")
+                error("The current system does not grant the shell permission to launch desktop shortcuts.")
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val launchIntent =
@@ -121,7 +121,7 @@ class ShizukuShortcutGateway(context: Context) {
                         identity.userId,
                         identity.packageName,
                         identity.shortcutId,
-                    ) ?: error("快捷方式已失效，请重新扫描。")
+                    ) ?: error("The shortcut is invalid, please scan again.")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     val options =
                         ActivityOptions.makeBasic().apply {
@@ -134,12 +134,12 @@ class ShizukuShortcutGateway(context: Context) {
                 }
             } else {
                 check(remote.launch(identity.userId, identity.packageName, identity.shortcutId)) {
-                    "快捷方式已失效，请重新扫描。"
+                    "The shortcut is invalid, please scan again."
                 }
             }
         }.recoverCatching { error ->
             if (error is PendingIntent.CanceledException) {
-                throw IllegalStateException("快捷方式已失效，请重新扫描。", error)
+                throw IllegalStateException("The shortcut is invalid, please scan again.", error)
             }
             throw error
         }
@@ -186,7 +186,7 @@ class ShizukuShortcutGateway(context: Context) {
                         activeService = null
                         binding = false
                         connectionLost = true
-                        failure = IllegalStateException("Shizuku 快捷方式连接已断开。")
+                        failure = IllegalStateException("Shizuku shortcut connection has been disconnected.")
                         latch.countDown()
                     }
                 }
@@ -195,25 +195,25 @@ class ShizukuShortcutGateway(context: Context) {
             if (!latch.await(BIND_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                 binding = false
                 release()
-                error("连接 Shizuku 超时。")
+                error("Connection to Shizuku timed out.")
             }
             failure?.let { throw it }
-            return activeService ?: error("Shizuku 未返回快捷方式服务。")
+            return activeService ?: error("Shizuku did not return the shortcut service.")
         }
     }
 
     private fun ensureReady() {
         when (status()) {
             ShortcutServiceStatus.READY -> Unit
-            ShortcutServiceStatus.NOT_INSTALLED -> error("请先安装 Shizuku。")
-            ShortcutServiceStatus.NOT_RUNNING -> error("Shizuku 未运行，请先完成无线调试配对。")
-            ShortcutServiceStatus.PERMISSION_REQUIRED -> error("需要先授权 KireiBox 使用 Shizuku。")
-            ShortcutServiceStatus.PERMISSION_DENIED -> error("Shizuku 权限已被拒绝。")
-            ShortcutServiceStatus.UNSUPPORTED_VERSION -> error("需要 Shizuku 13.1.5 或更新版本。")
-            ShortcutServiceStatus.UNSUPPORTED_IDENTITY -> error("只支持 Shizuku shell 模式，不支持 Root/Sui 模式。")
-            ShortcutServiceStatus.SYSTEM_PERMISSION_MISSING -> error("系统未向 shell 开放快捷方式权限。")
-            ShortcutServiceStatus.BINDING -> error("正在连接 Shizuku。")
-            ShortcutServiceStatus.CONNECTION_LOST -> error("Shizuku 连接已失效。")
+            ShortcutServiceStatus.NOT_INSTALLED -> error("Please install Shizuku first.")
+            ShortcutServiceStatus.NOT_RUNNING -> error("Shizuku is not running, please complete wireless debugging pairing first.")
+            ShortcutServiceStatus.PERMISSION_REQUIRED -> error("You need to authorize KireiBox to use Shizuku first.")
+            ShortcutServiceStatus.PERMISSION_DENIED -> error("Shizuku Permission denied.")
+            ShortcutServiceStatus.UNSUPPORTED_VERSION -> error("Requires Shizuku 13.1.5 or newer.")
+            ShortcutServiceStatus.UNSUPPORTED_IDENTITY -> error("Only Shizuku shell mode is supported, Root/Sui mode is not supported.")
+            ShortcutServiceStatus.SYSTEM_PERMISSION_MISSING -> error("The system does not open shortcut permissions to the shell.")
+            ShortcutServiceStatus.BINDING -> error("Connecting to Shizuku.")
+            ShortcutServiceStatus.CONNECTION_LOST -> error("Shizuku connection has expired.")
         }
     }
 

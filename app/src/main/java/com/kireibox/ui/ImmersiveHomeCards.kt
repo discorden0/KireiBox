@@ -307,7 +307,7 @@ private fun BoxScope.ImmersiveCardTitleOverlay(
         verticalArrangement = Arrangement.Bottom,
     ) {
         Text(
-            game.engine?.displayName ?: "游戏",
+            game.engine?.displayName ?: "Games",
             color = CoverOverlayAccentBright,
             style = AppleTypography.labelLarge.withImmersiveTitleShadow(contrast, isDark = true),
             fontSize = designSp(26f, density, scale),
@@ -336,7 +336,7 @@ internal fun ImmersiveLandscapeMetadata(
 ) {
     layout.metadata?.let {
         Text(
-            game.engine?.displayName ?: "游戏",
+            game.engine?.displayName ?: "Games",
             color = palette.accentBright,
             fontSize = designSp(30f, density, scale),
             lineHeight = designSp(IMMERSIVE_METADATA_LINE_HEIGHT_PX, density, scale),
@@ -389,7 +389,7 @@ internal fun ImmersiveLandscapeMetadata(
                 )
             }
         Text(
-            "继续游戏",
+            "continue game",
             color = palette.secondary,
             style = continueStyle,
             maxLines = 1,

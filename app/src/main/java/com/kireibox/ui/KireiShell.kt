@@ -192,7 +192,7 @@ internal fun UpdatePromptHost(
             colors = colors,
             haze = haze,
             modifier =
-                Modifier.semantics { paneTitle = "更新" }
+                Modifier.semantics { paneTitle = "Update" }
                     .padding(horizontal = KireiDialogDefaults.WindowMargin)
                     .widthIn(max = KireiDialogDefaults.MaxWidth)
                     .fillMaxWidth(),
@@ -205,12 +205,12 @@ internal fun UpdatePromptHost(
             ) {
                 when (state) {
                     is UpdateUiState.Checking -> {
-                        UpdatePromptTitle("正在检查更新", colors)
+                        UpdatePromptTitle("Checking for updates", colors)
                         KireiProgressBar(progress = null, colors = colors)
                     }
                     is UpdateUiState.Available -> {
                         val context = LocalContext.current
-                        UpdatePromptTitle("发现新版本", colors)
+                        UpdatePromptTitle("New version found", colors)
                         Text(
                             "${BuildConfig.VERSION_NAME}  →  ${state.release.versionName} · ${formatUpdateBytes(state.release.apkSize)}",
                             color = colors.secondary,
@@ -226,9 +226,9 @@ internal fun UpdatePromptHost(
                         }
                         // "稍后更新" also remembers the version, so it stops prompting until a
                         // genuinely newer release appears.
-                        UpdatePromptButtons("稍后更新", onIgnore, "更新", onDownload, colors)
+                        UpdatePromptButtons("Update later", onIgnore, "Update", onDownload, colors)
                         KireiButton(
-                            "在 GitHub 上查看",
+                            "View on GitHub",
                             colors,
                             Modifier.align(Alignment.CenterHorizontally),
                             KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL),
@@ -249,35 +249,35 @@ internal fun UpdatePromptHost(
                             } else {
                                 0f
                             }
-                        UpdatePromptTitle("正在下载更新", colors)
+                        UpdatePromptTitle("Downloading updates", colors)
                         KireiProgressBar(progress = progress, colors = colors)
                         Text(
                             "${formatUpdateBytes(state.bytesRead)} / ${formatUpdateBytes(state.totalBytes)} · ${formatUpdateBytes(state.bytesPerSecond)}/秒",
                             color = colors.secondary,
                             style = AppleTypography.numericSmall,
                         )
-                        UpdateSinglePromptButton("取消下载", onCancelDownload, colors, emphasized = false)
+                        UpdateSinglePromptButton("Cancel download", onCancelDownload, colors, emphasized = false)
                     }
                     is UpdateUiState.ReadyToInstall -> {
-                        UpdatePromptTitle("更新已校验", colors)
+                        UpdatePromptTitle("Update verified", colors)
                         Text(
                             if (state.release.hasStrictManifest) {
-                                "包名、版本、ABI、SDK、SHA-256 和签名证书均已通过校验。安装仍需由 Android 系统确认。"
+                                "Package name, version, ABI, SDK, SHA-256 and signing certificate have all been verified. Installation still needs to be confirmed by the Android system."
                             } else {
-                                "包名、版本、ABI、SDK 和已安装应用签名均已通过校验。安装仍需由 Android 系统确认。"
+                                "Package name, version, ABI, SDK, and installed application signature have all passed verification. Installation still needs to be confirmed by the Android system."
                             },
                             color = colors.secondary,
                             style = AppleTypography.bodyMedium,
                         )
-                        UpdatePromptButtons("稍后安装", onDiscard, "安装更新", { onInstall(state.apkPath) }, colors)
+                        UpdatePromptButtons("Install later", onDiscard, "Install updates", { onInstall(state.apkPath) }, colors)
                     }
                     is UpdateUiState.Error -> {
-                        UpdatePromptTitle(if (state.release == null) "更新检查失败" else "更新失败", colors)
+                        UpdatePromptTitle(if (state.release == null) "Update check failed" else "Update failed", colors)
                         Text(state.message, color = colors.secondary, style = AppleTypography.bodyMedium)
                         if (state.release == null) {
-                            UpdateSinglePromptButton("关闭", onDismiss, colors, emphasized = false)
+                            UpdateSinglePromptButton("Close", onDismiss, colors, emphasized = false)
                         } else {
-                            UpdatePromptButtons("关闭", onDismiss, "重试下载", onDownload, colors)
+                            UpdatePromptButtons("Close", onDismiss, "Retry download", onDownload, colors)
                         }
                     }
                     UpdateUiState.Idle -> Unit
@@ -338,7 +338,7 @@ internal fun UpdateSinglePromptButton(
 
 internal fun formatUpdateBytes(bytes: Long): String =
     when {
-        bytes <= 0L -> "未知大小"
+        bytes <= 0L -> "Unknown size"
         bytes >= 1024L * 1024L -> String.format(java.util.Locale.ROOT, "%.1f MB", bytes / (1024f * 1024f))
         bytes >= 1024L -> String.format(java.util.Locale.ROOT, "%.1f KB", bytes / 1024f)
         else -> "$bytes B"

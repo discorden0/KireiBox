@@ -72,7 +72,7 @@ internal object CoverTaskPresentationPolicy {
             pendingCount = badge.pendingCount,
             hasFailure = badge.hasFailure,
             showCompletionCheck = shouldShowCompletionCheck(tasks),
-            contentDescription = "封面任务，已完成 $completedCount / $totalCount，待处理 ${badge.pendingCount}",
+            contentDescription = "Cover task, completed $completedCount / $totalCount, pending ${badge.pendingCount}",
         )
     }
 
@@ -111,37 +111,37 @@ internal object CoverTaskPresentationPolicy {
 
     fun sections(tasks: List<CoverTaskUi>): List<Section> =
         listOf(
-            Section("需要处理", tasks.filter { it.status in ATTENTION_STATUSES }),
-            Section("正在处理", tasks.filter { it.status in ACTIVE_STATUSES }),
-            Section("已完成", tasks.filter { it.status in TERMINAL_STATUSES }),
+            Section("Need to be processed", tasks.filter { it.status in ATTENTION_STATUSES }),
+            Section("Processing", tasks.filter { it.status in ACTIVE_STATUSES }),
+            Section("Completed", tasks.filter { it.status in TERMINAL_STATUSES }),
         ).filter { it.tasks.isNotEmpty() }
 
     fun actionLabel(action: CoverTaskRowAction): String =
         when (action) {
-            CoverTaskRowAction.SELECT -> "选择"
-            CoverTaskRowAction.RETRY -> "重试"
-            CoverTaskRowAction.CANCEL -> "取消"
-            CoverTaskRowAction.UNDO -> "撤销"
+            CoverTaskRowAction.SELECT -> "Select"
+            CoverTaskRowAction.RETRY -> "Retry"
+            CoverTaskRowAction.CANCEL -> "Cancel"
+            CoverTaskRowAction.UNDO -> "Cancel"
             CoverTaskRowAction.NONE -> ""
         }
 
     fun phaseLabel(task: CoverTaskUi): String =
         when (task.status) {
-            CoverTaskStatus.QUEUED -> "等待处理"
-            CoverTaskStatus.SEARCHING -> "正在匹配"
-            CoverTaskStatus.DOWNLOADING -> task.totalBytes?.takeIf { it > 0L }?.let { "正在下载 ${((task.bytesRead * 100) / it).coerceIn(0, 100)}%" } ?: "正在下载"
-            CoverTaskStatus.NEEDS_REVIEW -> "等待确认"
-            CoverTaskStatus.FAILED -> task.error ?: "匹配失败"
-            CoverTaskStatus.COMPLETED -> "已完成"
-            CoverTaskStatus.CANCELLED -> "已取消"
+            CoverTaskStatus.QUEUED -> "Waiting for processing"
+            CoverTaskStatus.SEARCHING -> "Matching"
+            CoverTaskStatus.DOWNLOADING -> task.totalBytes?.takeIf { it > 0L }?.let { "Downloading ${((task.bytesRead * 100) / it).coerceIn(0, 100)}%" } ?: "Downloading"
+            CoverTaskStatus.NEEDS_REVIEW -> "Waiting for confirmation"
+            CoverTaskStatus.FAILED -> task.error ?: "Match failed"
+            CoverTaskStatus.COMPLETED -> "Completed"
+            CoverTaskStatus.CANCELLED -> "Canceled"
         }
 
     fun shouldShowCompletionCheck(tasks: List<CoverTaskUi>): Boolean = tasks.isNotEmpty() && tasks.all { it.status in TERMINAL_STATUSES }
 
     /** State shown on a row's status chip: the phase, with the percentage of a running download; a failure's reason has its own line. */
-    fun chipLabel(task: CoverTaskUi): String = if (task.status == CoverTaskStatus.FAILED) "匹配失败" else phaseLabel(task)
+    fun chipLabel(task: CoverTaskUi): String = if (task.status == CoverTaskStatus.FAILED) "Match failed" else phaseLabel(task)
 
-    fun downloadBytesLabel(task: CoverTaskUi): String = task.totalBytes?.let { "${formatBytes(task.bytesRead)} / ${formatBytes(it)}" } ?: "已下载 ${formatBytes(task.bytesRead)}"
+    fun downloadBytesLabel(task: CoverTaskUi): String = task.totalBytes?.let { "${formatBytes(task.bytesRead)} / ${formatBytes(it)}" } ?: "Downloaded ${formatBytes(task.bytesRead)}"
 
     /** Fraction of a running download, or null while the length is unknown (an indeterminate bar). */
     fun downloadProgress(task: CoverTaskUi): Float? = task.totalBytes?.takeIf { it > 0L }?.let { task.downloadFraction().toFloat() }

@@ -94,7 +94,7 @@ data class AddGameUi(
 
 /** Pure rules of the add-game flow. */
 internal object AddGamePolicy {
-    const val DIRECTORY_TARGET = "[游戏目录]"
+    const val DIRECTORY_TARGET = "[Game Catalog]"
 
     /** Engines the user can pick by hand for a folder. */
     val FOLDER_ENGINES: List<EngineType> =
@@ -118,7 +118,7 @@ internal object AddGamePolicy {
         val detectedCandidate =
             AddGameCandidate(
                 rootUri = result.uri.orEmpty(),
-                title = result.title?.takeIf(String::isNotBlank) ?: "未命名游戏",
+                title = result.title?.takeIf(String::isNotBlank) ?: "Unnamed game",
                 engine = detected,
                 detectedEngine = detected,
                 launchTarget = target,
@@ -159,8 +159,8 @@ internal object AddGamePolicy {
 
     fun summary(ui: AddGameUi): String =
         when {
-            ui.addedCount == 0 -> "没有添加游戏"
-            ui.skippedCount == 0 -> "已添加 ${ui.addedCount} 个游戏"
-            else -> "已添加 ${ui.addedCount} 个游戏，跳过 ${ui.skippedCount} 个"
+            ui.addedCount == 0 -> "No games added"
+            ui.skippedCount == 0 -> "${ui.addedCount} games added"
+            else -> "${ui.addedCount} games added, ${ui.skippedCount} skipped"
         }
 }

@@ -79,7 +79,7 @@ class CoverLoginActivity : ComponentActivity() {
     private val connectionBuilder =
         net.openid.appauth.connectivity.ConnectionBuilder { uri ->
             synchronized(tokenConnections) {
-                check(!finished.get()) { "授权已取消" }
+                check(!finished.get()) { "Authorization canceled" }
                 net.openid.appauth.connectivity.DefaultConnectionBuilder.INSTANCE.openConnection(uri).also {
                     it.connectTimeout = 8000
                     it.readTimeout = 20000
@@ -89,7 +89,7 @@ class CoverLoginActivity : ComponentActivity() {
         }
     private var epoch = 0L
     private val finished = AtomicBoolean(false)
-    private var message by mutableStateOf("正在打开官方授权页面…")
+    private var message by mutableStateOf("Opening the official authorization page...")
     private val browserResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             // A NextMoe tab closes as "cancelled" when the user returns by hand after the callback arrived.
@@ -97,7 +97,7 @@ class CoverLoginActivity : ComponentActivity() {
             val data = result.data
             val response = data?.let(AuthorizationResponse::fromIntent)
             if (response == null) {
-                complete(false, "授权已取消，请返回重试")
+                complete(false, "Authorization has been canceled, please go back and try again")
             } else {
                 exchange(response)
             }
@@ -111,7 +111,7 @@ class CoverLoginActivity : ComponentActivity() {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    complete(false, "授权已取消")
+                    complete(false, "Authorization canceled")
                 }
             }
         )
@@ -127,20 +127,20 @@ class CoverLoginActivity : ComponentActivity() {
             ) {
                 Surface(Modifier.fillMaxSize()) {
                     Column(Modifier.padding(28.dp), verticalArrangement = Arrangement.Center) {
-                        Text("连接 ${source.label}", style = MaterialTheme.typography.headlineSmall)
+                        Text("Connect ${source.label}", style = MaterialTheme.typography.headlineSmall)
                         Text(message, modifier = Modifier.padding(vertical = 20.dp))
-                        Button(onClick = { complete(false, "授权已取消") }) { Text("取消并返回") }
+                        Button(onClick = { complete(false, "Authorization canceled") }) { Text("Cancel and return") }
                     }
                 }
             }
         }
         if (savedInstanceState != null) {
-            complete(false, "授权会话已结束，请重新登录")
+            complete(false, "The authorization session has ended, please log in again")
             return
         }
         val id = CoverOAuthConfig.clientId(source)
         if (!source.requiresLogin || id.isBlank()) {
-            complete(false, "此测试包尚未配置 ${source.label} 客户端，暂不能登录")
+            complete(false, "This test package has not configured the ${source.label} client and cannot log in yet.")
             return
         }
         lifecycleScope.launch {
@@ -157,7 +157,7 @@ class CoverLoginActivity : ComponentActivity() {
                     listener?.let { Uri.parse("http://127.0.0.1:${it.localPort}/callback") }
                         ?: Uri.parse("kireibox://oauth/hikarinagi")
                 request = authorizationRequest(id, redirect)
-                message = "请在系统浏览器完成登录和授权。完成后返回 KireiBox，取消不会影响游戏库。"
+                message = "Please complete login and authorization in the system browser. Return to KireiBox when finished, canceling will not affect your game library."
                 // Both sources open in a Custom Tab inside this task (AppAuth falls back to the default
                 // browser): still the system browser, never a WebView, and closing it cancels.
                 browserResult.launch(service.getAuthorizationRequestIntent(request))
@@ -165,14 +165,14 @@ class CoverLoginActivity : ComponentActivity() {
             } catch (_: kotlinx.coroutines.CancellationException) {
                 socket?.close()
             } catch (_: SocketTimeoutException) {
-                complete(false, "授权已超时，请重新登录")
+                complete(false, "Authorization has timed out, please log in again")
             } catch (_: Exception) {
-                complete(false, "无法完成浏览器授权，请检查网络后重试")
+                complete(false, "Unable to complete browser authorization, please check the network and try again")
             }
         }
         lifecycleScope.launch {
             kotlinx.coroutines.delay(300_000)
-            complete(false, "授权已超时，请重新登录")
+            complete(false, "Authorization has timed out, please log in again")
         }
     }
 
@@ -211,7 +211,7 @@ class CoverLoginActivity : ComponentActivity() {
         // returning by background-start limits, so the exchange below never waits on it.
         runCatching { startActivity(AuthorizationManagementActivity.createResponseHandlingIntent(this, uri)) }
         if (uri.getQueryParameter("error") != null) {
-            complete(false, "授权未完成，请重试")
+            complete(false, "Authorization not completed, please try again")
         } else {
             exchange(AuthorizationResponse.Builder(request).fromUri(uri).build())
         }
@@ -253,7 +253,7 @@ class CoverLoginActivity : ComponentActivity() {
                 return null
             }
         if (callback != null) callbackAccepted.set(true)
-        val body = (if (callback != null) "授权结果已收到，请返回 KireiBox。" else "无效的授权回调。").toByteArray(Charsets.UTF_8)
+        val body = (if (callback != null) "The authorization result has been received, please return to KireiBox." else "Invalid authorization callback.").toByteArray(Charsets.UTF_8)
         runCatching {
             connection.getOutputStream().apply {
                 write(
@@ -275,14 +275,14 @@ class CoverLoginActivity : ComponentActivity() {
     private fun exchange(response: AuthorizationResponse) {
         if (finished.get()) return
         if (response.state != request.state || response.authorizationCode.isNullOrBlank()) {
-            complete(false, "授权校验失败，请重新登录")
+            complete(false, "Authorization verification failed, please log in again")
             return
         }
-        message = "正在安全保存授权…"
+        message = "Saving authorization safely..."
         service.performTokenRequest(response.createTokenExchangeRequest()) { token, error ->
             if (finished.get()) return@performTokenRequest
             if (error != null || token == null) {
-                complete(false, "授权换码失败，请重新登录")
+                complete(false, "Authorization code exchange failed, please log in again")
                 return@performTokenRequest
             }
             // AppAuth delivers on the main thread. Keep the short encrypted commit in this
@@ -300,9 +300,9 @@ class CoverLoginActivity : ComponentActivity() {
                     profile.accountId,
                     profile.avatarUrl,
                 )
-                complete(true, "${source.label} 已连接")
+                complete(true, "${source.label} is connected")
             } catch (_: Exception) {
-                complete(false, "无法安全保存授权，请重试")
+                complete(false, "Unable to securely save authorization, please try again")
             }
         }
     }

@@ -356,7 +356,7 @@ internal fun ImmersiveHome(
                 expanded = menuExpanded,
                 colors = colors,
                 haze = haze,
-                editLabel = "编辑沉浸式展示图",
+                editLabel = "Edit an immersive presentation",
                 menuDiameterDp = sharedChrome.menuDiameterDp.dp,
                 menuIconSizeDp = sharedChrome.menuIconSizeDp.dp,
                 opaqueFill = true,

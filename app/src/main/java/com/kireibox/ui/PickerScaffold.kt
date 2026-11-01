@@ -158,7 +158,7 @@ internal fun PickerPage(
                     modifier = Modifier.align(Alignment.TopCenter),
                     slots =
                         KireiTopBarSlots(
-                            navigation = { GlassIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "返回", colors, barHaze, spec.onBack) },
+                            navigation = { GlassIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", colors, barHaze, spec.onBack) },
                             actions = spec.topActions,
                             haze = barHaze,
                             topInset = top,
@@ -260,7 +260,7 @@ internal fun LazyListScope.groupSkeleton(colors: KireiColors) {
             Modifier.fillMaxWidth()
                 .heightIn(min = KireiSpacing.rowMinHeightTwoLine)
                 .padding(horizontal = KireiSpacing.groupInner, vertical = KireiSpacing.rowVerticalPadding)
-                .clearAndSetSemantics { if (index == 0) contentDescription = "加载中" },
+                .clearAndSetSemantics { if (index == 0) contentDescription = "Loading" },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             KireiSkeleton(colors, Modifier.size(KireiSpacing.iconTileSize), KireiShapes.sm)

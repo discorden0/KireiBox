@@ -63,7 +63,7 @@ class TyranoActivity : Activity() {
         Log.i(TAG, "onCreate gameDir=$gameDir")
         val resolvedGameDir = gameDir
         if (resolvedGameDir.isNullOrBlank()) {
-            failLaunch("Tyrano 启动失败：游戏目录为空")
+            failLaunch("Tyrano startup failed: game directory is empty")
             return
         }
 
@@ -74,7 +74,7 @@ class TyranoActivity : Activity() {
         val probe = EngineStorageProbe.probeDirectory(saves)
         if (!probe.ok) {
             Log.e(TAG, "save probe failed: ${probe.logMessage()}")
-            failLaunch("Tyrano 启动失败：${probe.userMessage()}")
+            failLaunch("Tyrano startup failed: ${probe.userMessage()}")
             return
         }
         Log.i(TAG, "save directory=${saves!!.absolutePath} scoped=${intent.getBooleanExtra(EXTRA_SCOPED_SAVE_DIR, false)}")
@@ -93,7 +93,7 @@ class TyranoActivity : Activity() {
             }
             !index.isFile -> {
                 Log.e(TAG, "entry not found index=${index.absolutePath} app.asar=${rootAsar.absolutePath} resources/app.asar=${resourcesAsar.absolutePath}")
-                failLaunch("Tyrano 启动失败：未找到 index.html 或 app.asar")
+                failLaunch("Tyrano startup failed: index.html or app.asar not found")
                 return
             }
         }
@@ -103,7 +103,7 @@ class TyranoActivity : Activity() {
                 asarArchive = AsarArchive(File(requireNotNull(asarPath)))
             } catch (error: Throwable) {
                 Log.e(TAG, "open asar failed", error)
-                failLaunch("Tyrano 启动失败：无法读取 app.asar")
+                failLaunch("Tyrano startup failed: Unable to read app.asar")
                 return
             }
         }
@@ -120,7 +120,7 @@ class TyranoActivity : Activity() {
                 }.also { it.start() }
         } catch (error: Throwable) {
             Log.e(TAG, "start local server failed", error)
-            failLaunch("Tyrano 启动失败：本地服务器启动失败")
+            failLaunch("Tyrano startup failed: Local server failed to start")
             return
         }
 
@@ -169,7 +169,7 @@ class TyranoActivity : Activity() {
             }
         val close =
             TextView(this).apply {
-                text = "返回"
+                text = "Back"
                 setTextColor(Color.rgb(120, 170, 255))
                 textSize = 16f
                 gravity = Gravity.CENTER
@@ -370,9 +370,9 @@ class TyranoActivity : Activity() {
 
     private fun confirmReturnToTitle() {
         showEngineConfirm(
-            "返回标题",
-            "确定要返回到标题界面吗？（请注意保存游戏进度。）",
-            "确定",
+            "Return title",
+            "Are you sure you want to return to the title screen? (Please remember to save your game progress.)",
+            "OK",
         ) {
             webView?.post { runCatching { webView?.reload() } }
         }
@@ -407,9 +407,9 @@ class TyranoActivity : Activity() {
     @Deprecated("Deprecated in Android")
     override fun onBackPressed() {
         showEngineConfirm(
-            "结束游戏",
-            "确定要结束当前游戏吗？",
-            "结束游戏",
+            "End game",
+            "Are you sure you want to end the current game?",
+            "End game",
             ::finish,
         )
     }
@@ -424,7 +424,7 @@ class TyranoActivity : Activity() {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setNegativeButton("取消", null)
+            .setNegativeButton("Cancel", null)
             .setPositiveButton(confirmLabel) { _, _ -> onConfirm() }
             .show()
     }

@@ -154,7 +154,7 @@ class AccountCatalogClient(private val accounts: CoverAccounts) {
         val data = root.optJSONObject("data") ?: root
         return objects(data.optJSONArray("items")).filter { it.optString("type") == "galgame" }.mapNotNull { row ->
             val id = row.optString("id")
-            require(id.matches(Regex("[0-9]+"))) { "资料 ID 无效" }
+            require(id.matches(Regex("[0-9]+"))) { "Invalid profile ID" }
             val response = get(CoverSourceMode.HIKARINAGI, "https://api.hikarinagi.org/v3/galgames/$id", emptyMap())
             val detail = response.optJSONObject("data") ?: response
             if (!accounts.includesAdult() && detail.optBoolean("nsfw", true)) return@mapNotNull null
@@ -180,7 +180,7 @@ class AccountCatalogClient(private val accounts: CoverAccounts) {
                     if (source == CoverSourceMode.NEXTMOE) addQueryParameter("nsfw", accounts.includesAdult().toString())
                 }.build()
             val remaining = (cooldown[source] ?: 0) - System.currentTimeMillis()
-            if (remaining > 0) throw IOException("请求受限，请在 ${(remaining + 999) / 1000} 秒后重试")
+            if (remaining > 0) throw IOException("Request restricted, please try again in ${(remaining + 999) / 1000} seconds")
             val token = accounts.accessToken(source)
             val response =
                 try {
@@ -203,14 +203,14 @@ class AccountCatalogClient(private val accounts: CoverAccounts) {
                         target = endpoint.substringBeforeLast('/') + "/" + current
                         continue
                     }
-                    throw IOException("该作品已在目录中合并，请重新搜索")
+                    throw IOException("This work has been merged in the catalog, please search again")
                 }
                 if (it.code == 401 && !refreshed) {
                     accounts.accessToken(source, forceRefresh = true, rejectedToken = token)
                     refreshed = true
                 } else if (it.code == 401) {
                     accounts.markExpired(source)
-                    throw IOException("${source.label} 授权已失效（可能已被撤销），请重新授权")
+                    throw IOException("${source.label} The authorization has expired (may have been revoked), please re-authorize it.")
                 } else if (it.code == 429) {
                     val now = System.currentTimeMillis()
                     val seconds = it.header("Retry-After")?.toLongOrNull()?.coerceIn(1, 86400)
@@ -218,14 +218,14 @@ class AccountCatalogClient(private val accounts: CoverAccounts) {
                         // Daily quota: the budget only resets at UTC midnight, so backing off and
                         // retrying would just burn the next attempt. Park the source until then.
                         cooldown[source] = now + CoverRateLimitPolicy.quotaCooldownMillis(now)
-                        throw IOException("${source.label} 今日调用额度已用尽，请明天再试")
+                        throw IOException("${source.label} Today’s call quota has been exhausted, please try again tomorrow.")
                     }
                     cooldown[source] = now + (seconds ?: 60) * 1000
-                    throw IOException("请求受限，请在 ${seconds ?: 60} 秒后重试")
+                    throw IOException("Request restricted, please try again in ${seconds ?: 60} seconds")
                 } else if (it.code >= 500 && !retried) {
                     retried = true
                 } else {
-                    throw IOException(if (it.code == 403) "账号缺少资料读取权限，请重新授权" else "资料搜索失败（HTTP ${it.code}）")
+                    throw IOException(if (it.code == 403) "The account lacks data read permission, please re-authorize it." else "Data search failed (HTTP ${it.code})")
                 }
             }
             if (retried) Thread.sleep(1000)
@@ -406,8 +406,8 @@ class AccountCatalogClient(private val accounts: CoverAccounts) {
                         val scale = NEXTMOE_RATING_SCALES[source] ?: 10.0
                         val votes = rowRating.optInt("vote_count", 0)
                         val label = source.replaceFirstChar { it.uppercase() }
-                        ratingText = "评分：${formatScore(score)}/${formatScore(scale)}" +
-                            (if (votes > 0) "（${votes}人）" else "") + " · $label"
+                        ratingText = "Rating: ${formatScore(score)}/${formatScore(scale)}" +
+                            (if (votes > 0) "(${votes} people)" else "") + " · $label"
                     }
                 }
 

@@ -202,7 +202,7 @@ internal fun SettingsLargeTitleLayout(
                 KireiTopBarSlots(
                     navigation =
                         spec.header.onBack?.let { back ->
-                            { GlassIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "返回", colors, barHaze, back) }
+                            { GlassIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", colors, barHaze, back) }
                         },
                     // The root's search button: only once the field has scrolled away under the bar.
                     actions = spec.header.onSearch?.let { search -> { SettingsCollapsedSearchButton(scroll, colors, barHaze, search) } },

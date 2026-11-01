@@ -24,7 +24,7 @@ internal class KireiScanRootController(host: KireiViewModel) : KireiViewModelCon
             var foundGames = 0
             val result =
                 runCatching {
-                    check(change != null) { "目录路径无效" }
+                    check(change != null) { "Invalid directory path" }
                     val report = core.scanUntilMatch(uri)
                     foundGames = report.results.size
                     // Adding or re-authorizing a directory is an explicit user action, so the games
@@ -40,13 +40,13 @@ internal class KireiScanRootController(host: KireiViewModel) : KireiViewModelCon
                             busy = false,
                             notice =
                                 if (change?.replaced == true) {
-                                    "目录已更新：发现 $foundGames 个游戏"
+                                    "Catalog updated: $foundGames games found"
                                 } else {
-                                    "扫描完成：发现 $foundGames 个游戏"
+                                    "Scan completed: $foundGames games found"
                                 },
                         )
                     } else {
-                        mutableState.value.copy(busy = false).withNotice(result.exceptionOrNull()?.message ?: "扫描目录失败", NoticeTone.ERROR)
+                        mutableState.value.copy(busy = false).withNotice(result.exceptionOrNull()?.message ?: "Scan directory failed", NoticeTone.ERROR)
                     }
             }
             reloadInternal()
@@ -60,7 +60,7 @@ internal class KireiScanRootController(host: KireiViewModel) : KireiViewModelCon
             val result =
                 runCatching {
                     if (affected.isNotEmpty()) repository.setGamesHidden(affected, true)
-                    check(core.settings.removeScanRoot(root) != null) { "扫描目录不存在" }
+                    check(core.settings.removeScanRoot(root) != null) { "Scan directory does not exist" }
                     UndoScanRootRemoval(
                         root = root,
                         previousRoots = snapshot.scanRoots,
@@ -78,7 +78,7 @@ internal class KireiScanRootController(host: KireiViewModel) : KireiViewModelCon
                             notice = null,
                         )
                     } else {
-                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "移除扫描目录失败", NoticeTone.ERROR)
+                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Failed to remove scan directory", NoticeTone.ERROR)
                     }
             }
             if (result.isSuccess) reloadInternal()
@@ -96,9 +96,9 @@ internal class KireiScanRootController(host: KireiViewModel) : KireiViewModelCon
             withContext(Dispatchers.Main) {
                 mutableState.value =
                     if (result.isSuccess) {
-                        mutableState.value.copy(undoScanRootRemoval = null, notice = "已恢复扫描目录")
+                        mutableState.value.copy(undoScanRootRemoval = null, notice = "Scan directory restored")
                     } else {
-                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "恢复扫描目录失败", NoticeTone.ERROR)
+                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Recovery scan directory failed", NoticeTone.ERROR)
                     }
             }
             if (result.isSuccess) reloadInternal()

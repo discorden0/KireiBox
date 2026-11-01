@@ -50,17 +50,17 @@ internal fun libraryEmptyStateModel(
     when (kind) {
         LibraryEmptyKind.LIBRARY_EMPTY ->
             LibraryEmptyStateModel(
-                title = "游戏库还是空的",
-                message = "添加游戏目录，自动识别游戏",
-                actionLabel = "添加游戏目录",
+                title = "The game library is still empty",
+                message = "Add game directory and automatically identify games",
+                actionLabel = "Add game directory",
                 onAction = onAddDirectory,
                 showMascot = true,
             )
         LibraryEmptyKind.NO_MATCH ->
             LibraryEmptyStateModel(
-                title = "没有匹配的游戏",
-                message = "试试换个关键词，或清除筛选条件",
-                actionLabel = "清除筛选",
+                title = "No matching games",
+                message = "Try changing keywords or clearing filter conditions",
+                actionLabel = "Clear filters",
                 onAction = onClearFilters,
             )
         null -> null
@@ -90,17 +90,17 @@ internal object LibraryLastPlayedLabel {
         nowMs: Long,
         zone: ZoneId = ZoneId.systemDefault(),
     ): String {
-        if (lastPlayedAtMs <= 0L) return "未游玩"
+        if (lastPlayedAtMs <= 0L) return "Not played"
         val played = Instant.ofEpochMilli(lastPlayedAtMs).atZone(zone).toLocalDate()
         val today = Instant.ofEpochMilli(nowMs).atZone(zone).toLocalDate()
         val days = ChronoUnit.DAYS.between(played, today)
         return when {
-            days <= 0L -> "今天"
-            days == 1L -> "昨天"
-            days < DAYS_PER_WEEK -> "$days 天前"
-            days < DAYS_PER_MONTH -> "${days / DAYS_PER_WEEK} 周前"
-            played.year == today.year -> "${played.monthValue}月${played.dayOfMonth}日"
-            else -> "${played.year}年${played.monthValue}月"
+            days <= 0L -> "Today"
+            days == 1L -> "Yesterday"
+            days < DAYS_PER_WEEK -> "$days days ago"
+            days < DAYS_PER_MONTH -> "${days / DAYS_PER_WEEK} weeks ago"
+            played.year == today.year -> "${played.monthValue}month${played.dayOfMonth}day"
+            else -> "${played.year} year ${played.monthValue} month"
         }
     }
 }

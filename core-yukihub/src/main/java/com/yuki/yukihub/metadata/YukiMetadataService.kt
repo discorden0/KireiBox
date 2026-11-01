@@ -108,7 +108,7 @@ class YukiMetadataService(context: Context) {
                 lastError = error
             }
         }
-        throw lastError ?: java.io.IOException("Bangumi 暂时不可用，请在设置中更换镜像地址")
+        throw lastError ?: java.io.IOException("Bangumi is temporarily unavailable, please change the mirror address in the settings")
     }
 
     fun search(
@@ -127,11 +127,11 @@ class YukiMetadataService(context: Context) {
                 } catch (error: com.yuki.yukihub.net.HttpClient.HttpFailure) {
                     if (error.status == 401) {
                         accounts.markExpired(source)
-                        throw java.io.IOException("Bangumi Token 已失效，请重新连接或断开后匿名搜索")
+                        throw java.io.IOException("Bangumi Token has expired, please reconnect or disconnect and search anonymously")
                     }
                     throw error
                 }
-            CoverSourceMode.BANGUMI_MIRROR, CoverSourceMode.YMGAL -> error("该历史来源已停止联网")
+            CoverSourceMode.BANGUMI_MIRROR, CoverSourceMode.YMGAL -> error("This historical source has been disconnected from the Internet")
             CoverSourceMode.NEXTMOE -> catalog.searchNextmoe(query, bounded)
             CoverSourceMode.HIKARINAGI -> catalog.searchHikarinagi(query, bounded)
         }
@@ -227,7 +227,7 @@ class YukiMetadataService(context: Context) {
                     null
                 }
             if (hits == null) {
-                if (!failed) lastError = lastError ?: java.io.IOException("${source.label} 搜索超时")
+                if (!failed) lastError = lastError ?: java.io.IOException("${source.label} Search timeout")
                 CoverSourceHealth.recordFailure(source)
                 continue
             }
@@ -243,7 +243,7 @@ class YukiMetadataService(context: Context) {
             val failure =
                 when {
                     attempted.isEmpty() ->
-                        java.io.IOException("封面来源暂时不可用（网络受限或正在冷却），请稍后重试")
+                        java.io.IOException("The cover source is temporarily unavailable (the network is limited or cooling down), please try again later.")
                     lastError != null -> lastError
                     else -> null
                 }

@@ -46,16 +46,16 @@ public final class EngineStorageProbe {
     /** Probes the given directory with a real write/rename/delete cycle. */
     public static Result probeDirectory(File directory) {
         if (directory == null) {
-            return new Result(false, "存档目录为空", "null save directory");
+            return new Result(false, "Archive directory is empty", "null save directory");
         }
         File pending = null;
         File committed = null;
         try {
             if (!directory.exists() && !directory.mkdirs()) {
-                return new Result(false, "无法创建存档目录：" + directory.getAbsolutePath(), "mkdirs failed");
+                return new Result(false, "Unable to create archive directory:" + directory.getAbsolutePath(), "mkdirs failed");
             }
             if (!directory.isDirectory()) {
-                return new Result(false, "存档路径不是目录：" + directory.getAbsolutePath(), "not a directory");
+                return new Result(false, "Archive path is not a directory:" + directory.getAbsolutePath(), "not a directory");
             }
             String suffix = android.os.Process.myPid() + "-" + System.nanoTime();
             pending = new File(directory, ".kireibox-write-test-" + suffix + ".tmp");
@@ -66,10 +66,10 @@ public final class EngineStorageProbe {
                 output.getFD().sync();
             }
             if (!pending.renameTo(committed)) {
-                return new Result(false, "存档目录无法完成写入检测：" + directory.getAbsolutePath(), "rename failed");
+                return new Result(false, "The archive directory cannot complete write detection:" + directory.getAbsolutePath(), "rename failed");
             }
             if (!committed.delete()) {
-                return new Result(false, "存档目录无法删除写入检测文件：" + directory.getAbsolutePath(), "delete failed");
+                return new Result(false, "Archive directory cannot delete write detection files:" + directory.getAbsolutePath(), "delete failed");
             }
             return new Result(true, "", "");
         } catch (Throwable error) {
@@ -77,7 +77,7 @@ public final class EngineStorageProbe {
                     ? error.getClass().getSimpleName()
                     : error.getMessage();
             Log.e(TAG, "probe failed dir=" + directory.getAbsolutePath() + " error=" + detail);
-            return new Result(false, "存档目录不可写入：" + directory.getAbsolutePath(), detail);
+            return new Result(false, "The archive directory is not writable:" + directory.getAbsolutePath(), detail);
         } finally {
             if (pending != null && pending.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -93,14 +93,14 @@ public final class EngineStorageProbe {
     /** KRKR keeps saves in <game>/savedata. */
     public static Result probeKrkrGameSaveDirectory(String gamePath) {
         if (gamePath == null || gamePath.trim().isEmpty()) {
-            return new Result(false, "游戏目录为空", "empty game path");
+            return new Result(false, "Game directory is empty", "empty game path");
         }
         String path = gamePath;
         if (path.startsWith("file://")) path = path.substring("file://".length());
         File root = new File(path);
         if (root.isFile()) root = root.getParentFile();
         if (root == null) {
-            return new Result(false, "无法解析游戏目录", "null game root");
+            return new Result(false, "Unable to parse game directory", "null game root");
         }
         return probeDirectory(new File(root, "savedata"));
     }
@@ -118,17 +118,17 @@ public final class EngineStorageProbe {
     public static String hint() {
         boolean android11Plus = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
         if (isHuaweiFamily()) {
-            return "华为/HarmonyOS 提示：请在“设置 → 应用 → KireiBox → 权限管理 → 存储”中开启“存储”权限后返回"
+            return "Huawei/HarmonyOS Tip: Please enable the \"Storage\" permission in \"Settings → Application → KireiBox → Permission Management → Storage\" and return"
                     + (android11Plus
-                    ? "；HarmonyOS 3 及以上还需要开启“所有文件访问”。"
+                    ? "; HarmonyOS 3 and above also need to turn on \"All File Access\"."
                     : "。")
-                    + " 已开启仍无法写入，请把游戏目录移到 Download 等常规位置后重试。";
+                    + "It has been opened but still cannot be written. Please move the game directory to a regular location such as Download and try again.";
         }
         if (android11Plus) {
-            return "请授予 KireiBox“所有文件访问权限”：设置 → 应用 → KireiBox → 权限 → 所有文件访问 → 允许；"
-                    + "授权后返回重试。若仍无法写入，请把游戏目录移到内部存储的常规位置。";
+            return "Please grant KireiBox \"All file access\": Settings → Apps → KireiBox → Permissions → All file access → Allow;"
+                    + "Return and try again after authorization. If it still cannot be written, please move the game directory to a regular location on the internal storage.";
         }
-        return "请授予 KireiBox“存储”权限：设置 → 应用 → KireiBox → 权限 → 存储 → 允许；"
-                + "已开启仍无法写入，请把游戏目录移到 Download 等常规位置后重试。";
+        return "Please grant \"Storage\" permission to KireiBox: Settings → Applications → KireiBox → Permissions → Storage → Allow;"
+                + "It has been opened but still cannot be written. Please move the game directory to a regular location such as Download and try again.";
     }
 }

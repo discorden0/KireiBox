@@ -24,7 +24,7 @@ internal class KireiPlaytimeSyncController(host: KireiViewModel) : KireiViewMode
                 // Time played on another device was brought in: show the new totals.
                 if (wasRunning && !status.running && status.pulled > 0) {
                     reload()
-                    showNotice("已从 NextMoe 同步 ${status.pulled} 款游戏的时长")
+                    showNotice("Duration of ${status.pulled} games synced from NextMoe")
                 }
                 wasRunning = status.running
             }
@@ -41,7 +41,7 @@ internal class KireiPlaytimeSyncController(host: KireiViewModel) : KireiViewMode
         when {
             !connected() -> {
                 host.openSettingsShortcut(KireiSettingsPage.COVER_ACCOUNTS)
-                showNotice("登录 NextMoe 后即可同步游玩时长")
+                showNotice("Log in to NextMoe to synchronize play time")
             }
             !sync.enabled() -> host.openSettingsShortcut(KireiSettingsPage.PLAYTIME_SYNC)
             else -> sync.syncNow()

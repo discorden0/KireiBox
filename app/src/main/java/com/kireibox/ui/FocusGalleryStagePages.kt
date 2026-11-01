@@ -198,7 +198,7 @@ internal fun FocusGalleryStage(
                         .then(
                             if (exposeSwitch) {
                                 Modifier.semantics(mergeDescendants = true) {
-                                    contentDescription = "切换到 ${game.title.orEmpty()}"
+                                    contentDescription = "Switch to ${game.title.orEmpty()}"
                                     role = Role.Button
                                 }
                             } else {

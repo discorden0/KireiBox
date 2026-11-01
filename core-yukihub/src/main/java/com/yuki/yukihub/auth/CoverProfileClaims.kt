@@ -60,7 +60,7 @@ object CoverProfileClaims {
         source: CoverSourceMode,
         name: String,
         accountId: String,
-    ): Boolean = name.isBlank() || name == "${source.label} 已授权" || (accountId.isNotBlank() && name == accountId)
+    ): Boolean = name.isBlank() || name == "${source.label} authorized" || (accountId.isNotBlank() && name == accountId)
 
     private val NEXTMOE_NAME_KEYS = listOf("name", "nickname", "preferred_username")
     private val DEFAULT_NAME_KEYS = listOf("nickname", "name", "preferred_username")

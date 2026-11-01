@@ -35,8 +35,8 @@ internal fun MotionModeRow(
     // Inline segmented choice; the group divider sits below the control, not under the title.
     SettingsSegmentedRow(
         SettingsSegmentedRowSpec(
-            title = "动画效果",
-            subtitle = if (requested == MotionMode.AUTO) "当前：${motionModeLabel(resolved)}" else null,
+            title = "Animation effects",
+            subtitle = if (requested == MotionMode.AUTO) "Current: ${motionModeLabel(resolved)}" else null,
             segments = MotionMode.entries.map { mode -> KireiSegment(mode, motionModeLabel(mode)) },
             selected = requested,
         ),
@@ -47,9 +47,9 @@ internal fun MotionModeRow(
 
 internal fun motionModeLabel(mode: MotionMode): String =
     when (mode) {
-        MotionMode.AUTO -> "自动"
-        MotionMode.POLISHED -> "完整"
-        MotionMode.REDUCED -> "精简"
+        MotionMode.AUTO -> "Auto"
+        MotionMode.POLISHED -> "Whole"
+        MotionMode.REDUCED -> "Streamline"
     }
 
 /**
@@ -64,7 +64,7 @@ internal fun OrientationModeRow(
 ) {
     SettingsSegmentedRow(
         SettingsSegmentedRowSpec(
-            title = "屏幕方向",
+            title = "Screen orientation",
             segments = OrientationMode.entries.map { option -> KireiSegment(option, option.displayName) },
             selected = value,
         ),
@@ -97,10 +97,10 @@ internal fun choiceLabel(value: String): String =
         "vndb" -> "VNDB"
         "bangumi" -> "Bangumi"
         "hikarinagi" -> "Hikarinagi"
-        "recent" -> "最近游玩"
-        "newest" -> "添加时间"
-        "name" -> "名称"
-        "manual" -> "自定义"
-        "auto" -> "自动"
+        "recent" -> "Recently visited"
+        "newest" -> "Add time"
+        "name" -> "Name"
+        "manual" -> "Customize"
+        "auto" -> "Auto"
         else -> value
     }

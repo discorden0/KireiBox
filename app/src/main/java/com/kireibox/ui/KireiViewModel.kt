@@ -523,7 +523,7 @@ class KireiViewModel
                 val updated = game.copy(nsfw = !game.nsfw, updatedAt = System.currentTimeMillis())
                 val result =
                     runCatching {
-                        check(repository.update(updated) == 1) { "保存 NSFW 封面设置失败" }
+                        check(repository.update(updated) == 1) { "Failed to save NSFW cover settings" }
                         // Any explicit user choice is authoritative over later metadata refreshes.
                         core.settings.markNsfwDetected(game.id)
                     }
@@ -536,10 +536,10 @@ class KireiViewModel
                                     mutableState.value.selectedGame?.let {
                                         if (it.id == updated.id) updated else it
                                     },
-                                notice = if (updated.nsfw) "NSFW 封面模糊已开启" else "NSFW 封面模糊已关闭",
+                                notice = if (updated.nsfw) "NSFW cover blur is on" else "NSFW cover blur is turned off",
                             )
                         } else {
-                            mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "保存 NSFW 封面设置失败", NoticeTone.ERROR)
+                            mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Failed to save NSFW cover settings", NoticeTone.ERROR)
                         }
                 }
             }

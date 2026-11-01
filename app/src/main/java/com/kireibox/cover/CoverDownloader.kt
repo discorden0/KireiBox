@@ -76,7 +76,7 @@ internal class CoverDownloader(
                                     com.yuki.yukihub.net.HttpClient.recordRateLimit(request.url.host, it.header("Retry-After"))
                                     com.yuki.yukihub.net.HttpClient.checkRateLimit(request.url.host)
                                 }
-                                check(it.isSuccessful) { "图片下载失败（HTTP ${it.code}），可重试、换图或从本地导入" }
+                                check(it.isSuccessful) { "Image download failed (HTTP ${it.code}), you can try again, change the image or import it locally" }
                                 val body = it.body ?: error("Cover response body is empty")
                                 val totalBytes = body.contentLength().takeIf { length -> length >= 0L }
                                 check(totalBytes == null || totalBytes <= maxBytes) { "Cover file exceeds size limit" }

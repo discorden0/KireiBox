@@ -16,7 +16,7 @@ object ExternalShortcutDirectLauncher {
         val recipe = ExternalShortcutDirectLaunch.parse(encodedTarget) ?: return null
         return runCatching {
             check(identity.packageName == ExternalShortcutDirectLaunch.GAME_HUB_PACKAGE) {
-                "快捷方式直启信息与应用不匹配，请重新扫描。"
+                "The shortcut direct launch information does not match the application, please scan again."
             }
             val spec = recipe.intentSpec()
             val component = ComponentName(spec.packageName, spec.activityName)
@@ -28,7 +28,7 @@ object ExternalShortcutDirectLauncher {
                     context.packageManager.getActivityInfo(component, 0)
                 }
             check(info.applicationInfo.enabled && info.enabled && info.exported && info.permission.isNullOrBlank()) {
-                "盖世直启入口不可用，请重新扫描或更新盖世。"
+                "The direct access to the world is unavailable, please rescan or update the world."
             }
             context.startActivity(
                 Intent(spec.action).apply {
@@ -39,7 +39,7 @@ object ExternalShortcutDirectLauncher {
             )
         }.recoverCatching { error ->
             if (error is PackageManager.NameNotFoundException) {
-                throw IllegalStateException("未找到可用的盖世直启入口，请确认已安装原版盖世 6.1.2 或重新扫描。", error)
+                throw IllegalStateException("No available direct access to the game was found. Please confirm that the original game 6.1.2 is installed or scan again.", error)
             }
             throw error
         }

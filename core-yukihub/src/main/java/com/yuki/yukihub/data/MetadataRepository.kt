@@ -145,7 +145,7 @@ class MetadataRepository(context: Context) {
                     put("updated_at", incomingUpdatedAt)
                 }
             if (db.insertWithOnConflict("metadata_cache", null, v, SQLiteDatabase.CONFLICT_REPLACE) <= 0) {
-                throw IllegalStateException("导入元数据失败: game=$gameId, source=$source")
+                throw IllegalStateException("Failed to import metadata: game=$gameId, source=$source")
             }
             changed++
         }

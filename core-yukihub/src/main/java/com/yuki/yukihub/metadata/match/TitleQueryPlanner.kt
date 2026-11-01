@@ -273,5 +273,5 @@ object TitleQueryPlanner {
 
     private const val MAX_VARIANTS = 12
     private const val MOJIBAKE_MARKERS =
-        "脙脗忙莽氓盲茅猫矛貌霉閺勯惃鍕勾娑撳秵鐖跺〒閹村繒浼閻忓灚"
+        "脙脗busy and reckless, blind thatched cat, spear and moldy appearance, 锯惃鍍Gou Suo 揿秵鐖跺〒castrated village 缯浼逎偓灚"
 }

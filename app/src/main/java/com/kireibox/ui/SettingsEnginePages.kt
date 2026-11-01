@@ -31,7 +31,7 @@ private val EnginePages =
         KireiSettingsPage.WINLATOR to EngineType.WINDOWS,
     )
 
-private const val ENGINE_PAGE_SUFFIX = " 引擎设置"
+private const val ENGINE_PAGE_SUFFIX = "Engine settings"
 
 @Composable
 internal fun EngineHubSettings(
@@ -64,7 +64,7 @@ internal fun EngineOrientationRow(colors: KireiColors) {
     var orientation by remember { mutableStateOf(LauncherEngineOptions.orientation(context)) }
     SettingsSegmentedRow(
         SettingsSegmentedRowSpec(
-            "游戏屏幕方向",
+            "Game screen orientation",
             LauncherEngineOptions.ORIENTATIONS.map { KireiSegment(it.toString(), engineOrientationLabel(it)) },
             orientation.toString(),
         ),
@@ -77,12 +77,12 @@ internal fun EngineOrientationRow(colors: KireiColors) {
 
 private fun engineOrientationLabel(value: Int): String =
     when (value) {
-        LauncherEngineOptions.ORIENTATION_LEFT_LANDSCAPE -> "左横屏"
-        LauncherEngineOptions.ORIENTATION_RIGHT_LANDSCAPE -> "右横屏"
-        else -> "传感器"
+        LauncherEngineOptions.ORIENTATION_LEFT_LANDSCAPE -> "Left horizontal screen"
+        LauncherEngineOptions.ORIENTATION_RIGHT_LANDSCAPE -> "Right horizontal screen"
+        else -> "Sensor"
     }
 
-private const val SAVE_DIR_FOOTER = "关闭后存档写入游戏目录。"
+private const val SAVE_DIR_FOOTER = "After closing, the archive is written to the game directory."
 
 @Composable
 internal fun OnsSettingsPage(colors: KireiColors) {
@@ -92,17 +92,17 @@ internal fun OnsSettingsPage(colors: KireiColors) {
         settings = it
         OnsGlobalSettings.save(context, it)
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "显示") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Show") {
         item { EngineOrientationRow(colors) }
-        item { SwitchRow("保持屏幕常亮", settings.keepScreenOn, colors) { update(settings.copy(keepScreenOn = it)) } }
-        item { SwitchRow("拉伸全屏", settings.stretchFull, colors) { update(settings.copy(stretchFull = it)) } }
-        item { SwitchRow("忽略刘海", settings.ignoreCutout, colors) { update(settings.copy(ignoreCutout = it)) } }
-        item { SwitchRow("画面锐化", settings.sharpness, colors) { update(settings.copy(sharpness = it)) } }
+        item { SwitchRow("Keep the screen on", settings.keepScreenOn, colors) { update(settings.copy(keepScreenOn = it)) } }
+        item { SwitchRow("Stretch full screen", settings.stretchFull, colors) { update(settings.copy(stretchFull = it)) } }
+        item { SwitchRow("Ignore bangs", settings.ignoreCutout, colors) { update(settings.copy(ignoreCutout = it)) } }
+        item { SwitchRow("Picture sharpening", settings.sharpness, colors) { update(settings.copy(sharpness = it)) } }
         item {
             SettingsSliderRow(
                 settings.sharpnessValue,
                 KireiSliderSpec(
-                    label = "锐化强度",
+                    label = "Sharpening strength",
                     valueText = OnsGlobalSettings.formatSharpness(settings.sharpnessValue),
                     valueRange = OnsGlobalSettings.MIN_SHARPNESS..OnsGlobalSettings.MAX_SHARPNESS,
                     // 0.5 stops: TalkBack and arrow keys land on round values.
@@ -113,17 +113,17 @@ internal fun OnsSettingsPage(colors: KireiColors) {
             ) { update(settings.copy(sharpnessValue = (it * 2).roundToInt() / 2f)) }
         }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "兼容") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "compatible") {
         item {
             SettingsSegmentedRow(
-                SettingsSegmentedRowSpec("文本编码", OnsGlobalSettings.ENCODINGS.map { KireiSegment(it, onsEncodingLabel(it)) }, settings.encoding),
+                SettingsSegmentedRowSpec("Text encoding", OnsGlobalSettings.ENCODINGS.map { KireiSegment(it, onsEncodingLabel(it)) }, settings.encoding),
                 colors,
             ) { update(settings.copy(encoding = it)) }
         }
-        item { SwitchRow("禁用视频", settings.disableVideo, colors) { update(settings.copy(disableVideo = it)) } }
+        item { SwitchRow("Disable video", settings.disableVideo, colors) { update(settings.copy(disableVideo = it)) } }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "存档", footer = SAVE_DIR_FOOTER) {
-        item { SwitchRow("独立存档目录", settings.scopedSaveDir, colors) { update(settings.copy(scopedSaveDir = it)) } }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Save data", footer = SAVE_DIR_FOOTER) {
+        item { SwitchRow("Independent archive directory", settings.scopedSaveDir, colors) { update(settings.copy(scopedSaveDir = it)) } }
     }
 }
 
@@ -140,11 +140,11 @@ internal fun ArtemisSettingsPage(
     colors: KireiColors,
     viewModel: KireiViewModel,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "显示") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Show") {
         item { EngineOrientationRow(colors) }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "存档", footer = SAVE_DIR_FOOTER) {
-        item { SwitchRow("独立存档目录", state.settings?.artemisScopedSaveDir != false, colors, viewModel::setArtemisScopedSaveDir) }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Save data", footer = SAVE_DIR_FOOTER) {
+        item { SwitchRow("Independent archive directory", state.settings?.artemisScopedSaveDir != false, colors, viewModel::setArtemisScopedSaveDir) }
     }
 }
 
@@ -157,22 +157,22 @@ internal fun TyranoSettingsPage(
     val context = LocalContext.current
     var keepScreenOn by remember { mutableStateOf(LauncherEngineOptions.tyranoKeepScreenOn(context)) }
     var ignoreCutout by remember { mutableStateOf(LauncherEngineOptions.tyranoIgnoreCutout(context)) }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "显示") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Show") {
         item { EngineOrientationRow(colors) }
         item {
-            SwitchRow("保持屏幕常亮", keepScreenOn, colors) {
+            SwitchRow("Keep the screen on", keepScreenOn, colors) {
                 keepScreenOn = it
                 LauncherEngineOptions.setTyranoKeepScreenOn(context, it)
             }
         }
         item {
-            SwitchRow("忽略刘海", ignoreCutout, colors) {
+            SwitchRow("Ignore bangs", ignoreCutout, colors) {
                 ignoreCutout = it
                 LauncherEngineOptions.setTyranoIgnoreCutout(context, it)
             }
         }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "存档", footer = SAVE_DIR_FOOTER) {
-        item { SwitchRow("独立存档目录", state.settings?.tyranoScopedSaveDir != false, colors, viewModel::setTyranoScopedSaveDir) }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Save data", footer = SAVE_DIR_FOOTER) {
+        item { SwitchRow("Independent archive directory", state.settings?.tyranoScopedSaveDir != false, colors, viewModel::setTyranoScopedSaveDir) }
     }
 }

@@ -88,12 +88,12 @@ class YukiCoreFacade(context: Context) {
             }
             val game = games.findByIdentity(rootUri, "") ?: Game()
             val wasHidden = game.hidden
-            game.title = result.title?.takeIf(String::isNotBlank) ?: "未命名游戏"
+            game.title = result.title?.takeIf(String::isNotBlank) ?: "Unnamed game"
             game.originalTitle = game.originalTitle ?: game.title
             game.engine = result.engine
             game.rootUri = rootUri
             game.entryKey = ""
-            game.launchTarget = result.launchTarget?.takeIf(String::isNotBlank) ?: "[游戏目录]"
+            game.launchTarget = result.launchTarget?.takeIf(String::isNotBlank) ?: "[Game Catalog]"
             game.emulatorPackage = defaultPackage(result.engine?.name)
             game.hidden = ScanImportVisibilityPolicy.hiddenAfterRefresh(wasHidden, keepRemovedHidden)
             val id =

@@ -77,7 +77,7 @@ object MetadataRequests {
         private val calls = mutableSetOf<Call>()
 
         @Synchronized fun checkActive() {
-            if (cancelled) throw CancellationException("请求已取消")
+            if (cancelled) throw CancellationException("Request canceled")
         }
 
         @Synchronized fun add(call: Call) {

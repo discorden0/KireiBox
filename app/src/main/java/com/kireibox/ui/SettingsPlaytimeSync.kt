@@ -30,7 +30,7 @@ import com.yuki.yukihub.sync.PlaytimeSyncStatus
 // 同步游玩时长 (doc §5.6): one row on the NextMoe account card and the overview's 上次同步 tile lead
 // here; the page holds the switch, 立即同步, and the games that wait for the user.
 
-internal const val PLAYTIME_SYNC_TITLE = "同步游玩时长"
+internal const val PLAYTIME_SYNC_TITLE = "Synchronized play time"
 
 /** 「3 分钟前」 for the overview tile and the status line; 「未同步」 before the first sync. */
 internal fun lastSyncLabel(
@@ -39,11 +39,11 @@ internal fun lastSyncLabel(
 ): String {
     val minutes = ((now - lastSyncAt).coerceAtLeast(0L) / 60_000L)
     return when {
-        lastSyncAt <= 0L -> "未同步"
-        minutes < 1 -> "刚刚"
-        minutes < 60 -> "$minutes 分钟前"
-        minutes < 24 * 60 -> "${minutes / 60} 小时前"
-        else -> "${minutes / (24 * 60)} 天前"
+        lastSyncAt <= 0L -> "Not synced"
+        minutes < 1 -> "Just"
+        minutes < 60 -> "$minutes minutes ago"
+        minutes < 24 * 60 -> "${minutes / 60} hours ago"
+        else -> "${minutes / (24 * 60)} days ago"
     }
 }
 
@@ -59,13 +59,13 @@ internal fun playtimeSyncLine(
     val summary = status.summary
     return when {
         !status.enabled -> null
-        !connected -> "登录 NextMoe 后开始同步"
-        status.problem == PlaytimeSyncProblem.NEEDS_LOGIN -> "需要重新登录 NextMoe"
-        summary.needsConfirm > 0 -> "${summary.needsConfirm} 款待确认 · 已同步 ${summary.synced} 款"
-        summary.rejected > 0 -> "${summary.rejected} 款未能同步 · 已同步 ${summary.synced} 款"
-        status.problem == PlaytimeSyncProblem.QUOTA -> "今日额度已用完，明天继续"
-        status.problem == PlaytimeSyncProblem.RATE_LIMITED -> "请求过于频繁，稍后继续"
-        status.problem == PlaytimeSyncProblem.NETWORK -> "暂时无法连接，稍后重试"
+        !connected -> "Start syncing after logging into NextMoe"
+        status.problem == PlaytimeSyncProblem.NEEDS_LOGIN -> "Need to log in to NextMoe again"
+        summary.needsConfirm > 0 -> "${summary.needsConfirm} Hospitality Confirmation · Synchronized ${summary.synced}"
+        summary.rejected > 0 -> "${summary.rejected} model failed to synchronize · ${summary.synced} model has been synchronized"
+        status.problem == PlaytimeSyncProblem.QUOTA -> "The quota has been used up today and will continue tomorrow."
+        status.problem == PlaytimeSyncProblem.RATE_LIMITED -> "Requests too frequent, continue later"
+        status.problem == PlaytimeSyncProblem.NETWORK -> "Unable to connect at the moment, try again later"
         else -> playtimeSyncProgressLine(status, now)
     }
 }
@@ -77,12 +77,12 @@ private fun playtimeSyncProgressLine(
 ): String {
     val summary = status.summary
     return when {
-        status.running -> "正在同步…"
-        summary.waiting > 0 -> "${summary.waiting} 款等待上传"
-        status.lastSyncAt <= 0 -> "尚未同步"
+        status.running -> "Syncing..."
+        summary.waiting > 0 -> "${summary.waiting} is waiting to be uploaded"
+        status.lastSyncAt <= 0 -> "Not synced yet"
         // Nothing played for a minute yet: there is nothing to count, only that NextMoe is current.
-        summary.synced == 0 -> "已是最新 · ${lastSyncLabel(status.lastSyncAt, now)}"
-        else -> "已同步 ${summary.synced} 款 · ${lastSyncLabel(status.lastSyncAt, now)}"
+        summary.synced == 0 -> "Already the latest · ${lastSyncLabel(status.lastSyncAt, now)}"
+        else -> "${summary.synced} style synchronized · ${lastSyncLabel(status.lastSyncAt, now)}"
     }
 }
 
@@ -110,9 +110,9 @@ internal fun KireiUiState.nextmoeConnected(): Boolean = coverAccounts[CoverSourc
 /** Why NextMoe refused a write, in words. */
 internal fun playtimeRejectionReason(code: String): String =
     when (code) {
-        "NOT_FOUND", "HTTP_404" -> "NextMoe 上找不到这部作品"
-        "VALIDATION_FAILED", "HTTP_422" -> "NextMoe 拒绝了这个时长"
-        else -> "NextMoe 拒绝写入（$code）"
+        "NOT_FOUND", "HTTP_404" -> "This work cannot be found on NextMoe"
+        "VALIDATION_FAILED", "HTTP_422" -> "NextMoe rejected this duration"
+        else -> "NextMoe refuses to write ($code)"
     }
 
 /** The row under the NextMoe account card: status as its subtitle, a badge while games wait. */
@@ -130,7 +130,7 @@ internal fun NextmoePlaytimeSyncRow(
             subtitle = playtimeSyncLine(status, state.nextmoeConnected(), System.currentTimeMillis()),
             icon = Icons.Rounded.Sync,
             tile = KireiTileColor.BLUE,
-            trailing = if (attention > 0) KireiRowTrailing.Badge(attention) else KireiRowTrailing.Value(if (status.enabled) "已开启" else "已关闭"),
+            trailing = if (attention > 0) KireiRowTrailing.Badge(attention) else KireiRowTrailing.Value(if (status.enabled) "Already turned on" else "Closed"),
         ),
         colors,
         onClick = onOpen,
@@ -164,9 +164,9 @@ internal fun PlaytimeSyncSettings(context: SettingsPageContext) {
         item {
             val title =
                 when {
-                    !connected -> "登录 NextMoe"
-                    status.running -> "正在同步…"
-                    else -> "立即同步"
+                    !connected -> "Login NextMoe"
+                    status.running -> "Syncing..."
+                    else -> "Sync now"
                 }
             KireiListRow(
                 KireiListRowSpec(title = title, tone = KireiRowTone.ACTION, enabled = !status.running && (status.enabled || !connected)),
@@ -178,12 +178,12 @@ internal fun PlaytimeSyncSettings(context: SettingsPageContext) {
     val games = state.playtimeAttention.filter { it.row?.rejected == null }
     val refused = state.playtimeAttention.filter { it.row?.rejected != null }
     if (games.isNotEmpty()) {
-        KireiListGroup(colors, SettingsGroupSpacing, title = "待确认（${games.size}）") {
+        KireiListGroup(colors, SettingsGroupSpacing, title = "To be confirmed (${games.size})") {
             games.forEach { game -> item(key = game.gameId) { PlaytimeConfirmRow(game, state, colors, viewModel) } }
         }
     }
     if (refused.isNotEmpty()) {
-        KireiListGroup(colors, SettingsGroupSpacing, title = "未能同步（${refused.size}）") {
+        KireiListGroup(colors, SettingsGroupSpacing, title = "Failed to sync (${refused.size})") {
             refused.forEach { game ->
                 item(key = game.gameId) {
                     val row = PlaytimeRow(game, state, playtimeRejectionReason(game.row?.rejected.orEmpty()), KireiRowTrailing.Chevron)
@@ -209,14 +209,14 @@ private fun PlaytimeConfirmRow(
         } else {
             KireiRowTrailing.Custom {
                 KireiButton(
-                    "是这部",
+                    "It's this one",
                     colors,
-                    Modifier.semantics { contentDescription = "确认 ${game.title} 是 ${game.row?.candidateTitle.orEmpty()}" },
+                    Modifier.semantics { contentDescription = "Confirm that ${game.title} is ${game.row?.candidateTitle.orEmpty()}" },
                     options = KireiButtonOptions(style = KireiButtonStyle.SECONDARY, size = KireiButtonSize.SMALL),
                 ) { viewModel.confirmPlaytimeWork(game.gameId, candidate) }
             }
         }
-    val subtitle = if (candidate == null) "没有找到对应作品 · 点按选择" else "NextMoe：${game.row?.candidateTitle?.ifBlank { null } ?: "作品 $candidate"}"
+    val subtitle = if (candidate == null) "No corresponding work found · Click to select" else "NextMoe：${game.row?.candidateTitle?.ifBlank { null } ?: "作品 $candidate"}"
     PlaytimeGameRow(PlaytimeRow(game, state, subtitle, trailing), colors) { viewModel.pickPlaytimeWork(game.gameId) }
 }
 

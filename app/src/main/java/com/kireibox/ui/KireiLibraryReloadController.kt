@@ -101,7 +101,7 @@ internal class KireiLibraryReloadController(host: KireiViewModel) : KireiViewMod
                     mutableState.value.copy(
                         busy = false,
                         homeLoadState = HomeLoadState.RELOAD_FAILED,
-                        homeLoadError = error.message ?: "加载失败",
+                        homeLoadError = error.message ?: "Loading failed",
                     )
             }
         }

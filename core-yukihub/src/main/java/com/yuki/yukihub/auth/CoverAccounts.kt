@@ -54,14 +54,14 @@ object CoverOAuthConfig {
         when (source) {
             CoverSourceMode.NEXTMOE -> "https://account.nextmoe.com/api/v1/oauth/authorize"
             CoverSourceMode.HIKARINAGI -> "https://id.hikarinagi.org/oidc/auth"
-            else -> error("来源不支持授权登录")
+            else -> error("The source does not support authorized login")
         }
 
     fun tokenUrl(source: CoverSourceMode) =
         when (source) {
             CoverSourceMode.NEXTMOE -> "https://account.nextmoe.com/api/v1/oauth/token"
             CoverSourceMode.HIKARINAGI -> "https://id.hikarinagi.org/oidc/token"
-            else -> error("来源不支持授权登录")
+            else -> error("The source does not support authorized login")
         }
 
     /**
@@ -132,20 +132,20 @@ class CoverAccounts private constructor(context: Context) {
 
     fun connectBangumi(token: String) {
         val epoch = generation(CoverSourceMode.BANGUMI)
-        require(token.isNotBlank()) { "请填写 Bangumi 个人 Token" }
+        require(token.isNotBlank()) { "Please fill in Bangumi personal Token" }
         val request =
             Request.Builder().url("https://api.bgm.tv/v0/me")
                 .header("Authorization", "Bearer ${token.trim()}").build()
         val me =
             client.newCall(request).execute().use { response ->
-                if (response.code == 401) throw IOException("Token 无效或已过期，请重新生成")
-                if (!response.isSuccessful) throw IOException("账号验证失败（HTTP ${response.code}）")
+                if (response.code == 401) throw IOException("Token is invalid or expired, please regenerate it")
+                if (!response.isSuccessful) throw IOException("Account verification failed (HTTP ${response.code})")
                 JSONObject(response.body.string())
             }
         synchronized(locks.getValue(CoverSourceMode.BANGUMI)) {
             MetadataRequests.checkActive()
             checkGeneration(CoverSourceMode.BANGUMI, epoch)
-            val name = me.optString("nickname").ifBlank { me.optString("username", "Bangumi 用户") }
+            val name = me.optString("nickname").ifBlank { me.optString("username", "Bangumi User") }
             val id = me.optLong("id", 0L).takeIf { it > 0L }?.toString().orEmpty()
             val avatar =
                 me.optJSONObject("avatar")?.let { avatar ->
@@ -167,7 +167,7 @@ class CoverAccounts private constructor(context: Context) {
             val legacy = settings.getString("bangumi_token", "").orEmpty()
             if (legacy.isBlank()) return@synchronized
             if (secure.read("bangumi") == null) {
-                secure.write("bangumi", JSONObject().put("token", legacy).put("name", "待验证的 Bangumi 账号").put("reauth", true).toString())
+                secure.write("bangumi", JSONObject().put("token", legacy).put("name", "Bangumi account pending verification").put("reauth", true).toString())
                 settings.edit().remove("bangumi_token").commit()
                 refreshStatus()
             } else {
@@ -188,7 +188,7 @@ class CoverAccounts private constructor(context: Context) {
         accountId: String = "",
         avatarUrl: String = "",
     ) {
-        require(source.requiresLogin && token.isNotBlank() && refresh.isNotBlank()) { "授权响应缺少令牌，请重新登录" }
+        require(source.requiresLogin && token.isNotBlank() && refresh.isNotBlank()) { "Authorization response is missing token, please log in again" }
         synchronized(locks.getValue(source)) {
             checkGeneration(source, epoch)
             // A token refresh preserves the identity/avatar already stored; only a fresh login passes them.
@@ -198,7 +198,7 @@ class CoverAccounts private constructor(context: Context) {
                 existing?.let { CoverProfile(it.optString("name"), it.optString("id"), it.optString("avatar")) }
                     ?: CoverProfile(current?.name.orEmpty(), current?.id.orEmpty(), current?.avatarUrl.orEmpty())
             val identity = CoverProfileClaims.merge(stored, CoverProfile(profile, accountId, avatarUrl))
-            val name = identity.name.ifBlank { "${source.label} 已授权" }
+            val name = identity.name.ifBlank { "${source.label} authorized" }
             val id = identity.accountId
             val avatar = identity.avatarUrl
             secure.write(
@@ -221,18 +221,18 @@ class CoverAccounts private constructor(context: Context) {
                 try {
                     secure.read(source.key)?.let(::JSONObject)
                 } catch (_: Exception) {
-                    throw IOException("账号安全存储不可用，请重新连接")
+                    throw IOException("Account security storage is unavailable, please reconnect.")
                 }
             if (source == CoverSourceMode.BANGUMI) {
-                if (record?.optBoolean("reauth") == true) throw IOException("Bangumi 授权已失效，请重新连接或断开后匿名搜索")
+                if (record?.optBoolean("reauth") == true) throw IOException("Bangumi authorization has expired, please reconnect or disconnect and search anonymously")
                 return@synchronized record?.optString("token").orEmpty()
             }
-            if (record == null || record.optBoolean("reauth")) throw IOException("请登录自己的 ${source.label} 账号")
+            if (record == null || record.optBoolean("reauth")) throw IOException("Please log in to your ${source.label} account")
             access[source]?.takeIf {
                 (!forceRefresh || (rejectedToken != null && it.first != rejectedToken)) && it.second > System.currentTimeMillis() + 60_000
             }?.let { return@synchronized it.first }
             val id = CoverOAuthConfig.clientId(source)
-            check(id.isNotBlank()) { "此测试包尚未配置 ${source.label} 客户端，暂不能登录" }
+            check(id.isNotBlank()) { "This test package has not configured the ${source.label} client and cannot log in yet." }
             val body =
                 FormBody.Builder().add("grant_type", "refresh_token").add("client_id", id)
                     .add("refresh_token", record.getString("refresh")).build()
@@ -244,9 +244,9 @@ class CoverAccounts private constructor(context: Context) {
                 // the same way: drop the credential and ask for a fresh authorization — never retry.
                 if (response.code == 401 || json.optString("error") == "invalid_grant") {
                     markExpired(source)
-                    throw IOException("${source.label} 授权已失效（可能已被撤销），请重新授权")
+                    throw IOException("${source.label} The authorization has expired (may have been revoked), please re-authorize it.")
                 }
-                if (!response.isSuccessful) throw IOException("暂时无法续期（HTTP ${response.code}），请稍后重试")
+                if (!response.isSuccessful) throw IOException("Renewal is temporarily unavailable (HTTP ${response.code}), please try again later.")
                 val token = json.optString("access_token")
                 val refresh =
                     json.optString("refresh_token").ifBlank {
@@ -272,7 +272,7 @@ class CoverAccounts private constructor(context: Context) {
         val token = accessToken(source)
         val profile =
             client.newCall(Request.Builder().url(url).header("Authorization", "Bearer $token").build()).execute().use { response ->
-                if (!response.isSuccessful) throw IOException("账号资料获取失败（HTTP ${response.code}）")
+                if (!response.isSuccessful) throw IOException("Failed to obtain account information (HTTP ${response.code})")
                 CoverProfileClaims.fromJson(source, JSONObject(response.body.string()))
             }
         if (profile.name.isNotBlank()) storeProfile(source, profile, epoch)
@@ -313,7 +313,7 @@ class CoverAccounts private constructor(context: Context) {
         source: CoverSourceMode,
         epoch: Long,
     ) {
-        if (generation(source) != epoch) throw CancellationException("账号操作已取消")
+        if (generation(source) != epoch) throw CancellationException("Account operation has been canceled")
     }
 
     companion object {

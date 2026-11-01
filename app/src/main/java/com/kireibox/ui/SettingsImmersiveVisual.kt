@@ -52,13 +52,13 @@ internal val ImmersivePresetSegments = ImmersiveFxPreset.entries.filter { it != 
 /** 3D depth labels follow the plan wording: 平 / 标准 / 强. */
 private fun cardDepthLabel(level: FxLevel): String =
     when (level) {
-        FxLevel.LOW -> "平"
-        FxLevel.MEDIUM -> "标准"
-        FxLevel.HIGH -> "强"
+        FxLevel.LOW -> "Flat"
+        FxLevel.MEDIUM -> "standard"
+        FxLevel.HIGH -> "Powerful"
     }
 
 /** Footer of the 视觉效果 group: only a low-RAM device has one, as effects are capped at 标准 there (plan §6.4). */
-internal fun immersivePresetFooter(lowRamDevice: Boolean): String? = if (lowRamDevice) "设备内存较小，效果上限为「标准」。" else null
+internal fun immersivePresetFooter(lowRamDevice: Boolean): String? = if (lowRamDevice) "The device has small memory and the upper limit of the effect is \"Standard\"." else null
 
 /** Backdrops that 减少透明度 swaps for the 氛围色 at runtime (plan §6.4). */
 private val TranslucentBackdrops = setOf(ImmersiveBackdropStyle.COVER_ZOOM, ImmersiveBackdropStyle.BLUR_COVER, ImmersiveBackdropStyle.AURORA)
@@ -94,9 +94,9 @@ internal fun ImmersiveVisualSettingsPanel(
         if (searchTarget?.page == KireiSettingsPage.INTERFACE && searchTarget.expandAdvanced) advancedOpen = true
     }
     ImmersiveGlobalHints(state, visual, colors, viewModel)
-    KireiListGroup(colors, groupSpacing, title = "视觉效果", footer = immersivePresetFooter(lowRam)) {
+    KireiListGroup(colors, groupSpacing, title = "Visual effects", footer = immersivePresetFooter(lowRam)) {
         item {
-            SettingsAnchor("视觉效果") {
+            SettingsAnchor("Visual effects") {
                 ImmersivePresetCards(
                     ImmersivePresetCardsSpec(visual),
                     colors,
@@ -109,7 +109,7 @@ internal fun ImmersiveVisualSettingsPanel(
         }
         item {
             SettingsSegmentedRow(
-                SettingsSegmentedRowSpec("切换方式", ImmersiveCardSwitch.entries.map { KireiSegment(it, it.displayName) }, visual.cardSwitch, subtitle = "仅竖屏"),
+                SettingsSegmentedRowSpec("Switch mode", ImmersiveCardSwitch.entries.map { KireiSegment(it, it.displayName) }, visual.cardSwitch, subtitle = "Portrait screen only"),
                 colors,
             ) { write(visual.copy(cardSwitch = it)) }
         }
@@ -151,11 +151,11 @@ private fun ImmersiveGlobalHints(
         item {
             KireiListRow(
                 KireiListRowSpec(
-                    title = "背景已改用氛围色",
-                    subtitle = "「减少透明度」已开启",
+                    title = "The background has been changed to an ambient color",
+                    subtitle = "\"Reduce Transparency\" is turned on",
                     icon = Icons.Rounded.Opacity,
                     tile = KireiTileColor.SLATE,
-                    trailing = KireiRowTrailing.Value("外观"),
+                    trailing = KireiRowTrailing.Value("Appearance"),
                 ),
                 colors,
                 onClick = openAppearance,
@@ -173,14 +173,14 @@ private fun ImmersiveAdvancedRow(
 ) {
     val reducedMotion = LocalResolvedMotionMode.current == MotionMode.REDUCED
     val turn by animateFloatAsState(if (open) 180f else 0f, selectionSpec(reducedMotion), label = "immersiveAdvancedChevron")
-    SettingsAnchor("高级选项") {
+    SettingsAnchor("Advanced options") {
         KireiListRow(
             KireiListRowSpec(
-                title = "高级选项",
+                title = "Advanced options",
                 trailing = KireiRowTrailing.Custom { Icon(Icons.Rounded.ExpandMore, contentDescription = null, tint = colors.secondary, modifier = Modifier.rotate(turn)) },
             ),
             colors,
-            Modifier.semantics { stateDescription = if (open) "已展开" else "已收起" },
+            Modifier.semantics { stateDescription = if (open) "Expanded" else "Collected" },
             onClick = onToggle,
         )
     }
@@ -193,11 +193,11 @@ private fun ImmersiveBackdropSettingsGroup(
     modifier: Modifier,
     write: (ImmersiveVisualSettings) -> Unit,
 ) {
-    KireiListGroup(colors, modifier, title = "背景") {
+    KireiListGroup(colors, modifier, title = "Background") {
         item {
             SettingsSegmentedRow(
                 SettingsSegmentedRowSpec(
-                    title = "背景样式",
+                    title = "Background style",
                     segments = ImmersiveBackdropStyle.entries.map { KireiSegment(it, it.displayName) },
                     selected = visual.backdrop,
                 ),
@@ -206,20 +206,20 @@ private fun ImmersiveBackdropSettingsGroup(
         }
         item {
             SettingsSegmentedRow(
-                SettingsSegmentedRowSpec("背景强度", FxLevel.entries.map { KireiSegment(it, it.displayName) }, visual.backdropIntensity),
+                SettingsSegmentedRowSpec("Background intensity", FxLevel.entries.map { KireiSegment(it, it.displayName) }, visual.backdropIntensity),
                 colors,
             ) { write(visual.copy(backdropIntensity = it)) }
         }
         item {
             SettingsToggleRow(
-                "封面缓慢推拉",
+                "Cover slowly pushed and pulled",
                 visual.kenBurns,
                 colors,
-                subtitle = if (visual.backdrop == ImmersiveBackdropStyle.SOLID) "纯色背景下无效" else null,
+                subtitle = if (visual.backdrop == ImmersiveBackdropStyle.SOLID) "Invalid on solid color background" else null,
             ) { write(visual.copy(kenBurns = it)) }
         }
-        item { SettingsToggleRow("胶片颗粒", visual.grain, colors) { write(visual.copy(grain = it)) } }
-        item { SettingsToggleRow("暗角", visual.vignette, colors) { write(visual.copy(vignette = it)) } }
+        item { SettingsToggleRow("Film grain", visual.grain, colors) { write(visual.copy(grain = it)) } }
+        item { SettingsToggleRow("Vignetting", visual.vignette, colors) { write(visual.copy(vignette = it)) } }
     }
 }
 
@@ -230,17 +230,17 @@ private fun ImmersiveCardSettingsGroup(
     modifier: Modifier,
     write: (ImmersiveVisualSettings) -> Unit,
 ) {
-    KireiListGroup(colors, modifier, title = "卡片") {
+    KireiListGroup(colors, modifier, title = "Card") {
         item {
             SettingsSegmentedRow(
-                SettingsSegmentedRowSpec("3D 深度", FxLevel.entries.map { KireiSegment(it, cardDepthLabel(it)) }, visual.cardDepth),
+                SettingsSegmentedRowSpec("3D depth", FxLevel.entries.map { KireiSegment(it, cardDepthLabel(it)) }, visual.cardDepth),
                 colors,
             ) { write(visual.copy(cardDepth = it)) }
         }
-        item { SettingsToggleRow("中心卡光晕", visual.glow, colors) { write(visual.copy(glow = it)) } }
-        item { SettingsToggleRow("边缘光", visual.rimLight, colors) { write(visual.copy(rimLight = it)) } }
-        item { SettingsToggleRow("高光扫过", visual.sheen, colors) { write(visual.copy(sheen = it)) } }
-        item { SettingsToggleRow("动态取色", visual.dynamicTint, colors) { write(visual.copy(dynamicTint = it)) } }
+        item { SettingsToggleRow("Center card halo", visual.glow, colors) { write(visual.copy(glow = it)) } }
+        item { SettingsToggleRow("Rim light", visual.rimLight, colors) { write(visual.copy(rimLight = it)) } }
+        item { SettingsToggleRow("Highlight sweep", visual.sheen, colors) { write(visual.copy(sheen = it)) } }
+        item { SettingsToggleRow("Dynamic color selection", visual.dynamicTint, colors) { write(visual.copy(dynamicTint = it)) } }
     }
 }
 
@@ -251,15 +251,15 @@ private fun ImmersiveAmbientSettingsGroup(
     modifier: Modifier,
     write: (ImmersiveVisualSettings) -> Unit,
 ) {
-    KireiListGroup(colors, modifier, title = "氛围") {
+    KireiListGroup(colors, modifier, title = "Atmosphere") {
         item {
             SettingsSegmentedRow(
-                SettingsSegmentedRowSpec("氛围粒子", ImmersiveAmbient.entries.map { KireiSegment(it, it.displayName) }, visual.ambient),
+                SettingsSegmentedRowSpec("Atmospheric particles", ImmersiveAmbient.entries.map { KireiSegment(it, it.displayName) }, visual.ambient),
                 colors,
             ) { write(visual.copy(ambient = it)) }
         }
         item {
-            SettingsToggleRow("陀螺仪视差", visual.gyroParallax, colors) { write(visual.copy(gyroParallax = it)) }
+            SettingsToggleRow("Gyroscope Parallax", visual.gyroParallax, colors) { write(visual.copy(gyroParallax = it)) }
         }
     }
 }
@@ -273,11 +273,11 @@ private fun ImmersiveRestoreDefaultsGroup(
 ) {
     var confirming by rememberSaveable { mutableStateOf(false) }
     val atDefault = visual.preset == RecommendedImmersivePreset
-    KireiListGroup(colors, SettingsGroupSpacing, footer = "当前已是默认效果。".takeIf { atDefault }) {
+    KireiListGroup(colors, SettingsGroupSpacing, footer = "It is currently the default effect.".takeIf { atDefault }) {
         item {
-            SettingsAnchor("恢复默认效果") {
+            SettingsAnchor("Restore default effect") {
                 KireiListRow(
-                    KireiListRowSpec(title = "恢复默认效果", tone = KireiRowTone.ACTION, enabled = !atDefault),
+                    KireiListRowSpec(title = "Restore default effect", tone = KireiRowTone.ACTION, enabled = !atDefault),
                     colors,
                     onClick = { confirming = true },
                 )
@@ -289,14 +289,14 @@ private fun ImmersiveRestoreDefaultsGroup(
         KireiDialog(
             spec =
                 KireiDialogSpec(
-                    title = "恢复默认效果？",
-                    message = "将恢复为「标准」效果，当前的自定义组合不会保留。",
+                    title = "Restore default effect?",
+                    message = "Will revert to the \"standard\" effect, and the current custom combination will not be retained.",
                     confirm =
-                        KireiDialogAction("恢复默认", {
+                        KireiDialogAction("Restore default", {
                             close()
                             write(visual.withPreset(RecommendedImmersivePreset))
                         }),
-                    dismiss = KireiDialogAction("取消", close, style = KireiButtonStyle.PLAIN),
+                    dismiss = KireiDialogAction("Cancel", close, style = KireiButtonStyle.PLAIN),
                 ),
             colors = colors,
             onDismissRequest = close,

@@ -132,7 +132,7 @@ object LauncherKrkrBridge {
             ENGINE_VERSION_139 -> "1.3.9"
             ENGINE_VERSION_134 -> "1.3.4"
             ENGINE_VERSION_126 -> "1.2.6"
-            else -> "自动"
+            else -> "Auto"
         }
     }
 }

@@ -140,7 +140,7 @@ public class ArtemisActivity extends NativeActivity {
         String oldPath = old.getStringExtra("path");
         String newPath = intent.getStringExtra("path");
         if (oldPath == null || oldPath.equals(newPath) || newPath == null) return;
-        Toast.makeText(this, "已有游戏在运行，请先存档并退出游戏后再启动新游戏", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "There is already a game running. Please save and exit the game before starting a new game.", Toast.LENGTH_SHORT).show();
     }
 
     @Override

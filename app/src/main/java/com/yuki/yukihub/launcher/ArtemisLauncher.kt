@@ -46,7 +46,7 @@ internal object ArtemisLauncher {
             check(save.available && save.directory != null) { save.description }
             saveName = save.directory.name
             launchPath = prepareScopedMirror(context, rootPath, saveName)
-                ?: throw IllegalStateException("无法创建 Artemis 应用独立存档目录")
+                ?: throw IllegalStateException("Unable to create Artemis application standalone archive directory")
             logInfo("internal Artemis scoped mirror root=$rootPath -> $launchPath")
         }
 
@@ -97,19 +97,19 @@ internal object ArtemisLauncher {
         if (!scoped) {
             return SaveLocation(
                 null,
-                "Artemis 已使用游戏原始目录，无法安全识别存档文件",
+                "Artemis has used the game's original directory and cannot safely identify the save file",
                 false,
             )
         }
         if (rootPath.isNullOrBlank() || rootPath.startsWith("content://")) {
-            return SaveLocation(null, "无法解析游戏本地目录", false)
+            return SaveLocation(null, "Unable to resolve game local directory", false)
         }
         val external =
             context?.getExternalFilesDir(null)
-                ?: return SaveLocation(null, "应用独立存储目录不可用", false)
+                ?: return SaveLocation(null, "The application independent storage directory is not available", false)
         return SaveLocation(
             File(File(external, "save"), safeSaveName(rootPath)),
-            "Artemis 独立存档目录",
+            "Artemis independent archive directory",
             true,
         )
     }

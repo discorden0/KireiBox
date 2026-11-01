@@ -75,7 +75,7 @@ internal data class KireiSearchFieldOptions(
     val focusRequester: FocusRequester? = null,
     val onFocusChange: (Boolean) -> Unit = {},
     val onSearch: () -> Unit = {},
-    val clearLabel: String = "清除搜索内容",
+    val clearLabel: String = "Clear search",
     val onComposingChange: (Boolean) -> Unit = {},
 )
 

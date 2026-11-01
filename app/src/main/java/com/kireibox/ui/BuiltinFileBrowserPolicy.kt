@@ -8,8 +8,8 @@ import java.util.Locale
 
 /** Pure rules for the built-in file browser: breadcrumb visibility and row details. */
 internal object BuiltinFileBrowserPolicy {
-    private val SAME_YEAR_FORMAT = DateTimeFormatter.ofPattern("M月d日 HH:mm", Locale.CHINA)
-    private val OTHER_YEAR_FORMAT = DateTimeFormatter.ofPattern("yyyy年M月d日", Locale.CHINA)
+    private val SAME_YEAR_FORMAT = DateTimeFormatter.ofPattern("M day HH:mm", Locale.CHINA)
+    private val OTHER_YEAR_FORMAT = DateTimeFormatter.ofPattern("M, d, yyyy", Locale.CHINA)
 
     /** The crumb row carries no information for a single (root-only) crumb. */
     fun shouldHideCrumbRow(crumbCount: Int): Boolean = crumbCount <= 1
@@ -35,7 +35,7 @@ internal object BuiltinFileBrowserPolicy {
         nowMillis: Long = System.currentTimeMillis(),
     ): String =
         if (file.isDirectory) {
-            "${runCatching { file.list()?.size }.getOrNull() ?: 0} 项"
+            "${runCatching { file.list()?.size }.getOrNull() ?: 0} items"
         } else {
             listOf(formatFileSize(file.length()), modifiedLabel(file.lastModified(), nowMillis)).filter(String::isNotEmpty).joinToString(" · ")
         }

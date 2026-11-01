@@ -39,26 +39,26 @@ internal object UpdatePackagePolicy {
     ): UpdatePackageValidation {
         fun invalid(message: String) = UpdatePackageValidation.Invalid(message)
         if (archive.packageName != KIREIBOX_PACKAGE_NAME || archive.packageName != manifest.packageName) {
-            return invalid("更新 APK 包名不匹配")
+            return invalid("Update APK package name does not match")
         }
         if (archive.versionCode != manifest.versionCode || archive.versionCode <= installedVersionCode) {
-            return invalid("更新 APK 版本无效")
+            return invalid("Invalid update APK version")
         }
         if (KireiVersion.normalize(archive.versionName) != KireiVersion.normalize(manifest.versionName)) {
-            return invalid("更新 APK 版本名称不匹配")
+            return invalid("Update APK version name mismatch")
         }
         if (archive.minSdk != manifest.minSdk || archive.minSdk > deviceSdk) {
-            return invalid("更新 APK 不支持当前 Android 版本")
+            return invalid("Update APK does not support current Android version")
         }
         val archiveAbis = archive.abis.toSet()
         if (archiveAbis != manifest.abis.toSet() || archiveAbis.intersect(deviceAbis.toSet()).isEmpty()) {
-            return invalid("更新 APK ABI 不兼容")
+            return invalid("Update APK ABI incompatible")
         }
         val archiveSigner = UpdateManifestCodec.normalizeDigest(archive.signerSha256)
         val manifestSigner = UpdateManifestCodec.normalizeDigest(manifest.signingCertSha256)
         val installedSigner = UpdateManifestCodec.normalizeDigest(currentSignerSha256)
         if (archiveSigner != manifestSigner || archiveSigner != installedSigner) {
-            return invalid("更新 APK 签名不匹配")
+            return invalid("Update APK signature mismatch")
         }
         return UpdatePackageValidation.Valid
     }
@@ -72,18 +72,18 @@ internal object UpdatePackagePolicy {
         expectedVersionName: String,
     ): UpdatePackageValidation {
         fun invalid(message: String) = UpdatePackageValidation.Invalid(message)
-        if (archive.packageName != KIREIBOX_PACKAGE_NAME) return invalid("更新 APK 包名不匹配")
-        if (archive.versionCode <= installedVersionCode) return invalid("更新 APK 版本无效")
+        if (archive.packageName != KIREIBOX_PACKAGE_NAME) return invalid("Update APK package name does not match")
+        if (archive.versionCode <= installedVersionCode) return invalid("Invalid update APK version")
         if (KireiVersion.normalize(archive.versionName) != KireiVersion.normalize(expectedVersionName)) {
-            return invalid("更新 APK 版本名称与 GitHub Release 不匹配")
+            return invalid("Update APK version name does not match GitHub Release")
         }
-        if (archive.minSdk > deviceSdk) return invalid("更新 APK 不支持当前 Android 版本")
+        if (archive.minSdk > deviceSdk) return invalid("Update APK does not support current Android version")
         if (archive.abis.toSet().intersect(deviceAbis.toSet()).isEmpty()) {
-            return invalid("更新 APK ABI 不兼容")
+            return invalid("Update APK ABI incompatible")
         }
         val archiveSigner = UpdateManifestCodec.normalizeDigest(archive.signerSha256)
         val installedSigner = UpdateManifestCodec.normalizeDigest(currentSignerSha256)
-        if (archiveSigner != installedSigner) return invalid("更新 APK 签名不匹配")
+        if (archiveSigner != installedSigner) return invalid("Update APK signature mismatch")
         return UpdatePackageValidation.Valid
     }
 }
@@ -97,10 +97,10 @@ internal class UpdateInstaller(private val context: Context) {
     ): UpdatePackageValidation {
         val archive =
             inspectArchive(file)
-                ?: return UpdatePackageValidation.Invalid("无法读取更新 APK")
+                ?: return UpdatePackageValidation.Invalid("Unable to read update APK")
         val installed =
             installedPackageMetadata()
-                ?: return UpdatePackageValidation.Invalid("无法读取当前应用签名")
+                ?: return UpdatePackageValidation.Invalid("Unable to read current app signature")
         return release.manifest?.let { manifest ->
             UpdatePackagePolicy.validate(
                 installedVersionCode = installed.versionCode,

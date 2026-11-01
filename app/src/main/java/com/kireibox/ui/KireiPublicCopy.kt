@@ -14,22 +14,22 @@ https://github.com/Yukin0a/KireiBox"""
 
     fun coverSourceDescription(source: CoverSourceMode): String =
         when (source) {
-            CoverSourceMode.NEXTMOE -> "需登录 NextMoe 账号"
-            CoverSourceMode.VNDB -> "公开数据，无需登录"
-            CoverSourceMode.BANGUMI -> "可匿名搜索"
-            CoverSourceMode.BANGUMI_MIRROR -> "历史镜像，已停止联网"
-            CoverSourceMode.YMGAL -> "历史资料来源，已停止联网"
-            CoverSourceMode.HIKARINAGI -> "需登录 Hikarinagi 账号"
+            CoverSourceMode.NEXTMOE -> "Need to log in to NextMoe account"
+            CoverSourceMode.VNDB -> "Public data, no login required"
+            CoverSourceMode.BANGUMI -> "Anonymous search possible"
+            CoverSourceMode.BANGUMI_MIRROR -> "Historical mirror, has stopped connecting to the Internet"
+            CoverSourceMode.YMGAL -> "Historical data source, no longer connected to the Internet"
+            CoverSourceMode.HIKARINAGI -> "Need to log in to Hikarinagi account"
         }
 
     /** Copy shared by the dashboard and settings UI; developer-log implementation details stay private. */
     fun dashboardAndLogLabels(): List<String> =
         listOf(
-            "游玩时长",
-            "打开游戏数",
-            "最近 7 天 · 结果",
-            "最近 30 天 · 结果",
-            "诊断日志",
-            "复制日志",
+            "Play time",
+            "Number of open games",
+            "Last 7 days · Results",
+            "Last 30 days · Results",
+            "Diagnostic log",
+            "Copy log",
         )
 }

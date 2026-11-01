@@ -28,7 +28,7 @@ internal object GameMapper {
         v.put("vndb_binding_mode", normalizeVndbBindingMode(g.vndbBindingMode))
         v.put("vndb_match_score", g.vndbMatchScore)
         v.put("emulator_package", g.emulatorPackage)
-        v.put("launch_target", g.launchTarget?.takeIf { it.isNotEmpty() } ?: "[游戏目录]")
+        v.put("launch_target", g.launchTarget?.takeIf { it.isNotEmpty() } ?: "[Game Catalog]")
         v.put("description", g.description)
         v.put("tags", g.tags)
         v.put("play_status", normalizePlayStatus(g.playStatus))
@@ -59,7 +59,7 @@ internal object GameMapper {
         g.vndbMatchScore = getDoubleOrDefault(c, "vndb_match_score", 0.0)
         g.emulatorPackage = c.getString(c.getColumnIndexOrThrow("emulator_package"))
         g.launchTarget = getStringOrNull(c, "launch_target")
-        if (g.launchTarget.isNullOrEmpty()) g.launchTarget = "[游戏目录]"
+        if (g.launchTarget.isNullOrEmpty()) g.launchTarget = "[Game Catalog]"
         g.description = c.getString(c.getColumnIndexOrThrow("description"))
         g.tags = c.getString(c.getColumnIndexOrThrow("tags"))
         g.playStatus = normalizePlayStatus(getStringOrNull(c, "play_status"))

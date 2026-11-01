@@ -91,10 +91,10 @@ internal fun DashboardRecentWidget(
             ),
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("最近打开", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.weight(1f), maxLines = 1)
+                Text("Recently opened", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.weight(1f), maxLines = 1)
                 if (showAction) {
                     KireiButton(
-                        label = "查看全部",
+                        label = "View all",
                         colors = colors,
                         options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL),
                         onClick = onOpenLibrary,
@@ -103,7 +103,7 @@ internal fun DashboardRecentWidget(
             }
             if (games.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-                    Text("还没有游玩记录", color = colors.secondary, style = AppleTypography.bodyMedium)
+                    Text("No play records yet", color = colors.secondary, style = AppleTypography.bodyMedium)
                 }
             } else {
                 BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
@@ -221,7 +221,7 @@ internal fun RecentGamesItem(
                         maxLines = 1,
                     )
                 }
-                PlayTriangleButton(colors, "启动 ${game.title.orEmpty()}", 48.dp, onClick = { onLaunchGame(game) })
+                PlayTriangleButton(colors, "Start ${game.title.orEmpty()}", 48.dp, onClick = { onLaunchGame(game) })
             }
         }
     }
@@ -253,7 +253,7 @@ internal fun DashboardFavoritesWidget(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("${games.size}", color = colors.danger, style = AppleTypography.numericLarge)
-                Text("款收藏", color = colors.secondary, style = AppleTypography.labelLarge)
+                Text("Collection", color = colors.secondary, style = AppleTypography.labelLarge)
             }
             return@GlassSurface
         }
@@ -262,7 +262,7 @@ internal fun DashboardFavoritesWidget(
                 GameCoverArtwork(games.first(), Modifier.fillMaxSize(), ContentScale.Crop, KireiShapes.Radius.lg)
                 Box(Modifier.fillMaxSize().background(coverScrim(.82f)))
                 Column(Modifier.align(Alignment.BottomStart).padding(KireiSpacing.md)) {
-                    Text("收藏主封面", color = KireiTokens.OnImage.ink.copy(alpha = .72f), style = AppleTypography.labelMedium)
+                    Text("Collection main cover", color = KireiTokens.OnImage.ink.copy(alpha = .72f), style = AppleTypography.labelMedium)
                     Text(
                         games.first().title.orEmpty(),
                         color = KireiTokens.OnImage.ink,
@@ -277,9 +277,9 @@ internal fun DashboardFavoritesWidget(
         Column(Modifier.fillMaxSize().padding(KireiSpacing.md), verticalArrangement = Arrangement.Center) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Rounded.Favorite, null, tint = colors.danger, modifier = Modifier.size(24.dp))
-                Text("收藏", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(start = KireiSpacing.xs))
+                Text("collect", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(start = KireiSpacing.xs))
             }
-            Text("${games.size} 部游戏", color = colors.secondary, style = AppleTypography.bodySmall, modifier = Modifier.padding(top = KireiSpacing.xxs))
+            Text("${games.size} games", color = colors.secondary, style = AppleTypography.bodySmall, modifier = Modifier.padding(top = KireiSpacing.xxs))
             if (games.isNotEmpty()) {
                 Row(
                     Modifier.padding(top = KireiSpacing.xs),
@@ -460,12 +460,12 @@ internal fun DashboardLibraryShortcut(
     ) {
         Column(Modifier.fillMaxSize().padding(KireiSpacing.md), verticalArrangement = Arrangement.Center) {
             Icon(Icons.Rounded.GridView, null, tint = colors.accent, modifier = Modifier.size(28.dp))
-            Text("游戏库", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.xs))
+            Text("Game library", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.xs))
             Text(
                 if (styleKey == DashboardStyles.LIBRARY_PROGRESS) {
-                    "已打开 $playedCount / $gameCount 款"
+                    "Opened $playedCount / $gameCount"
                 } else {
-                    "$gameCount 部游戏"
+                    "$gameCount games"
                 },
                 color = colors.secondary,
                 style = AppleTypography.bodySmall

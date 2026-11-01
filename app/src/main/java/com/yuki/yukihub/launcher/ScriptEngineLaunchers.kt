@@ -76,7 +76,7 @@ internal object ScriptEngineLaunchers {
         val rootPath = uriToFilePath(rootUri)
         if (rootPath.isNullOrEmpty()) return rootUri
         val target = launchTarget?.trim().orEmpty()
-        if (target.isEmpty() || target == "[游戏目录]" || target.equals("DIR", ignoreCase = true)) {
+        if (target.isEmpty() || target == "[Game Catalog]" || target.equals("DIR", ignoreCase = true)) {
             return rootPath
         }
         val targetFile =
@@ -99,7 +99,7 @@ internal object ScriptEngineLaunchers {
         val requestedRoot = stripFileScheme(uriToFilePath(gamePath))
         val root = resolveOnsGameDirectory(requestedRoot)
         if (root.isNullOrEmpty()) {
-            val message = "未在所选目录、上一级或直属子目录中找到 ONS 启动文件"
+            val message = "ONS startup file not found in selected directory, parent level or immediate subdirectory"
             logError("internal ONS rejected: $message root=$requestedRoot")
             throw IllegalStateException(message)
         }
@@ -178,7 +178,7 @@ internal object ScriptEngineLaunchers {
         val base = File(root, "arc.nsa")
         val extra = File(root, "arc1.nsa")
         return if (base.isFile && base.length() > 0 && extra.isFile && extra.length() == 0L) {
-            "游戏资源不完整：arc1.nsa 为 0 字节。请重新解压或重新导入完整游戏目录。"
+            "Incomplete game resources: arc1.nsa is 0 bytes. Please re-unzip or re-import the complete game directory."
         } else {
             null
         }
@@ -219,10 +219,10 @@ internal object ScriptEngineLaunchers {
             }
         return if (directory == null) {
             SaveLocation.unavailable(
-                if (scoped) "ONS 应用独立存储目录不可用" else "ONS 游戏目录不可用或不是可写的本地目录",
+                if (scoped) "ONS application independent storage directory is not available" else "ONS game directory is not available or is not a writable local directory",
             )
         } else {
-            SaveLocation.available(directory, if (scoped) "ONS 应用独立存档目录" else "ONS 游戏内存档目录")
+            SaveLocation.available(directory, if (scoped) "ONS application independent archive directory" else "ONS in-game archive directory")
         }
     }
 
@@ -233,29 +233,29 @@ internal object ScriptEngineLaunchers {
         scoped: Boolean,
     ): SaveLocation {
         if (gameDirectory.isNullOrBlank() || gameDirectory.startsWith("content://")) {
-            return SaveLocation.unavailable("无法解析 Tyrano 实际游戏目录")
+            return SaveLocation.unavailable("Unable to parse Tyrano actual game directory")
         }
         return try {
             val root = File(stripFileScheme(gameDirectory).orEmpty()).canonicalFile
-            if (!root.isDirectory) return SaveLocation.unavailable("Tyrano 游戏目录不可用")
+            if (!root.isDirectory) return SaveLocation.unavailable("Tyrano game directory unavailable")
             if (scoped) {
                 val external =
                     context?.getExternalFilesDir(null)
-                        ?: return SaveLocation.unavailable("Tyrano 应用独立存储目录不可用")
+                        ?: return SaveLocation.unavailable("Tyrano application independent storage directory is not available")
                 SaveLocation.available(
                     File(File(File(external, "save"), "tyrano"), safeSaveName(root.absolutePath)),
-                    "Tyrano 应用独立存档目录",
+                    "Tyrano application independent archive directory",
                 )
             } else {
                 val directory = File(root, "savedata").canonicalFile
                 if (!directory.path.startsWith(root.path + File.separator)) {
-                    SaveLocation.unavailable("Tyrano 游戏内存档目录无效")
+                    SaveLocation.unavailable("Tyrano in-game save directory is invalid")
                 } else {
-                    SaveLocation.available(directory, "Tyrano 游戏内存档目录")
+                    SaveLocation.available(directory, "Tyrano in-game save directory")
                 }
             }
         } catch (_: Throwable) {
-            SaveLocation.unavailable("无法解析 Tyrano 实际游戏目录")
+            SaveLocation.unavailable("Unable to parse Tyrano actual game directory")
         }
     }
 
@@ -268,10 +268,10 @@ internal object ScriptEngineLaunchers {
         engine: String
     ) {
         if (!directory.exists() && !directory.mkdirs()) {
-            throw IllegalStateException("无法创建 $engine 存档目录：${directory.absolutePath}")
+            throw IllegalStateException("Unable to create $engine archive directory: ${directory.absolutePath}")
         }
         if (!directory.isDirectory || !directory.canWrite()) {
-            throw IllegalStateException("$engine 存档目录不可写：${directory.absolutePath}")
+            throw IllegalStateException("$engine The archive directory is not writable: ${directory.absolutePath}")
         }
     }
 

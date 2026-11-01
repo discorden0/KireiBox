@@ -164,7 +164,7 @@ internal fun LibraryPage(
     val selectLibrarySort: (String) -> Unit = { mode ->
         if (mode == YukiSettingsStore.SORT_MANUAL) {
             if (!customReorderEnabled) {
-                viewModel.showNotice("请清空搜索并切换到全部后再自定义排序")
+                viewModel.showNotice("Please clear the search and switch to all before customizing the sorting")
             } else {
                 // The sort menu is also reachable while browsing: numbering cards needs edit mode
                 // (tap-to-number, 完成 and back all hang off it).
@@ -360,15 +360,15 @@ internal fun LibraryPage(
             KireiDialog(
                 spec =
                     KireiDialogSpec(
-                        title = "放弃自定义排序？",
-                        message = "尚未保存的编号顺序将被放弃。",
+                        title = "Give up custom sorting?",
+                        message = "Numbering sequences that have not been saved will be discarded.",
                         confirm =
-                            KireiDialogAction("放弃更改", {
+                            KireiDialogAction("Discard changes", {
                                 showDiscardCustomOrder = false
                                 customOrderDraft = null
                                 editMode = false
                             }, style = KireiButtonStyle.DESTRUCTIVE),
-                        dismiss = KireiDialogAction("继续编辑", { showDiscardCustomOrder = false }, style = KireiButtonStyle.PLAIN),
+                        dismiss = KireiDialogAction("Continue editing", { showDiscardCustomOrder = false }, style = KireiButtonStyle.PLAIN),
                     ),
                 colors = colors,
                 onDismissRequest = { showDiscardCustomOrder = false },

@@ -17,14 +17,14 @@ object ExeEntrySelector {
     private val AUXILIARY =
         listOf(
             "unins", "uninst", "setup", "install", "vcredist", "vc_redist", "dxsetup", "directx", "dotnet",
-            "crash", "update", "config", "setting", "設定", "设置",
+            "crash", "update", "config", "setting", "Settings", "Settings",
         )
 
     /** Name parts of a simplified Chinese build; short Latin tags must stand alone (`game_chs`, `cn`). */
     private val SIMPLIFIED_TAGS = listOf("chs", "sc", "cn", "zhcn", "gb", "chinese")
-    private val SIMPLIFIED_WORDS = listOf("汉化", "中文", "简体", "简中")
+    private val SIMPLIFIED_WORDS = listOf("Chinese", "Chinese", "Simplified", "Simplified Chinese")
     private val TRADITIONAL_TAGS = listOf("cht", "tc", "tw", "zhtw", "big5")
-    private val TRADITIONAL_WORDS = listOf("繁體", "繁体", "繁中")
+    private val TRADITIONAL_WORDS = listOf("Traditional Chinese", "Traditional Chinese", "Traditional Chinese")
 
     /** 0 = simplified Chinese build, 1 = traditional Chinese build, 2 = anything else. */
     fun chineseRank(name: String): Int {

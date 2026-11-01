@@ -96,14 +96,14 @@ internal fun coverAccountButtons(
     busy: Boolean,
 ): List<CoverAccountButton> {
     val bangumi = source == CoverSourceMode.BANGUMI
-    if (bangumi && busy) return listOf(CoverAccountButton("取消验证", KireiButtonStyle.SECONDARY, CoverAccountAction.CANCEL))
-    val signOut = CoverAccountButton("退出", KireiButtonStyle.SECONDARY, CoverAccountAction.SIGN_OUT)
+    if (bangumi && busy) return listOf(CoverAccountButton("Cancel verification", KireiButtonStyle.SECONDARY, CoverAccountAction.CANCEL))
+    val signOut = CoverAccountButton("Exit", KireiButtonStyle.SECONDARY, CoverAccountAction.SIGN_OUT)
     val signInLabel =
         when {
-            bangumi && state == CoverAccountState.ANONYMOUS -> "设置令牌"
-            bangumi -> "更换令牌"
-            state == CoverAccountState.SIGNED_OUT -> "登录"
-            else -> "重新登录"
+            bangumi && state == CoverAccountState.ANONYMOUS -> "Set token"
+            bangumi -> "Replace token"
+            state == CoverAccountState.SIGNED_OUT -> "Log in"
+            else -> "Log in again"
         }
     return when (state) {
         CoverAccountState.SIGNED_IN -> listOf(CoverAccountButton(signInLabel, KireiButtonStyle.SECONDARY, CoverAccountAction.SIGN_IN), signOut)
@@ -139,7 +139,7 @@ private fun CoverAccountCard(
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val returnedSource = CoverSourceMode.selected(result.data?.getStringExtra("source"))
-            viewModel.completeCoverLogin(returnedSource, result.resultCode == Activity.RESULT_OK, result.data?.getStringExtra("message") ?: "授权已取消", false)
+            viewModel.completeCoverLogin(returnedSource, result.resultCode == Activity.RESULT_OK, result.data?.getStringExtra("message") ?: "Authorization canceled", false)
         }
     val onAction: (CoverAccountAction) -> Unit = { action ->
         when (action) {
@@ -316,10 +316,10 @@ private fun coverSourceBrandDrawable(
 
 private fun coverAccountChip(state: CoverAccountState): Pair<String, KireiStatusTone> =
     when (state) {
-        CoverAccountState.SIGNED_IN -> "已登录" to KireiStatusTone.POSITIVE
-        CoverAccountState.NEEDS_REAUTH -> "需要重新授权" to KireiStatusTone.WARNING
-        CoverAccountState.ANONYMOUS -> "匿名可用" to KireiStatusTone.ACCENT
-        CoverAccountState.SIGNED_OUT -> "未登录" to KireiStatusTone.NEUTRAL
+        CoverAccountState.SIGNED_IN -> "Logged in" to KireiStatusTone.POSITIVE
+        CoverAccountState.NEEDS_REAUTH -> "Requires reauthorization" to KireiStatusTone.WARNING
+        CoverAccountState.ANONYMOUS -> "Anonymous available" to KireiStatusTone.ACCENT
+        CoverAccountState.SIGNED_OUT -> "Not logged in" to KireiStatusTone.NEUTRAL
     }
 
 /**
@@ -335,12 +335,12 @@ internal fun coverAccountLine(
     when (state) {
         CoverAccountState.SIGNED_IN ->
             buildList {
-                add(accountName.ifBlank { "账号已连接" })
+                add(accountName.ifBlank { "Account is connected" })
                 // Only Bangumi's id is a short number worth showing; NextMoe/Hikarinagi ids are opaque.
                 accountId.takeIf { source == CoverSourceMode.BANGUMI && it.isNotBlank() }?.let { add("ID $it") }
             }.joinToString(" · ")
         // Bangumi has no login, only its personal token.
-        CoverAccountState.NEEDS_REAUTH -> if (source == CoverSourceMode.BANGUMI) "令牌已失效，请更换令牌" else "授权已失效，请重新登录"
+        CoverAccountState.NEEDS_REAUTH -> if (source == CoverSourceMode.BANGUMI) "The token has expired, please replace it" else "Authorization has expired, please log in again"
         CoverAccountState.ANONYMOUS, CoverAccountState.SIGNED_OUT -> null
     }
 
@@ -354,14 +354,14 @@ private fun CoverSignOutDialog(
     KireiDialog(
         spec =
             KireiDialogSpec(
-                title = "退出 ${source.label}？",
-                message = "将清除本机保存的 ${source.label} 授权，自动匹配和封面搜索不再使用这个账号。",
+                title = "Exit ${source.label}?",
+                message = "The ${source.label} authorization saved on this machine will be cleared, and this account will no longer be used for automatic matching and cover search.",
                 confirm =
-                    KireiDialogAction("退出", {
+                    KireiDialogAction("Exit", {
                         onClose()
                         onConfirm()
                     }, style = KireiButtonStyle.DESTRUCTIVE),
-                dismiss = KireiDialogAction("取消", onClose, style = KireiButtonStyle.PLAIN),
+                dismiss = KireiDialogAction("Cancel", onClose, style = KireiButtonStyle.PLAIN),
             ),
         colors = colors,
         onDismissRequest = onClose,

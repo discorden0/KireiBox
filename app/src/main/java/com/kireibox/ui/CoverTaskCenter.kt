@@ -189,7 +189,7 @@ internal fun CoverTaskButton(
                     .border(1.dp, colors.surfaceOverlay, KireiShapes.full)
                     .padding(horizontal = layout.badgeHorizontalPaddingDp.dp)
                     .semantics {
-                        contentDescription = "待处理 ${layout.badgeAccessibilityCount}"
+                        contentDescription = "Pending ${layout.badgeAccessibilityCount}"
                     },
                 contentAlignment = Alignment.Center,
             ) {
@@ -324,16 +324,16 @@ internal fun CoverTaskCenterContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(KireiSpacing.xs),
         ) {
-            Text("封面任务", color = colors.text, style = AppleTypography.headlineMedium, modifier = Modifier.weight(1f).semantics { heading() })
+            Text("Cover assignment", color = colors.text, style = AppleTypography.headlineMedium, modifier = Modifier.weight(1f).semantics { heading() })
             Text("${(queue.aggregateProgress * 100).toInt()}%", color = colors.secondary, style = AppleTypography.numericMedium)
             KireiButton(
-                if (running) "暂停" else "继续",
+                if (running) "Pause" else "Continue",
                 colors,
                 options = KireiButtonOptions(style = KireiButtonStyle.SECONDARY, size = KireiButtonSize.SMALL),
                 onClick = if (running) actions.onPause else actions.onResume,
             )
             actions.onClose?.let { close ->
-                KireiButton("关闭", colors, options = KireiButtonOptions(style = KireiButtonStyle.PLAIN, size = KireiButtonSize.SMALL), onClick = close)
+                KireiButton("Close", colors, options = KireiButtonOptions(style = KireiButtonStyle.PLAIN, size = KireiButtonSize.SMALL), onClick = close)
             }
         }
         LazyColumn(

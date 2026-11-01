@@ -89,7 +89,7 @@ internal fun Xp3PickerPage(
                             subtitle = target.substringBeforeLast('/', "").takeIf(String::isNotEmpty),
                             icon = Icons.Rounded.Description,
                             tile = KireiTileColor.INDIGO,
-                            trailing = if (checked) KireiRowTrailing.Custom { KireiStatusChip("当前", KireiStatusTone.ACCENT, colors) } else KireiRowTrailing.None,
+                            trailing = if (checked) KireiRowTrailing.Custom { KireiStatusChip("Current", KireiStatusTone.ACCENT, colors) } else KireiRowTrailing.None,
                             subtitleMaxLines = 1,
                         ),
                         colors,
@@ -123,12 +123,12 @@ internal fun AndroidAppPickerPage(
                 }
             }
         }
-    PickerPage(PickerPageSpec("选择 Android 应用", onDismiss), colors, haze) {
-        pickerSearch(query, { query = it }, "搜索应用名称或包名", colors)
+    PickerPage(PickerPageSpec("Choose an Android app", onDismiss), colors, haze) {
+        pickerSearch(query, { query = it }, "Search for app name or package name", colors)
         when {
             picker.loading -> groupSkeleton(colors)
             picker.error != null -> pickerErrorRow(picker.error, colors)
-            visible.isEmpty() -> groupStateRow("app-empty", colors, KireiListRowSpec(if (query.isBlank()) "没有查询到可启动的应用" else "没有匹配的应用"))
+            visible.isEmpty() -> groupStateRow("app-empty", colors, KireiListRowSpec(if (query.isBlank()) "No launchable applications found" else "No matching app"))
             else ->
                 groupItems(visible, colors, AndroidAppEntry::componentKey) { entry ->
                     KireiListRow(
@@ -169,26 +169,26 @@ internal fun ExternalShortcutPickerPage(
     val showSelectAll = !picker.loading && picker.error == null && selectable > 0
     val spec =
         PickerPageSpec(
-            title = "导入桌面游戏快捷方式",
+            title = "Import desktop game shortcuts",
             onBack = onDismiss,
             topActions = {
                 if (showSelectAll) {
                     KireiButton(
-                        if (allSelected) "取消全选" else "全选未导入",
+                        if (allSelected) "Deselect all" else "Select all but not imported",
                         colors,
                         options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL),
                         onClick = onToggleAll,
                     )
                 }
             },
-            bottomAction = PickerAction("导入所选（${picker.selectedKeys.size}）", onImport, enabled = picker.selectedKeys.isNotEmpty() && !picker.loading),
+            bottomAction = PickerAction("Import selected (${picker.selectedKeys.size})", onImport, enabled = picker.selectedKeys.isNotEmpty() && !picker.loading),
         )
     PickerPage(spec, colors, haze) {
-        pickerSearch(query, { query = it }, "搜索标题或应用", colors)
+        pickerSearch(query, { query = it }, "Search for a title or app", colors)
         when {
             picker.loading -> groupSkeleton(colors)
             picker.error != null -> pickerErrorRow(picker.error, colors)
-            visible.isEmpty() -> groupStateRow("shortcut-empty", colors, KireiListRowSpec(if (query.isBlank()) "没有找到可导入的桌面快捷方式" else "没有匹配的快捷方式"))
+            visible.isEmpty() -> groupStateRow("shortcut-empty", colors, KireiListRowSpec(if (query.isBlank()) "No desktop shortcut found to import" else "No matching shortcut"))
             else -> groupItems(visible, colors, ExternalShortcutPickerEntry::stableKey) { entry -> ShortcutRow(entry, entry.stableKey in picker.selectedKeys, colors, onToggle) }
         }
     }
@@ -210,12 +210,12 @@ private fun ShortcutRow(
             tile = if (entry.imported) KireiTileColor.GRAY else KireiTileColor.INDIGO,
             trailing =
                 KireiRowTrailing.Custom {
-                    if (entry.imported) KireiStatusChip("已导入", KireiStatusTone.POSITIVE, colors) else PickerSelectionMark(selected, colors)
+                    if (entry.imported) KireiStatusChip("Imported", KireiStatusTone.POSITIVE, colors) else PickerSelectionMark(selected, colors)
                 },
         ),
         colors,
         // An imported row is display-only: no click, one TalkBack stop with its status chip.
-        Modifier.semantics { if (!entry.imported) stateDescription = if (selected) "已选择" else "未选择" },
+        Modifier.semantics { if (!entry.imported) stateDescription = if (selected) "Selected" else "Not selected" },
         onClick = if (entry.imported) null else ({ onToggle(entry.stableKey) }),
     )
 }
@@ -227,8 +227,8 @@ internal fun shortcutRowTitle(shortcut: ExternalShortcutDescriptor): String = sh
 internal fun shortcutRowDetail(shortcut: ExternalShortcutDescriptor): String =
     listOfNotNull(
         shortcut.appName.takeIf { it.isNotBlank() && it != shortcutRowTitle(shortcut) },
-        if (shortcut.pinned) "桌面固定" else "动态",
-        "导入后免 Shizuku".takeIf { shortcut.directLaunchTarget != null },
+        if (shortcut.pinned) "Desktop fixed" else "Dynamic",
+        "Free Shizuku after importing".takeIf { shortcut.directLaunchTarget != null },
     ).joinToString(" · ")
 
 /** Round selection mark of a multi-select row; the row itself carries the state for TalkBack. */
@@ -308,12 +308,12 @@ internal fun BuiltinFileBrowserPage(
         }
     val spec =
         PickerPageSpec(
-            title = "选择游戏目录",
+            title = "Select game directory",
             onBack = goBack,
             topActions = {
-                KireiButton("系统 SAF", colors, options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL), onClick = onUseSaf)
+                KireiButton("System SAF", colors, options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL), onClick = onUseSaf)
             },
-            bottomAction = PickerAction("选择此文件夹", { onSelected(Uri.fromFile(current)) }),
+            bottomAction = PickerAction("Select this folder", { onSelected(Uri.fromFile(current)) }),
             scrollResetKey = current,
         )
     PickerPage(spec, colors, haze) {
@@ -323,11 +323,11 @@ internal fun BuiltinFileBrowserPage(
         }
         if (!BuiltinFileBrowserPolicy.shouldHideCrumbRow(breadcrumbs.size)) {
             item(key = "browser-crumbs") {
-                BrowserCrumbs(breadcrumbs, current, if (navigationRoot == internalRoot) "内部存储" else "应用目录", colors) { current = it }
+                BrowserCrumbs(breadcrumbs, current, if (navigationRoot == internalRoot) "Internal storage" else "Application Catalog", colors) { current = it }
             }
         }
         if (entries.isEmpty()) {
-            groupStateRow("browser-empty", colors, KireiListRowSpec("这个文件夹里没有可选择的内容"))
+            groupStateRow("browser-empty", colors, KireiListRowSpec("There is no selectable content in this folder"))
         } else {
             groupItems(entries, colors, { it.path }) { file ->
                 BrowserRow(file, colors) { current = file.safeCanonical() }
@@ -351,9 +351,9 @@ private fun LazyListScope.browserLocations(
             horizontalArrangement = Arrangement.spacedBy(KireiSpacing.xs),
             verticalArrangement = Arrangement.spacedBy(KireiSpacing.xs),
         ) {
-            KireiChip("内部存储", internalSelected, colors) { onRoot(true) }
-            KireiChip("应用目录", appSelected, colors) { onRoot(false) }
-            KireiButton("SD 卡 / 受限存储", colors, options = KireiButtonOptions(style = KireiButtonStyle.SECONDARY, size = KireiButtonSize.SMALL), onClick = onUseSaf)
+            KireiChip("Internal storage", internalSelected, colors) { onRoot(true) }
+            KireiChip("Application Catalog", appSelected, colors) { onRoot(false) }
+            KireiButton("SD card/restricted storage", colors, options = KireiButtonOptions(style = KireiButtonStyle.SECONDARY, size = KireiButtonSize.SMALL), onClick = onUseSaf)
         }
     }
 }

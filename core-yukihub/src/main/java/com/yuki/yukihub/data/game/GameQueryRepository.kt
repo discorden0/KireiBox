@@ -265,7 +265,7 @@ internal class GameQueryRepository(
                 }
             var changed = 0
             cleanIds.forEach { id -> changed += db.update("games", values, "id=?", arrayOf(id.toString())) }
-            check(changed == cleanIds.size) { "批量更新游戏库状态失败" }
+            check(changed == cleanIds.size) { "Batch update of game library status failed" }
             db.setTransactionSuccessful()
             changed
         } finally {
@@ -279,7 +279,7 @@ internal class GameQueryRepository(
         orderedIds: List<Long>,
     ) {
         val cleanIds = orderedIds.filter { it > 0L }
-        require(cleanIds.size == cleanIds.distinct().size) { "手动排序包含重复游戏" }
+        require(cleanIds.size == cleanIds.distinct().size) { "Manual sorting contains duplicate games" }
         val db = helper.writableDatabase
         db.beginTransaction()
         try {
@@ -296,7 +296,7 @@ internal class GameQueryRepository(
                         "id=? AND favorite=? AND hidden=0",
                         arrayOf(id.toString(), if (favorite) "1" else "0"),
                     )
-                check(changed == 1) { "手动排序游戏不存在或跨越收藏分组: $id" }
+                check(changed == 1) { "Manually sorting games does not exist or spans collection groups: $id" }
             }
             db.setTransactionSuccessful()
         } finally {
@@ -311,9 +311,9 @@ internal class GameQueryRepository(
     ) {
         val favorites = favoriteIds.filter { it > 0L }
         val regular = regularIds.filter { it > 0L }
-        require(favorites.size == favorites.distinct().size) { "自定义排序的收藏组包含重复游戏" }
-        require(regular.size == regular.distinct().size) { "自定义排序的普通组包含重复游戏" }
-        require(favorites.none { it in regular.toHashSet() }) { "自定义排序包含跨组重复游戏" }
+        require(favorites.size == favorites.distinct().size) { "Custom sorted collection group contains duplicate games" }
+        require(regular.size == regular.distinct().size) { "Custom sorted common group contains duplicate games" }
+        require(favorites.none { it in regular.toHashSet() }) { "Custom sorting includes repeating games across groups" }
         val db = helper.writableDatabase
         db.beginTransaction()
         try {
@@ -334,7 +334,7 @@ internal class GameQueryRepository(
                             "id=? AND favorite=? AND hidden=0",
                             arrayOf(id.toString(), if (favorite) "1" else "0"),
                         )
-                    check(changed == 1) { "自定义排序游戏不存在或跨越收藏分组: $id" }
+                    check(changed == 1) { "Custom sorted games do not exist or span collection groups: $id" }
                 }
             }
             writeGroup(favorites, favorite = true)

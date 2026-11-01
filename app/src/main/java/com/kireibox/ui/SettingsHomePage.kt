@@ -24,7 +24,7 @@ import com.yuki.yukihub.settings.SpotlightStrategy
 // plus 显示游玩时长. The rest of the 首页 page is InterfaceSettings and ImmersiveVisualSettingsPanel.
 
 /** Footer under 首页样式 in components mode: that layout is edited on the home itself (编辑首页). */
-internal fun homeStyleFooter(mode: HomePresentationMode): String? = if (mode == HomePresentationMode.COMPONENTS) "在首页菜单的「编辑首页」调整布局。" else null
+internal fun homeStyleFooter(mode: HomePresentationMode): String? = if (mode == HomePresentationMode.COMPONENTS) "Adjust the layout in \"Edit Home Page\" on the home page menu." else null
 
 /** The immersive gallery selection as the settings page reads it from the UI state. */
 internal fun KireiUiState.immersiveGallerySelection(): ImmersiveGallerySettings =
@@ -43,24 +43,24 @@ internal fun KireiUiState.immersiveGallerySelection(): ImmersiveGallerySettings 
 internal fun homeContentSummary(settings: ImmersiveGallerySettings): String {
     if (settings.selectionMode == SpotlightSelectionMode.MANUAL) {
         val picked = settings.manualIds.distinct().size
-        return if (picked == 0) "手动挑选，还没有选择游戏" else "手动挑选的 $picked 个游戏"
+        return if (picked == 0) "Manual selection, no game selected yet" else "$picked games hand picked"
     }
     val count = settings.count.coerceIn(ImmersiveGallerySettings.MIN_COUNT, ImmersiveGallerySettings.MAX_COUNT)
     val pool =
         when (settings.source) {
-            SpotlightSource.FAVORITES -> "收藏"
-            SpotlightSource.ALL -> "全部游戏"
-            SpotlightSource.RECENT, SpotlightSource.FIXED -> "最近打开"
+            SpotlightSource.FAVORITES -> "collect"
+            SpotlightSource.ALL -> "All games"
+            SpotlightSource.RECENT, SpotlightSource.FIXED -> "Recently opened"
         }
     return when (settings.strategy) {
         SpotlightStrategy.FIRST ->
             when (settings.source) {
-                SpotlightSource.FAVORITES -> "收藏中的前 $count 个游戏"
-                SpotlightSource.ALL -> "游戏库中的前 $count 个游戏"
-                SpotlightSource.RECENT, SpotlightSource.FIXED -> "最近打开的 $count 个游戏"
+                SpotlightSource.FAVORITES -> "Top $count games in collection"
+                SpotlightSource.ALL -> "Top $count games in game library"
+                SpotlightSource.RECENT, SpotlightSource.FIXED -> "Recently opened $count games"
             }
-        SpotlightStrategy.RANDOM_EACH_LAUNCH -> "从${pool}中随机 $count 个，每次启动更换"
-        SpotlightStrategy.DAILY_RANDOM -> "从${pool}中随机 $count 个，每天更换"
+        SpotlightStrategy.RANDOM_EACH_LAUNCH -> "Random $count from ${pool}, replaced each time"
+        SpotlightStrategy.DAILY_RANDOM -> "Random $count from ${pool}, changed every day"
     }
 }
 
@@ -73,12 +73,12 @@ internal fun HomeContentSettingsGroup(
 ) {
     var editing by rememberSaveable { mutableStateOf(false) }
     val selection = state.immersiveGallerySelection()
-    KireiListGroup(colors, SettingsGroupSpacing, title = "展示内容") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Show content") {
         item {
-            SettingsAnchor("展示的游戏") {
+            SettingsAnchor("Shown games") {
                 KireiListRow(
                     KireiListRowSpec(
-                        title = "展示的游戏",
+                        title = "Shown games",
                         subtitle = homeContentSummary(selection),
                         icon = Icons.Rounded.ViewCarousel,
                         tile = KireiTileColor.PURPLE,
@@ -90,10 +90,10 @@ internal fun HomeContentSettingsGroup(
             }
         }
         item {
-            SettingsAnchor("显示游玩时长") {
+            SettingsAnchor("Show play time") {
                 KireiListRow(
                     KireiListRowSpec(
-                        title = "显示游玩时长",
+                        title = "Show play time",
                         reserveIconSpace = true,
                         trailing = KireiRowTrailing.Toggle(state.settings?.immersivePlayTimeVisible != false, viewModel::setImmersivePlayTimeVisible),
                     ),

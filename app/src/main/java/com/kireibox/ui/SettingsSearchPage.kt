@@ -101,7 +101,7 @@ internal fun SettingsSearchBar(
             modifier = Modifier.weight(1f),
             options =
                 KireiSearchFieldOptions(
-                    placeholder = "搜索设置",
+                    placeholder = "Search settings",
                     focusRequester = search.focusRequester,
                     onFocusChange = { search.focused = it },
                     // The keyboard's 搜索 key only puts the keyboard away: results update as you type.
@@ -115,7 +115,7 @@ internal fun SettingsSearchBar(
             exit = if (reducedMotion) ExitTransition.None else fadeOut() + shrinkHorizontally(),
         ) {
             KireiButton(
-                "取消",
+                "Cancel",
                 colors,
                 Modifier.padding(start = KireiSpacing.xxs),
                 KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.MEDIUM),
@@ -143,11 +143,11 @@ internal fun SettingsSearchResults(
     val focusManager = LocalFocusManager.current
     val homeMode = context.state.settings?.homePresentationMode ?: HomePresentationMode.IMMERSIVE
     val results = remember(search.resultsQuery) { SettingsSearch.search(SettingsSearchIndex.entries, search.resultsQuery) }
-    SettingsSearchAnnouncement(if (results.isEmpty()) SETTINGS_SEARCH_EMPTY else "找到 ${results.size} 项", search.composing)
+    SettingsSearchAnnouncement(if (results.isEmpty()) SETTINGS_SEARCH_EMPTY else "Found ${results.size} items", search.composing)
     if (results.isEmpty()) {
         SettingsSearchEmpty(colors) { suggestion -> search.fill(suggestion) }
     } else {
-        KireiListGroup(colors, SettingsGroupSpacing, title = "找到 ${results.size} 项") {
+        KireiListGroup(colors, SettingsGroupSpacing, title = "Found ${results.size} items") {
             results.forEach { entry ->
                 item(key = entry.id) {
                     val (icon, tile) = settingsSearchPageVisual(entry.page)
@@ -168,7 +168,7 @@ internal fun SettingsSearchResults(
 }
 
 private val EmptyIconSize = 40.dp
-internal const val SETTINGS_SEARCH_EMPTY = "没有找到相关设置"
+internal const val SETTINGS_SEARCH_EMPTY = "No relevant settings found"
 
 /** How long the result count has to hold before TalkBack hears it (not on every keystroke). */
 private const val ANNOUNCE_SETTLE_MS = 500L
@@ -221,7 +221,7 @@ private fun SettingsSearchEmpty(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = KireiSpacing.xs).semantics { heading() },
         )
-        Text("换个说法试试，比如：", color = colors.secondary, style = AppleTypography.bodyMedium, textAlign = TextAlign.Center)
+        Text("Try saying it another way, for example:", color = colors.secondary, style = AppleTypography.bodyMedium, textAlign = TextAlign.Center)
         FlowRow(
             Modifier.fillMaxWidth().padding(top = KireiSpacing.xs),
             horizontalArrangement = Arrangement.spacedBy(KireiSpacing.xs, Alignment.CenterHorizontally),
@@ -244,7 +244,7 @@ internal fun settingsSearchSubtitle(
 ): String =
     when {
         entry.subtitle != null -> entry.subtitle
-        entry.location.scope != SettingsSearchScope.ALWAYS && homeMode == HomePresentationMode.COMPONENTS -> "${entry.location.breadcrumb} · 需使用沉浸式首页"
+        entry.location.scope != SettingsSearchScope.ALWAYS && homeMode == HomePresentationMode.COMPONENTS -> "${entry.location.breadcrumb} · Requires immersive homepage"
         else -> entry.location.breadcrumb
     }
 
@@ -306,6 +306,6 @@ internal fun RowScope.SettingsCollapsedSearchButton(
         enter = if (reducedMotion) EnterTransition.None else fadeIn(),
         exit = if (reducedMotion) ExitTransition.None else fadeOut(),
     ) {
-        GlassIconButton(Icons.Rounded.Search, "搜索设置", colors, haze, onClick)
+        GlassIconButton(Icons.Rounded.Search, "Search settings", colors, haze, onClick)
     }
 }

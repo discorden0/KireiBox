@@ -130,21 +130,21 @@ internal fun DashboardEditorPage(
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 KireiButton(
-                    label = "取消",
+                    label = "Cancel",
                     colors = colors,
                     options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.MEDIUM),
                     onClick = closeOrConfirm,
                 )
                 Column(Modifier.weight(1f).padding(horizontal = KireiSpacing.xs), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("编辑首页", color = colors.text, style = AppleTypography.headlineMedium)
+                    Text("Edit home page", color = colors.text, style = AppleTypography.headlineMedium)
                     Text(
-                        if (profile == DashboardProfile.COMPACT) "手机 · 2 列布局" else "宽屏 · 4 列布局",
+                        if (profile == DashboardProfile.COMPACT) "Mobile · 2 column layout" else "Widescreen · 4-column layout",
                         color = colors.secondary,
                         style = AppleTypography.labelLarge
                     )
                 }
                 KireiButton(
-                    label = "保存",
+                    label = "Save",
                     colors = colors,
                     options = KireiButtonOptions(style = KireiButtonStyle.PRIMARY, size = KireiButtonSize.MEDIUM, enabled = dirty),
                     onClick = {
@@ -154,7 +154,7 @@ internal fun DashboardEditorPage(
                 )
             }
             Text(
-                "长按组件拖动，拖动右下角调整大小",
+                "Press and hold the component to drag, drag the lower right corner to resize",
                 color = colors.secondary,
                 style = AppleTypography.bodySmall,
                 modifier = Modifier.padding(top = KireiSpacing.sm, bottom = KireiSpacing.sm)
@@ -163,8 +163,8 @@ internal fun DashboardEditorPage(
                 if (draft.widgets.isEmpty()) {
                     GlassSurface(colors, haze, Modifier.fillMaxWidth().height(192.dp), KireiShapes.lg) {
                         Column(Modifier.fillMaxSize().padding(KireiSpacing.xl), verticalArrangement = Arrangement.Center) {
-                            Text("首页是空的", color = colors.text, style = AppleTypography.headlineMedium)
-                            Text("点击右下角加号添加第一个组件。", color = colors.secondary, style = AppleTypography.bodyMedium)
+                            Text("Home page is empty", color = colors.text, style = AppleTypography.headlineMedium)
+                            Text("Click the plus sign in the lower right corner to add the first component.", color = colors.secondary, style = AppleTypography.bodyMedium)
                         }
                     }
                 } else {
@@ -224,8 +224,8 @@ internal fun DashboardEditorPage(
             KireiSegmented(
                 spec =
                     KireiSegmentedSpec(
-                        label = "排列方式",
-                        segments = listOf(KireiSegment(true, "自动排列"), KireiSegment(false, "自由摆放")),
+                        label = "Arrangement",
+                        segments = listOf(KireiSegment(true, "Automatic arrangement"), KireiSegment(false, "Free placement")),
                         selected = draft.autoFill,
                     ),
                 onSelect = { draft = DashboardLayouts.setAutoFill(draft, profile, it) },
@@ -242,7 +242,7 @@ internal fun DashboardEditorPage(
             onClick = { showAdd = true }
         ) {
             Box(Modifier.fillMaxSize().background(colors.accent, KireiShapes.full), contentAlignment = Alignment.Center) {
-                Icon(Icons.Rounded.Add, "添加组件", tint = colors.onAccent, modifier = Modifier.size(28.dp))
+                Icon(Icons.Rounded.Add, "Add component", tint = colors.onAccent, modifier = Modifier.size(28.dp))
             }
         }
         if (showAdd) {
@@ -303,7 +303,7 @@ internal fun DashboardEditorPage(
         styleInstanceId?.let { instanceId ->
             val spec = draft.widgets.firstOrNull { it.instanceId == instanceId }
             if (spec != null) {
-                KireiActionSheet("选择组件样式", colors, { styleInstanceId = null }) {
+                KireiActionSheet("Select component style", colors, { styleInstanceId = null }) {
                     DashboardStyles.allowed(spec.type).forEach { style ->
                         SheetChoiceRow(dashboardStyleLabel(style), null, spec.styleKey == style, colors) {
                             draft = DashboardLayouts.setStyle(draft, profile, instanceId, style)
@@ -332,14 +332,14 @@ internal fun DashboardEditorPage(
             KireiDialog(
                 spec =
                     KireiDialogSpec(
-                        title = "放弃首页修改？",
-                        message = "尚未保存的组件顺序、大小和增删会丢失。",
+                        title = "Give up on homepage changes?",
+                        message = "Unsaved component order, size, additions and deletions will be lost.",
                         confirm =
-                            KireiDialogAction("放弃修改", {
+                            KireiDialogAction("Abandon changes", {
                                 showDiscard = false
                                 onClose()
                             }, style = KireiButtonStyle.DESTRUCTIVE),
-                        dismiss = KireiDialogAction("继续编辑", { showDiscard = false }, style = KireiButtonStyle.PLAIN),
+                        dismiss = KireiDialogAction("Continue editing", { showDiscard = false }, style = KireiButtonStyle.PLAIN),
                     ),
                 colors = colors,
                 onDismissRequest = { showDiscard = false },
@@ -471,8 +471,8 @@ internal fun DashboardEditorWidget(
             GlassSurface(colors, haze, Modifier.fillMaxSize(), KireiShapes.lg, KireiGlassRole.CONTENT, onRebind) {
                 Column(Modifier.fillMaxSize().padding(KireiSpacing.md), verticalArrangement = Arrangement.Center) {
                     Icon(Icons.Rounded.Gamepad, null, tint = colors.accent)
-                    Text("游戏已移出", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.xs))
-                    Text("点按重新选择游戏", color = colors.secondary, style = AppleTypography.bodySmall)
+                    Text("Game has been moved", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.xs))
+                    Text("Tap to reselect game", color = colors.secondary, style = AppleTypography.bodySmall)
                 }
             }
         } else {
@@ -504,15 +504,15 @@ internal fun DashboardEditorWidget(
             horizontalArrangement = Arrangement.spacedBy(-EDITOR_CONTROL_OVERLAP),
         ) {
             if (spec.type != DashboardWidgetType.PLAY_TREND && DashboardStyles.allowed(spec.type).size > 1) {
-                EditorControl(EditorControlSpec(Icons.Rounded.Palette, "更改组件样式"), colors, onStyle)
+                EditorControl(EditorControlSpec(Icons.Rounded.Palette, "Change component style"), colors, onStyle)
             }
             if (spec.type == DashboardWidgetType.PLAY_TREND) {
-                EditorControl(EditorControlSpec(Icons.Rounded.Tune, "趋势图设置"), colors, onTrendConfig)
+                EditorControl(EditorControlSpec(Icons.Rounded.Tune, "Trend chart settings"), colors, onTrendConfig)
             }
             if (spec.type == DashboardWidgetType.GAME_SPOTLIGHT) {
-                EditorControl(EditorControlSpec(Icons.Rounded.Tune, "设置头图来源与展示方式"), colors, onRebind)
+                EditorControl(EditorControlSpec(Icons.Rounded.Tune, "Set header image source and display method"), colors, onRebind)
             }
-            EditorControl(EditorControlSpec(Icons.Rounded.Remove, "移除组件", danger = true), colors) {
+            EditorControl(EditorControlSpec(Icons.Rounded.Remove, "Remove component", danger = true), colors) {
                 if (!removing) removing = true
             }
         }
@@ -558,7 +558,7 @@ internal fun DashboardEditorWidget(
                     )
                 }
         ) {
-            EditorControl(EditorControlSpec(Icons.Rounded.ZoomOutMap, "拖动调整高度，点按切换宽度", atBottom = true), colors) {
+            EditorControl(EditorControlSpec(Icons.Rounded.ZoomOutMap, "Drag to adjust height, click to switch width", atBottom = true), colors) {
                 if (allowedWidths.size > 1) {
                     val index = allowedWidths.indexOf(spec.size.columns).coerceAtLeast(0)
                     onResizeWidth(allowedWidths[(index + 1) % allowedWidths.size])
@@ -645,10 +645,10 @@ internal fun DashboardAddSheet(
                 }
             }
         }
-    KireiActionSheet("添加首页组件", colors, onDismiss, expanded = true) {
+    KireiActionSheet("Add home page component", colors, onDismiss, expanded = true) {
         if (layout.widgets.size >= DashboardLayouts.MAX_WIDGETS) {
             Text(
-                "最多可添加 ${DashboardLayouts.MAX_WIDGETS} 个组件。",
+                "You can add up to ${DashboardLayouts.MAX_WIDGETS} components.",
                 color = colors.secondary,
                 style = AppleTypography.bodyMedium,
                 modifier = Modifier.padding(KireiSpacing.xl),
@@ -667,15 +667,15 @@ internal fun DashboardAddSheet(
         ) {
             SheetActionRow(
                 Icons.Rounded.AutoFixHigh,
-                "动态头图",
-                "默认显示最近打开，可配置收藏、全部游戏与随机方式",
+                "Dynamic header image",
+                "The most recently opened display is displayed by default, and collection, all games, and random modes can be configured.",
                 colors,
             ) {
                 onAdd(DashboardWidgetType.GAME_SPOTLIGHT, null)
             }
         }
         Text(
-            "游戏展示",
+            "Game show",
             color = colors.secondary,
             style = AppleTypography.labelLarge,
             modifier = Modifier.padding(horizontal = KireiSpacing.xl, vertical = KireiSpacing.sm),
@@ -683,7 +683,7 @@ internal fun DashboardAddSheet(
         val availableGames = games.filterNot { it.id in usedGames }
         if (availableGames.isEmpty()) {
             Text(
-                "没有可添加的游戏",
+                "No games to add",
                 color = colors.secondary,
                 style = AppleTypography.bodyMedium,
                 modifier = Modifier.padding(horizontal = KireiSpacing.xl, vertical = KireiSpacing.md),
@@ -705,7 +705,7 @@ internal fun SpotlightConfigSheet(
     onSettings: (HomeContentSettings) -> Unit,
 ) {
     KireiActionSheet(
-        "设置头图",
+        "Set header image",
         colors,
         onDismiss,
         expanded = true,
@@ -738,55 +738,55 @@ internal fun DashboardGamePickerRow(
                 subtitleMaxLines = 1,
             ),
         colors = colors,
-        modifier = Modifier.semantics { contentDescription = "添加 ${game.title.orEmpty()}" },
+        modifier = Modifier.semantics { contentDescription = "Add ${game.title.orEmpty()}" },
         onClick = onClick,
     )
 }
 
 internal fun dashboardWidgetLabel(type: DashboardWidgetType): String =
     when (type) {
-        DashboardWidgetType.GAME_SPOTLIGHT -> "游戏展示"
-        DashboardWidgetType.LIBRARY_OVERVIEW -> "游戏概览"
-        DashboardWidgetType.RECENT_GAMES -> "最近打开"
-        DashboardWidgetType.FAVORITES -> "收藏概览"
-        DashboardWidgetType.LIBRARY_SHORTCUT -> "游戏库入口"
-        DashboardWidgetType.PLAY_TREND -> "游玩趋势"
+        DashboardWidgetType.GAME_SPOTLIGHT -> "Game show"
+        DashboardWidgetType.LIBRARY_OVERVIEW -> "Game overview"
+        DashboardWidgetType.RECENT_GAMES -> "Recently opened"
+        DashboardWidgetType.FAVORITES -> "Collection overview"
+        DashboardWidgetType.LIBRARY_SHORTCUT -> "Game library entrance"
+        DashboardWidgetType.PLAY_TREND -> "Gaming trends"
     }
 
 internal fun dashboardWidgetDescription(type: DashboardWidgetType): String =
     when (type) {
-        DashboardWidgetType.GAME_SPOTLIGHT -> "展示封面与直接启动按钮"
-        DashboardWidgetType.LIBRARY_OVERVIEW -> "累计时长、游戏数与收藏数"
-        DashboardWidgetType.RECENT_GAMES -> "最近打开的游戏"
-        DashboardWidgetType.FAVORITES -> "收藏数量和封面预览"
-        DashboardWidgetType.LIBRARY_SHORTCUT -> "快速进入游戏库"
-        DashboardWidgetType.PLAY_TREND -> "7 日或 30 日游玩折线图"
+        DashboardWidgetType.GAME_SPOTLIGHT -> "Display cover and direct launch button"
+        DashboardWidgetType.LIBRARY_OVERVIEW -> "Cumulative time, number of games and number of collections"
+        DashboardWidgetType.RECENT_GAMES -> "Recently opened games"
+        DashboardWidgetType.FAVORITES -> "Collection quantity and cover preview"
+        DashboardWidgetType.LIBRARY_SHORTCUT -> "Quickly access the game library"
+        DashboardWidgetType.PLAY_TREND -> "7-day or 30-day play line chart"
     }
 
 internal fun dashboardStyleLabel(style: String): String =
     when (style) {
-        DashboardStyles.SPOTLIGHT_IMMERSIVE -> "沉浸头图"
-        DashboardStyles.SPOTLIGHT_POSTER -> "海报详情"
-        DashboardStyles.SPOTLIGHT_HORIZONTAL -> "横向紧凑"
-        DashboardStyles.OVERVIEW_MINIMAL -> "极简数字"
-        DashboardStyles.OVERVIEW_SPLIT -> "分栏统计"
-        DashboardStyles.OVERVIEW_RING -> "环形统计"
-        DashboardStyles.OVERVIEW_TILES -> "三格数据"
-        DashboardStyles.OVERVIEW_FOCUS -> "大数字聚焦"
-        DashboardStyles.RECENT_STRIP -> "主题卡条"
-        DashboardStyles.RECENT_GLASS -> "玻璃列表"
-        DashboardStyles.RECENT_COVERS -> "封面横滑"
-        DashboardStyles.FAVORITES_STACK -> "叠放封面"
-        DashboardStyles.FAVORITES_MOSAIC -> "封面拼图"
-        DashboardStyles.FAVORITES_FEATURED -> "主封面"
-        DashboardStyles.FAVORITES_COUNT -> "纯数字紧凑"
-        DashboardStyles.LIBRARY_ICON -> "图标入口"
-        DashboardStyles.LIBRARY_PROGRESS -> "进度摘要"
-        DashboardStyles.TREND_7_DAY -> "7 日折线"
-        DashboardStyles.TREND_30_DAY -> "30 日面积折线"
-        DashboardStyles.TREND_LAUNCH_7_DAY -> "7 日启动款数"
-        DashboardStyles.TREND_LAUNCH_30_DAY -> "30 日启动款数"
-        else -> "默认样式"
+        DashboardStyles.SPOTLIGHT_IMMERSIVE -> "Immersion head map"
+        DashboardStyles.SPOTLIGHT_POSTER -> "Poster details"
+        DashboardStyles.SPOTLIGHT_HORIZONTAL -> "Laterally compact"
+        DashboardStyles.OVERVIEW_MINIMAL -> "Minimalist numbers"
+        DashboardStyles.OVERVIEW_SPLIT -> "Column statistics"
+        DashboardStyles.OVERVIEW_RING -> "Ring statistics"
+        DashboardStyles.OVERVIEW_TILES -> "Three grid data"
+        DashboardStyles.OVERVIEW_FOCUS -> "Big numbers focus"
+        DashboardStyles.RECENT_STRIP -> "Theme card strip"
+        DashboardStyles.RECENT_GLASS -> "Glass list"
+        DashboardStyles.RECENT_COVERS -> "Cover slides horizontally"
+        DashboardStyles.FAVORITES_STACK -> "Stack covers"
+        DashboardStyles.FAVORITES_MOSAIC -> "Cover puzzle"
+        DashboardStyles.FAVORITES_FEATURED -> "Main cover"
+        DashboardStyles.FAVORITES_COUNT -> "Pure digital compact"
+        DashboardStyles.LIBRARY_ICON -> "Icon entrance"
+        DashboardStyles.LIBRARY_PROGRESS -> "Progress summary"
+        DashboardStyles.TREND_7_DAY -> "7-day line"
+        DashboardStyles.TREND_30_DAY -> "30-day area line"
+        DashboardStyles.TREND_LAUNCH_7_DAY -> "7-day activation amount"
+        DashboardStyles.TREND_LAUNCH_30_DAY -> "Activation amount on 30th day"
+        else -> "Default style"
     }
 
 internal fun dashboardWidgetIcon(type: DashboardWidgetType): androidx.compose.ui.graphics.vector.ImageVector =

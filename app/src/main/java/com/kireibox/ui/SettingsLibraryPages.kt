@@ -74,14 +74,14 @@ internal fun LibraryHubSettings(
     viewModel: KireiViewModel,
 ) {
     val sortMode = state.settings?.sortMode ?: YukiSettingsStore.SORT_RECENT
-    KireiListGroup(colors, SettingsGroupSpacing, title = "目录") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Table of contents") {
         item {
             KireiListRow(
                 KireiListRowSpec(
-                    title = "扫描目录",
+                    title = "Scan directory",
                     icon = Icons.Rounded.Folder,
                     tile = KireiTileColor.BLUE,
-                    trailing = KireiRowTrailing.Value("${state.settings?.scanRoots?.size ?: 0} 个"),
+                    trailing = KireiRowTrailing.Value("${state.settings?.scanRoots?.size ?: 0}"),
                 ),
                 colors,
                 onClick = { viewModel.openSettingsPage(KireiSettingsPage.LIBRARY) },
@@ -91,13 +91,13 @@ internal fun LibraryHubSettings(
     KireiListGroup(
         colors,
         SettingsGroupSpacing,
-        title = "游戏卡片",
-        footer = "长按游戏卡片后依次编号。".takeIf { sortMode == YukiSettingsStore.SORT_MANUAL },
+        title = "Game cards",
+        footer = "Long press the game cards and number them in sequence.".takeIf { sortMode == YukiSettingsStore.SORT_MANUAL },
     ) {
         item {
             SettingsSegmentedRow(
                 SettingsSegmentedRowSpec(
-                    title = "游戏库顺序",
+                    title = "Game library order",
                     segments = LibrarySortOptions.map { KireiSegment(it, choiceLabel(it)) },
                     selected = sortMode,
                 ),
@@ -156,23 +156,23 @@ internal fun LibrarySettings(
     var removalRoot by remember { mutableStateOf<String?>(null) }
     var showRemovedGames by remember { mutableStateOf(false) }
     ScanRootGroup(state, colors, onAdd = actions.chooseDirectory) { actionRoot = it }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "自动更新") {
-        item { SwitchRow("目录自动更新", state.settings?.autoScanOnStartup ?: true, colors, viewModel::setAutoScanOnStartup) }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Automatic updates") {
+        item { SwitchRow("Catalog automatic update", state.settings?.autoScanOnStartup ?: true, colors, viewModel::setAutoScanOnStartup) }
         item {
-            SwitchRow("已移除游戏更新目录不会再添加", state.settings?.keepRemovedGamesHiddenOnRefresh ?: true, colors, viewModel::setKeepRemovedGamesHiddenOnRefresh)
+            SwitchRow("The removed game update directory will not be added again", state.settings?.keepRemovedGamesHiddenOnRefresh ?: true, colors, viewModel::setKeepRemovedGamesHiddenOnRefresh)
         }
         item {
-            SettingsAnchor("已移除的游戏") {
+            SettingsAnchor("Removed games") {
                 KireiListRow(
-                    KireiListRowSpec(title = "已移除的游戏", trailing = KireiRowTrailing.Value("${state.removedGames.size} 部")),
+                    KireiListRowSpec(title = "Removed games", trailing = KireiRowTrailing.Value("${state.removedGames.size} Department")),
                     colors,
                     onClick = { showRemovedGames = true },
                 )
             }
         }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "文件选择") {
-        item { SwitchRow("使用内置文件浏览器", state.settings?.useBuiltinFileChooser != false, colors, viewModel::setUseBuiltinFileChooser) }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "File selection") {
+        item { SwitchRow("Use the built-in file browser", state.settings?.useBuiltinFileChooser != false, colors, viewModel::setUseBuiltinFileChooser) }
     }
     if (showRemovedGames) {
         RemovedGamesSheet(
@@ -204,13 +204,13 @@ private fun ScanRootGroup(
     val context = LocalContext.current
     val roots = state.settings?.scanRoots.orEmpty()
     // The page is already titled 扫描目录, so the group names what it lists.
-    KireiListGroup(colors, SettingsGroupSpacing, title = "已添加的目录") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Added directory") {
         roots.forEach { root ->
             item(key = root) {
                 KireiListRow(
                     KireiListRowSpec(
                         title = GameLocationLabel.format(context, root),
-                        subtitle = "已导入 ${scanRootGameCount(state, root)} 部游戏",
+                        subtitle = "${scanRootGameCount(state, root)} games imported",
                         icon = Icons.Rounded.Folder,
                         tile = KireiTileColor.BLUE,
                         trailing = KireiRowTrailing.Glyph(Icons.Rounded.MoreHoriz),
@@ -221,9 +221,9 @@ private fun ScanRootGroup(
             }
         }
         item(key = "add-scan-root") {
-            SettingsAnchor("添加扫描目录") {
+            SettingsAnchor("Add scan directory") {
                 KireiListRow(
-                    KireiListRowSpec(title = "添加扫描目录", icon = Icons.Rounded.Add, tile = KireiTileColor.GREEN, tone = KireiRowTone.ACTION),
+                    KireiListRowSpec(title = "Add scan directory", icon = Icons.Rounded.Add, tile = KireiTileColor.GREEN, tone = KireiRowTone.ACTION),
                     colors,
                     onClick = onAdd,
                 )
@@ -253,11 +253,11 @@ private fun ScanRootActionSheet(
 ) {
     val context = LocalContext.current
     KireiActionSheet(title = GameLocationLabel.format(context, root), colors = colors, onDismiss = actions.onDismiss) {
-        SheetActionRow(Icons.Rounded.Refresh, "重新授权", "需重新选择同一文件夹", colors) {
+        SheetActionRow(Icons.Rounded.Refresh, "Reauthorize", "Need to reselect the same folder", colors) {
             actions.onDismiss()
             actions.onRepair()
         }
-        SheetActionRow(Icons.Rounded.DeleteOutline, "移除扫描目录", "同时移出该目录下的 $gameCount 部游戏", colors, destructive = true) {
+        SheetActionRow(Icons.Rounded.DeleteOutline, "Remove scan directory", "Also remove $gameCount games in this directory", colors, destructive = true) {
             actions.onDismiss()
             actions.onRemove()
         }
@@ -276,14 +276,14 @@ private fun ScanRootRemovalDialog(
     KireiDialog(
         spec =
             KireiDialogSpec(
-                title = "移除扫描目录？",
-                message = "将从游戏库移出该目录下的 ${scanRootGameCount(state, root)} 部游戏，不会删除游戏文件。",
+                title = "Remove scan directory?",
+                message = "The ${scanRootGameCount(state, root)} games in this directory will be moved out of the game library. The game files will not be deleted.",
                 confirm =
-                    KireiDialogAction("移除目录与游戏", {
+                    KireiDialogAction("Remove directories and games", {
                         onClose()
                         viewModel.removeScanRoot(root)
                     }, style = KireiButtonStyle.DESTRUCTIVE),
-                dismiss = KireiDialogAction("取消", onClose, style = KireiButtonStyle.PLAIN),
+                dismiss = KireiDialogAction("Cancel", onClose, style = KireiButtonStyle.PLAIN),
                 // An explicit choice is required: back and outside taps do nothing (as before).
                 dismissible = false,
             ),
@@ -306,7 +306,7 @@ internal fun PermissionSettings(
     val context = LocalContext.current
     val roots = state.settings?.scanRoots.orEmpty()
     val access = rememberStorageAccess(roots)
-    KireiListGroup(colors, SettingsGroupSpacing, title = "KRKR 原生引擎") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "KRKR native engine") {
         item {
             // One search anchor for the status row and its button (the title depends on the API level).
             SettingsAnchor(SettingsSearchIndex.NATIVE_ACCESS_ANCHOR) {
@@ -325,10 +325,10 @@ internal fun PermissionSettings(
             }
         }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "扫描目录") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Scan directory") {
         if (roots.isEmpty()) {
             item(key = "no-roots") {
-                KireiListRow(KireiListRowSpec("还没有扫描目录", "在「游戏库 › 扫描目录」添加", icon = Icons.Rounded.Folder, tile = KireiTileColor.BLUE), colors)
+                KireiListRow(KireiListRowSpec("The directory has not been scanned yet", "Add in \"Game Library › Scan Directory\"", icon = Icons.Rounded.Folder, tile = KireiTileColor.BLUE), colors)
             }
         }
         roots.forEach { root ->
@@ -348,7 +348,7 @@ internal fun PermissionSettings(
         }
     }
     KireiListGroup(colors, SettingsGroupSpacing) {
-        item { SettingsAnchor("检查访问权限") { KireiListRow(KireiListRowSpec(title = "检查访问权限", tone = KireiRowTone.ACTION), colors, onClick = actions.checkPermissions) } }
+        item { SettingsAnchor("Check access rights") { KireiListRow(KireiListRowSpec(title = "Check access rights", tone = KireiRowTone.ACTION), colors, onClick = actions.checkPermissions) } }
     }
 }
 
@@ -357,9 +357,9 @@ internal fun PermissionSettings(
 private fun AccessChip(
     granted: Boolean,
     colors: KireiColors,
-    missing: String = "需要重新授权",
+    missing: String = "Requires reauthorization",
 ) {
-    KireiStatusChip(if (granted) "已授权" else missing, if (granted) KireiStatusTone.POSITIVE else KireiStatusTone.WARNING, colors)
+    KireiStatusChip(if (granted) "Authorized" else missing, if (granted) KireiStatusTone.POSITIVE else KireiStatusTone.WARNING, colors)
 }
 
 /** Storage access as the permission page shows it; re-read every time the launcher resumes. */
@@ -422,14 +422,14 @@ internal object StorageAccessPolicy {
     ): KireiListRowSpec =
         KireiListRowSpec(
             title = nativeAccessTitle(),
-            subtitle = "供 KRKR 引擎读取游戏",
+            subtitle = "For the KRKR engine to read the game",
             icon = Icons.Rounded.FolderOpen,
             tile = KireiTileColor.GREEN,
-            trailing = KireiRowTrailing.Custom { AccessChip(granted, colors, missing = "需要授权") },
+            trailing = KireiRowTrailing.Custom { AccessChip(granted, colors, missing = "Authorization required") },
         )
 
     /** The primary action's label, written out per API level (never 「授权存储权限」). */
-    fun nativeAccessAction(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "开启所有文件访问" else "授予存储权限"
+    fun nativeAccessAction(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "Enable access to all files" else "Grant storage permissions"
 
     private fun nativeAccessGranted(context: Context): Boolean =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -438,5 +438,5 @@ internal object StorageAccessPolicy {
             ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
         }
 
-    fun nativeAccessTitle(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "所有文件访问" else "存储权限"
+    fun nativeAccessTitle(): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) "All file access" else "Storage permissions"
 }

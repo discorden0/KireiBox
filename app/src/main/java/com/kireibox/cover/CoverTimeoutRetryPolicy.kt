@@ -7,7 +7,7 @@ import java.util.Locale
 
 internal object CoverTimeoutRetryPolicy {
     const val TOTAL_ATTEMPTS = 3
-    const val FINAL_MESSAGE = "连接超时，已自动尝试 3 次"
+    const val FINAL_MESSAGE = "Connection timed out, automatically attempted 3 times"
 
     fun isTimeout(error: Throwable?): Boolean {
         var current = error
@@ -41,7 +41,7 @@ internal object CoverTimeoutRetryPolicy {
                     throw cancelled
                 }
             if (result.isSuccess) return result
-            val error = result.exceptionOrNull() ?: IllegalStateException("封面请求失败")
+            val error = result.exceptionOrNull() ?: IllegalStateException("Cover request failed")
             if (error is CancellationException) throw error
             if (!isTimeout(error)) return result
             lastError = error
@@ -53,5 +53,5 @@ internal object CoverTimeoutRetryPolicy {
         return Result.failure(SocketTimeoutException(FINAL_MESSAGE).apply { initCause(lastError) })
     }
 
-    fun normalizeFinalError(error: Throwable): Throwable = if (isTimeout(error)) SocketTimeoutException("资料搜索超时，请检查网络后重试").apply { initCause(error) } else error
+    fun normalizeFinalError(error: Throwable): Throwable = if (isTimeout(error)) SocketTimeoutException("Data search timed out, please check the network and try again").apply { initCause(error) } else error
 }

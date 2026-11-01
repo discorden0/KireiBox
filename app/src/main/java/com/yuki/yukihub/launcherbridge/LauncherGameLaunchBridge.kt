@@ -85,9 +85,9 @@ object LauncherGameLaunchBridge {
         game: Game?,
         krSafCompatibility: Boolean
     ): LaunchResult {
-        if (context == null) return LaunchResult.failure("上下文不可用")
-        if (game == null) return LaunchResult.failure("游戏不存在")
-        if (!SupportedEngines.contains(game.engine)) return LaunchResult.failure("KireiBox 不支持该游戏引擎")
+        if (context == null) return LaunchResult.failure("Context is not available")
+        if (game == null) return LaunchResult.failure("Game does not exist")
+        if (!SupportedEngines.contains(game.engine)) return LaunchResult.failure("KireiBox does not support this game engine")
         val appContext = context.applicationContext
         val repository = GameRepository(appContext)
         val prepared = GameLocationPreflight.verify(appContext, repository, game)
@@ -103,7 +103,7 @@ object LauncherGameLaunchBridge {
                 System.currentTimeMillis() - previousGate.startedAtWallMs <
                     ExternalSessionRecoveryPolicy.PROCESS_SPAWN_GRACE_MS
             if (isProcessRunning(appContext, previousGate.processPackage) || withinSpawnGrace) {
-                return LaunchResult.failure("已有游戏正在运行：${previousGate.gameTitle}")
+                return LaunchResult.failure("There is already a game running: ${previousGate.gameTitle}")
             }
             recoverExternalGate(appContext, repository, previousGate)
         }
@@ -111,7 +111,7 @@ object LauncherGameLaunchBridge {
         val externalShortcut = ExternalShortcutIdentity.fromGame(launchGame)
         if (externalShortcut != null) {
             val sessionId = repository.startPlaySession(launchGame.id, System.currentTimeMillis(), "external.shortcut")
-            if (sessionId <= 0L) return LaunchResult.failure("无法记录本次快捷方式启动")
+            if (sessionId <= 0L) return LaunchResult.failure("Unable to record this shortcut startup")
             val direct = ExternalShortcutDirectLauncher.launch(appContext, externalShortcut, launchGame.launchTarget)
             val launched =
                 if (direct?.isSuccess == true) {
@@ -119,7 +119,7 @@ object LauncherGameLaunchBridge {
                 } else {
                     ShizukuShortcutGateway(appContext).launch(externalShortcut).recoverCatching { fallbackError ->
                         val directMessage = direct?.exceptionOrNull()?.message
-                        if (!directMessage.isNullOrBlank()) throw IllegalStateException("$directMessage Shizuku 回退也不可用：${fallbackError.message.orEmpty()}", fallbackError)
+                        if (!directMessage.isNullOrBlank()) throw IllegalStateException("$directMessage Shizuku fallback is also not available: ${fallbackError.message.orEmpty()}", fallbackError)
                         throw fallbackError
                     }
                 }
@@ -129,18 +129,18 @@ object LauncherGameLaunchBridge {
                     ExternalGameGate(
                         sessionId = sessionId,
                         gameId = launchGame.id,
-                        gameTitle = launchGame.title?.ifBlank { "未命名游戏" } ?: "未命名游戏",
+                        gameTitle = launchGame.title?.ifBlank { "Unnamed game" } ?: "Unnamed game",
                         processPackage = externalShortcut.packageName,
                         startedAtWallMs = System.currentTimeMillis(),
                     )
                 if (!writeExternalGate(appContext, gate)) {
                     repository.cancelPlaySession(sessionId)
-                    return LaunchResult.failure("无法记录本次快捷方式游玩会话")
+                    return LaunchResult.failure("Unable to record this shortcut play session")
                 }
                 LaunchResult.success(sessionId, LaunchHandoff.SHORTCUT)
             } else {
                 repository.cancelPlaySession(sessionId)
-                LaunchResult.failure(launched.exceptionOrNull()?.message ?: "快捷方式已失效，请重新扫描。")
+                LaunchResult.failure(launched.exceptionOrNull()?.message ?: "The shortcut is invalid, please scan again.")
             }
         }
         val emulatorPackage = resolveEmulatorPackage(launchGame)
@@ -153,7 +153,7 @@ object LauncherGameLaunchBridge {
 
         val startedAt = System.currentTimeMillis()
         val sessionId = repository.startPlaySession(launchGame.id, startedAt, resolveLaunchType(emulatorPackage))
-        if (sessionId <= 0L) return LaunchResult.failure("无法记录本次游玩启动")
+        if (sessionId <= 0L) return LaunchResult.failure("Unable to record the start of this game")
         val launchError =
             startGameActivity(
                 context,
@@ -171,13 +171,13 @@ object LauncherGameLaunchBridge {
                     ExternalGameGate(
                         sessionId = sessionId,
                         gameId = launchGame.id,
-                        gameTitle = launchGame.title?.ifBlank { "未命名游戏" } ?: "未命名游戏",
+                        gameTitle = launchGame.title?.ifBlank { "Unnamed game" } ?: "Unnamed game",
                         processPackage = emulatorPackage,
                         startedAtWallMs = System.currentTimeMillis(),
                     )
                 if (!writeExternalGate(appContext, gate)) {
                     repository.cancelPlaySession(sessionId)
-                    return LaunchResult.failure("无法记录本次 Android 应用游玩会话")
+                    return LaunchResult.failure("Unable to record this Android app play session")
                 }
                 return LaunchResult.success(sessionId, LaunchHandoff.EXTERNAL_APP)
             }
@@ -199,7 +199,7 @@ object LauncherGameLaunchBridge {
         val sessionId = if (ready) repository.startPlaySession(game.id, System.currentTimeMillis(), "external.winlator") else -1L
         return when {
             !ready -> LaunchResult.failure(WinlatorLauncher.statusMessage(availability))
-            sessionId <= 0L -> LaunchResult.failure("无法记录本次游玩启动")
+            sessionId <= 0L -> LaunchResult.failure("Unable to record the start of this game")
             else -> runWindowsSession(context, repository, game, sessionId)
         }
     }
@@ -217,7 +217,7 @@ object LauncherGameLaunchBridge {
                 ExternalGameGate(
                     sessionId = sessionId,
                     gameId = game.id,
-                    gameTitle = game.title?.ifBlank { "未命名游戏" } ?: "未命名游戏",
+                    gameTitle = game.title?.ifBlank { "Unnamed game" } ?: "Unnamed game",
                     processPackage = it.packageName,
                     startedAtWallMs = System.currentTimeMillis(),
                 )
@@ -227,7 +227,7 @@ object LauncherGameLaunchBridge {
             return LaunchResult.success(sessionId, LaunchHandoff.EXTERNAL_APP)
         }
         repository.cancelPlaySession(sessionId)
-        val message = (started as? WinlatorLaunchResult.Failed)?.message ?: "无法记录本次 PC 游戏游玩会话"
+        val message = (started as? WinlatorLaunchResult.Failed)?.message ?: "Unable to record this PC game session"
         DevLogger.event("winlator launch failed: $message")
         return LaunchResult.failure(message)
     }
@@ -378,7 +378,7 @@ object LauncherGameLaunchBridge {
         return ExternalGameGate(
             sessionId = sessionId,
             gameId = prefs.getLong(KEY_EXT_GAME_ID, -1L),
-            gameTitle = prefs.getString(KEY_EXT_GAME_TITLE, "当前游戏") ?: "当前游戏",
+            gameTitle = prefs.getString(KEY_EXT_GAME_TITLE, "Current game") ?: "Current game",
             processPackage = prefs.getString(KEY_EXT_PROCESS_PACKAGE, "") ?: "",
             startedAtWallMs = prefs.getLong(KEY_EXT_STARTED_AT, 0L),
         )
@@ -453,9 +453,9 @@ object LauncherGameLaunchBridge {
     ): String? {
         if (emulatorPackage.isEmpty()) {
             return if (game.engine == EngineType.ANDROID_APP) {
-                "请为 Android 应用卡片设置包名。"
+                "Please set a package name for the Android app card."
             } else {
-                "没有可用的内置引擎。"
+                "There is no built-in engine available."
             }
         }
         return null
@@ -473,7 +473,7 @@ object LauncherGameLaunchBridge {
     }
 
     private fun resolveLaunchTarget(game: Game): String? {
-        if (game.engine == EngineType.ARTEMIS || game.engine == EngineType.TYRANO) return "[游戏目录]"
+        if (game.engine == EngineType.ARTEMIS || game.engine == EngineType.TYRANO) return "[Game Catalog]"
         return game.launchTarget
     }
 
@@ -527,12 +527,12 @@ object LauncherGameLaunchBridge {
                 return if (EmulatorLauncher.launchAndroidApp(context, pkg, launchTarget)) {
                     null
                 } else {
-                    "无法启动 Android 应用：包名或 Activity 无效"
+                    "Unable to launch Android app: Invalid package name or activity"
                 }
             }
-            "没有可用的内置引擎启动方式"
+            "No built-in engine starting method available"
         } catch (error: Throwable) {
-            error.message?.takeIf(String::isNotBlank) ?: "启动引擎时发生未知错误"
+            error.message?.takeIf(String::isNotBlank) ?: "An unknown error occurred while starting the engine"
         }
     }
 
@@ -540,8 +540,8 @@ object LauncherGameLaunchBridge {
         context: Context?,
         intent: Intent?
     ): String? {
-        if (context == null) return "应用上下文不可用"
-        if (intent == null) return "无法构建引擎启动意图"
+        if (context == null) return "Application context is not available"
+        if (intent == null) return "Unable to build engine launch intent"
         return try {
             if (context !is Activity) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -549,7 +549,7 @@ object LauncherGameLaunchBridge {
             context.startActivity(intent)
             null
         } catch (error: Throwable) {
-            error.message?.takeIf(String::isNotBlank) ?: "无法启动引擎界面"
+            error.message?.takeIf(String::isNotBlank) ?: "Unable to start engine interface"
         }
     }
 
@@ -590,7 +590,7 @@ object LauncherGameLaunchBridge {
             ): LaunchResult = LaunchResult(true, sessionId, "", handoff)
 
             @JvmStatic
-            fun failure(message: String?): LaunchResult = LaunchResult(false, -1L, if (message.isNullOrBlank()) "启动失败" else message, LaunchHandoff.NONE)
+            fun failure(message: String?): LaunchResult = LaunchResult(false, -1L, if (message.isNullOrBlank()) "Startup failed" else message, LaunchHandoff.NONE)
         }
     }
 }

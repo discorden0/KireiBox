@@ -32,7 +32,7 @@ internal sealed interface DockTabBadge {
  */
 internal object DockSettingsBadgePolicy {
     /** Read after the tab name (「设置，有新的设置建议」) while the dot shows. */
-    const val SUGGESTION_DESCRIPTION = "有新的设置建议"
+    const val SUGGESTION_DESCRIPTION = "There are new setting suggestions"
 
     fun resolve(
         attentionCount: Int,

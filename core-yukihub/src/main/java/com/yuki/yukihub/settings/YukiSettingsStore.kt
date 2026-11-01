@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import com.yuki.yukihub.storage.StorageRootIdentity
 
 enum class OrientationMode(val storedValue: String, val displayName: String) {
-    AUTO("auto", "自动"),
-    PORTRAIT("portrait", "竖屏"),
-    LANDSCAPE("landscape", "横屏"),
+    AUTO("auto", "Auto"),
+    PORTRAIT("portrait", "Vertical screen"),
+    LANDSCAPE("landscape", "Horizontal screen"),
     ;
 
     companion object {

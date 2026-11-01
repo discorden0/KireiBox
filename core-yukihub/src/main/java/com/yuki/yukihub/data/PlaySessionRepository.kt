@@ -66,7 +66,7 @@ class PlaySessionRepository(
                 "UPDATE games SET last_played_at=MAX(IFNULL(last_played_at,0),?),updated_at=? WHERE id=?",
                 arrayOf<Any>(launchedAt, launchedAt, gameId),
             )
-            GameMapper.ensureSingleChangedRow(db, "记录最近启动时找不到游戏: $gameId")
+            GameMapper.ensureSingleChangedRow(db, "Log game not found on recent startup: $gameId")
             db.setTransactionSuccessful()
             true
         } finally {
@@ -115,10 +115,10 @@ class PlaySessionRepository(
                             put("dirty", 1)
                         }
                     if (db.update("play_sessions", values, "id=?", arrayOf(sessionId.toString())) != 1) {
-                        throw IllegalStateException("保留短时启动记录失败: $sessionId")
+                        throw IllegalStateException("Failed to retain short-term boot record: $sessionId")
                     }
                 } else if (db.delete("play_sessions", "id=?", arrayOf(sessionId.toString())) != 1) {
-                    throw IllegalStateException("删除无效游玩会话失败: $sessionId")
+                    throw IllegalStateException("Failed to delete invalid play session: $sessionId")
                 }
                 db.setTransactionSuccessful()
                 return
@@ -130,14 +130,14 @@ class PlaySessionRepository(
             values.put("updated_at", end)
             values.put("dirty", 1)
             if (db.update("play_sessions", values, "id=?", arrayOf(sessionId.toString())) != 1) {
-                throw IllegalStateException("结算游玩会话失败: $sessionId")
+                throw IllegalStateException("Failed to settle play session: $sessionId")
             }
             // Keep the increment in SQL so a stale Game object cannot overwrite it.
             db.execSQL(
                 "UPDATE games SET total_play_time = total_play_time + ?, last_played_at = MAX(IFNULL(last_played_at,0), ?), updated_at = ? WHERE id = ?",
                 arrayOf<Any>(duration, end, end, gameId),
             )
-            GameMapper.ensureSingleChangedRow(db, "结算游玩会话时找不到游戏: $gameId")
+            GameMapper.ensureSingleChangedRow(db, "Game not found when checking out play session: $gameId")
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
@@ -178,10 +178,10 @@ class PlaySessionRepository(
                             put("dirty", 1)
                         }
                     if (db.update("play_sessions", values, "id=?", arrayOf(sessionId.toString())) != 1) {
-                        throw IllegalStateException("保留短时启动记录失败: $sessionId")
+                        throw IllegalStateException("Failed to retain short-term boot record: $sessionId")
                     }
                 } else if (db.delete("play_sessions", "id=?", arrayOf(sessionId.toString())) != 1) {
-                    throw IllegalStateException("删除无效游玩会话失败: $sessionId")
+                    throw IllegalStateException("Failed to delete invalid play session: $sessionId")
                 }
                 db.setTransactionSuccessful()
                 return true
@@ -194,13 +194,13 @@ class PlaySessionRepository(
                     put("dirty", 1)
                 }
             if (db.update("play_sessions", values, "id=?", arrayOf(sessionId.toString())) != 1) {
-                throw IllegalStateException("结算游玩会话失败: $sessionId")
+                throw IllegalStateException("Failed to settle play session: $sessionId")
             }
             db.execSQL(
                 "UPDATE games SET total_play_time=total_play_time+?,last_played_at=MAX(IFNULL(last_played_at,0),?),updated_at=? WHERE id=?",
                 arrayOf<Any>(duration, safeEnd, safeEnd, gameId),
             )
-            GameMapper.ensureSingleChangedRow(db, "结算游玩会话时找不到游戏: $gameId")
+            GameMapper.ensureSingleChangedRow(db, "Game not found when checking out play session: $gameId")
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
@@ -257,7 +257,7 @@ class PlaySessionRepository(
             a.launchType = it.getString(7)
             val title = a.gameTitle
             if (title == null || title.trim().isEmpty()) {
-                a.gameTitle = "未命名游戏"
+                a.gameTitle = "Unnamed game"
             }
             a
         }
@@ -277,7 +277,7 @@ class PlaySessionRepository(
                         sessionId = it.getLong(0),
                         sessionUuid = it.getString(1),
                         gameId = it.getLong(2),
-                        gameTitle = it.getString(3)?.takeIf(String::isNotBlank) ?: "未命名游戏",
+                        gameTitle = it.getString(3)?.takeIf(String::isNotBlank) ?: "Unnamed game",
                         startTime = it.getLong(4),
                         endTime = 0L,
                         duration = it.getLong(6),
@@ -343,13 +343,13 @@ class PlaySessionRepository(
         db.beginTransaction()
         try {
             if (db.insert("play_sessions", null, session) <= 0) {
-                throw IllegalStateException("写入手动游玩记录失败: $gameId")
+                throw IllegalStateException("Failed to write manual game record: $gameId")
             }
             db.execSQL(
                 "UPDATE games SET total_play_time = total_play_time + ?, last_played_at = MAX(IFNULL(last_played_at,0), ?), updated_at = ? WHERE id = ?",
                 arrayOf<Any>(duration, safeEnd, now, gameId),
             )
-            GameMapper.ensureSingleChangedRow(db, "累计手动游玩时长时找不到游戏: $gameId")
+            GameMapper.ensureSingleChangedRow(db, "Game not found when accumulating manual play time: $gameId")
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
@@ -385,7 +385,7 @@ class PlaySessionRepository(
                 session.put("dirty", 1)
                 session.put("deleted", 0)
                 if (db.insert("play_sessions", null, session) <= 0) {
-                    throw IllegalStateException("写入手动总时长记录失败: $gameId")
+                    throw IllegalStateException("Failed to write manual total duration record: $gameId")
                 }
             }
             val v = ContentValues()
@@ -394,7 +394,7 @@ class PlaySessionRepository(
             v.put("playtime_reset_at", now)
             v.put("updated_at", now)
             if (db.update("games", v, "id=?", arrayOf(gameId.toString())) != 1) {
-                throw IllegalStateException("设置手动总时长时找不到游戏: $gameId")
+                throw IllegalStateException("Game not found when setting manual total time: $gameId")
             }
             db.setTransactionSuccessful()
         } finally {
@@ -432,7 +432,7 @@ class PlaySessionRepository(
             while (it.moveToNext()) {
                 val title = it.getString(0)
                 val duration = it.getLong(1)
-                result.put(if (title == null || title.trim().isEmpty()) "未命名游戏" else title, duration)
+                result.put(if (title == null || title.trim().isEmpty()) "Unnamed game" else title, duration)
             }
         }
         return result
@@ -463,7 +463,7 @@ class PlaySessionRepository(
                 a.playStatus = GameMapper.normalizePlayStatus(it.getString(8))
                 val title = a.gameTitle
                 if (title == null || title.trim().isEmpty()) {
-                    a.gameTitle = "未命名游戏"
+                    a.gameTitle = "Unnamed game"
                 }
                 list.add(a)
             }
@@ -500,7 +500,7 @@ class PlaySessionRepository(
                 a.playStatus = GameMapper.normalizePlayStatus(it.getString(8))
                 val title = a.gameTitle
                 if (title == null || title.trim().isEmpty()) {
-                    a.gameTitle = "未命名游戏"
+                    a.gameTitle = "Unnamed game"
                 }
                 list.add(a)
             }

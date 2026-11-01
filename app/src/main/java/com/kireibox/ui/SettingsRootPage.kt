@@ -137,18 +137,18 @@ private fun SettingsPersonalGroup(
     state: KireiUiState,
     rows: SettingsCategoryRowContext,
 ) {
-    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "个性化") {
+    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "Personalization") {
         item {
             SettingsCategoryRow(
                 KireiSettingsPage.APPEARANCE,
-                SettingsCategoryRowSpec(Icons.Rounded.Palette, "外观", null, KireiTileColor.PINK, value = state.settings?.themeMode?.displayName),
+                SettingsCategoryRowSpec(Icons.Rounded.Palette, "Appearance", null, KireiTileColor.PINK, value = state.settings?.themeMode?.displayName),
                 rows,
             )
         }
         item {
             SettingsCategoryRow(
                 KireiSettingsPage.INTERFACE,
-                SettingsCategoryRowSpec(Icons.Rounded.Home, "首页", null, KireiTileColor.PURPLE, value = state.settings?.homePresentationMode?.displayName),
+                SettingsCategoryRowSpec(Icons.Rounded.Home, "front page", null, KireiTileColor.PURPLE, value = state.settings?.homePresentationMode?.displayName),
                 rows,
             )
         }
@@ -164,17 +164,17 @@ private fun SettingsGamesGroup(
     // Review + failed tasks: a failed automatic match still needs the user, so it lights the row.
     val attention = state.coverAttentionCount
     // No footer: the attention badge explains itself whenever it shows.
-    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "游戏") {
+    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "Games") {
         item {
-            SettingsCategoryRow(KireiSettingsPage.LIBRARY_HUB, SettingsCategoryRowSpec(Icons.Rounded.GridView, "游戏库", null, KireiTileColor.BLUE), rows)
+            SettingsCategoryRow(KireiSettingsPage.LIBRARY_HUB, SettingsCategoryRowSpec(Icons.Rounded.GridView, "Game library", null, KireiTileColor.BLUE), rows)
         }
         item {
             SettingsCategoryRow(
                 KireiSettingsPage.COVERS,
                 SettingsCategoryRowSpec(
                     Icons.Rounded.CollectionsBookmark,
-                    "封面与元数据",
-                    if (attention > 0) "$attention 个封面待处理" else null,
+                    "Cover and metadata",
+                    if (attention > 0) "$attention covers pending" else null,
                     KireiTileColor.TEAL,
                     badgeCount = attention,
                 ),
@@ -184,12 +184,12 @@ private fun SettingsGamesGroup(
         item {
             SettingsCategoryRow(
                 KireiSettingsPage.COVER_ACCOUNTS,
-                SettingsCategoryRowSpec(Icons.Rounded.AccountCircle, "封面来源账号", null, KireiTileColor.INDIGO, value = coverAccountSummary(state)),
+                SettingsCategoryRowSpec(Icons.Rounded.AccountCircle, "Cover source account", null, KireiTileColor.INDIGO, value = coverAccountSummary(state)),
                 rows,
             )
         }
         item {
-            SettingsCategoryRow(KireiSettingsPage.ENGINES, SettingsCategoryRowSpec(Icons.Rounded.Gamepad, "全局引擎设置", null, KireiTileColor.ORANGE), rows)
+            SettingsCategoryRow(KireiSettingsPage.ENGINES, SettingsCategoryRowSpec(Icons.Rounded.Gamepad, "Global engine settings", null, KireiTileColor.ORANGE), rows)
         }
     }
 }
@@ -197,18 +197,18 @@ private fun SettingsGamesGroup(
 /** 系统: 存储与权限 and 日志与诊断. */
 @Composable
 private fun SettingsSystemGroup(rows: SettingsCategoryRowContext) {
-    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "系统") {
+    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "System") {
         item {
             SettingsCategoryRow(
                 KireiSettingsPage.PERMISSIONS,
-                SettingsCategoryRowSpec(Icons.Rounded.Folder, "存储与权限", null, KireiTileColor.GREEN),
+                SettingsCategoryRowSpec(Icons.Rounded.Folder, "Storage and permissions", null, KireiTileColor.GREEN),
                 rows,
             )
         }
         item {
             SettingsCategoryRow(
                 KireiSettingsPage.DIAGNOSTICS,
-                SettingsCategoryRowSpec(Icons.Rounded.Terminal, "日志与诊断", null, KireiTileColor.SLATE),
+                SettingsCategoryRowSpec(Icons.Rounded.Terminal, "Logging and Diagnostics", null, KireiTileColor.SLATE),
                 rows,
             )
         }
@@ -222,13 +222,13 @@ private fun SettingsAboutGroup(
     viewModel: KireiViewModel,
     rows: SettingsCategoryRowContext,
 ) {
-    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "关于") {
+    KireiListGroup(rows.colors, SettingsGroupSpacing, title = "About") {
         item {
-            SettingsCategoryRow(KireiSettingsPage.ABOUT, SettingsCategoryRowSpec(Icons.Rounded.Info, "关于 KireiBox", null, KireiTileColor.GRAY), rows)
+            SettingsCategoryRow(KireiSettingsPage.ABOUT, SettingsCategoryRowSpec(Icons.Rounded.Info, "About KireiBox", null, KireiTileColor.GRAY), rows)
         }
         item {
             KireiListRow(
-                updateRowSpec(state.updateState, KireiTileColor.INDIGO, "当前版本 ${BuildConfig.VERSION_NAME}").withCategoryMetrics(resolveSettingsCategoryRowMetrics(rows.orientation)),
+                updateRowSpec(state.updateState, KireiTileColor.INDIGO, "Current version ${BuildConfig.VERSION_NAME}").withCategoryMetrics(resolveSettingsCategoryRowMetrics(rows.orientation)),
                 rows.colors,
                 onClick = { viewModel.checkForUpdates(manual = true) },
             )
@@ -249,20 +249,20 @@ internal fun updateRowSpec(
     subtitle: String,
 ): KireiListRowSpec =
     KireiListRowSpec(
-        title = "检查更新",
+        title = "Check for updates",
         subtitle = subtitle,
         icon = Icons.Rounded.Update,
         tile = tile,
         tone = KireiRowTone.ACTION,
-        trailing = if (update is UpdateUiState.Checking) KireiRowTrailing.Value("正在检查…", chevron = false) else KireiRowTrailing.None,
+        trailing = if (update is UpdateUiState.Checking) KireiRowTrailing.Value("Checking…", chevron = false) else KireiRowTrailing.None,
     )
 
 /** 关于's 检查更新 subtitle: when the last check ran (the stored automatic or manual check time). */
 internal fun lastUpdateCheckLabel(checkedAtMillis: Long?): String =
     if (checkedAtMillis == null || checkedAtMillis <= 0L) {
-        "尚未检查过更新"
+        "Haven't checked for updates yet"
     } else {
-        "上次检查：${SimpleDateFormat("M月d日 HH:mm", Locale.CHINA).format(Date(checkedAtMillis))}"
+        "Last checked: ${SimpleDateFormat("M月d日 HH:mm", Locale.CHINA).format(Date(checkedAtMillis))}"
     }
 
 /**

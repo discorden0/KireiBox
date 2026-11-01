@@ -21,7 +21,7 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
             game.updatedAt = System.currentTimeMillis()
             repository.update(game)
             withContext(Dispatchers.Main) {
-                mutableState.value = mutableState.value.copy(selectedGame = null, notice = "游戏名称已更新")
+                mutableState.value = mutableState.value.copy(selectedGame = null, notice = "Game name has been updated")
             }
             reloadInternal()
         }
@@ -32,9 +32,9 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
             val updated = game.copy(favorite = !game.favorite, updatedAt = System.currentTimeMillis())
             val result =
                 runCatching {
-                    check(repository.update(updated) == 1) { "收藏状态保存失败" }
+                    check(repository.update(updated) == 1) { "Failed to save favorite status" }
                     if (mutableState.value.settings?.sortMode == com.yuki.yukihub.settings.YukiSettingsStore.SORT_MANUAL) {
-                        check(repository.appendManualOrder(updated.id, updated.favorite)) { "收藏排序保存失败" }
+                        check(repository.appendManualOrder(updated.id, updated.favorite)) { "Favorite sorting failed to save" }
                     }
                 }
             withContext(Dispatchers.Main) {
@@ -42,10 +42,10 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
                     if (result.isSuccess) {
                         mutableState.value.copy(
                             selectedGame = null,
-                            notice = if (updated.favorite) "已收藏并置顶" else "已取消收藏"
+                            notice = if (updated.favorite) "Collected and pinned" else "Canceled favorites"
                         )
                     } else {
-                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "收藏状态保存失败", NoticeTone.ERROR)
+                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Failed to save favorite status", NoticeTone.ERROR)
                     }
             }
             if (result.isSuccess) reloadInternal()
@@ -58,7 +58,7 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
             val hiddenGame = game.copy(hidden = true, updatedAt = System.currentTimeMillis())
             val result =
                 runCatching {
-                    check(repository.update(hiddenGame) == 1) { "无法移出游戏库" }
+                    check(repository.update(hiddenGame) == 1) { "Unable to move out of game library" }
                 }
             withContext(Dispatchers.Main) {
                 mutableState.value =
@@ -80,7 +80,7 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
                             notice = null
                         )
                     } else {
-                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "无法移出游戏库", NoticeTone.ERROR)
+                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Unable to move out of game library", NoticeTone.ERROR)
                     }
             }
         }
@@ -90,7 +90,7 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
         val undo = mutableState.value.undoRemoval ?: return
         viewModelScope.launch(Dispatchers.IO) {
             val restoredGame = undo.game.copy(hidden = false, updatedAt = System.currentTimeMillis())
-            val result = runCatching { check(repository.update(restoredGame) == 1) { "恢复失败" } }
+            val result = runCatching { check(repository.update(restoredGame) == 1) { "Recovery failed" } }
             withContext(Dispatchers.Main) {
                 if (result.isSuccess) {
                     val restored =
@@ -108,10 +108,10 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
                                     imported = true,
                                 ),
                             undoRemoval = null,
-                            notice = "已恢复 ${restoredGame.title ?: "游戏"}"
+                            notice = "Restored ${restoredGame.title ?:"游戏"}"
                         )
                 } else {
-                    mutableState.value = mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "恢复失败", NoticeTone.ERROR)
+                    mutableState.value = mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Recovery failed", NoticeTone.ERROR)
                 }
             }
         }
@@ -155,7 +155,7 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
             if (result.isFailure) {
                 withContext(Dispatchers.Main) {
                     mutableState.value =
-                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "手动排序保存失败", NoticeTone.ERROR)
+                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Manual sorting and saving failed", NoticeTone.ERROR)
                 }
                 reloadInternal()
             }
@@ -192,7 +192,7 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
             } else {
                 withContext(Dispatchers.Main) {
                     mutableState.value =
-                        mutableState.value.copy(games = before).withNotice(result.exceptionOrNull()?.message ?: "自定义排序保存失败", NoticeTone.ERROR)
+                        mutableState.value.copy(games = before).withNotice(result.exceptionOrNull()?.message ?: "Custom sorting failed to save", NoticeTone.ERROR)
                 }
             }
         }
@@ -211,7 +211,7 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
                 )
             val result =
                 runCatching {
-                    check(repository.update(updated) == 1) { "保存 Artemis 版本失败" }
+                    check(repository.update(updated) == 1) { "Failed to save Artemis version" }
                 }
             withContext(Dispatchers.Main) {
                 mutableState.value =
@@ -219,10 +219,10 @@ internal class KireiLibraryMutationController(host: KireiViewModel) : KireiViewM
                         mutableState.value.copy(
                             games = mutableState.value.games.map { if (it.id == updated.id) updated else it },
                             selectedGame = updated,
-                            notice = "Artemis 版本已设为 ${version.displayName}",
+                            notice = "Artemis version has been set to ${version.displayName}",
                         )
                     } else {
-                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "保存 Artemis 版本失败", NoticeTone.ERROR)
+                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Failed to save Artemis version", NoticeTone.ERROR)
                     }
             }
         }

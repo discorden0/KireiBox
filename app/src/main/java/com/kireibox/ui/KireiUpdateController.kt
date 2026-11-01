@@ -69,12 +69,12 @@ internal class KireiUpdateController(host: KireiViewModel) : KireiViewModelContr
                         ->
                             mutableState.value.copy(
                                 updateState = UpdateUiState.Idle,
-                                notice = if (manual) "已是最新版" else mutableState.value.notice,
+                                notice = if (manual) "Already the latest version" else mutableState.value.notice,
                             )
                         UpdateCheckResult.NoPublishedRelease ->
                             mutableState.value.copy(
                                 updateState = UpdateUiState.Idle,
-                                notice = if (manual) "GitHub 暂无公开版本" else mutableState.value.notice,
+                                notice = if (manual) "There is currently no public version on GitHub" else mutableState.value.notice,
                             )
                         is UpdateCheckResult.Failed ->
                             mutableState.value.copy(
@@ -146,7 +146,7 @@ internal class KireiUpdateController(host: KireiViewModel) : KireiViewModelContr
                         mutableState.value.copy(
                             updateState =
                                 UpdateUiState.Error(
-                                    error.message?.takeIf(String::isNotBlank) ?: "更新下载失败",
+                                    error.message?.takeIf(String::isNotBlank) ?: "Update download failed",
                                     release,
                                 ),
                         )

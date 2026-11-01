@@ -364,7 +364,7 @@ internal fun HomeSpotlight(
                             Modifier.size(if (selected) 18.dp else 8.dp, 8.dp)
                                 .clip(CircleShape)
                                 .background(Color.White.copy(alpha = if (selected) .95f else .5f))
-                                .semantics { contentDescription = "第${index + 1}页，共${pages.size}页" }
+                                .semantics { contentDescription = "Page ${index + 1} of ${pages.size}" }
                                 .clickable {
                                     controller.goToGame(index, pages.size)
                                 },
@@ -525,7 +525,7 @@ internal fun HomeSpotlight(
                         Modifier.size(if (selected) 18.dp else 8.dp, 8.dp)
                             .clip(CircleShape)
                             .background(Color.White.copy(alpha = if (selected) .95f else .5f))
-                            .semantics { contentDescription = "第${index + 1}页，共${pages.size}页" }
+                            .semantics { contentDescription = "Page ${index + 1} of ${pages.size}" }
                             .clickable {
                                 scope.launch {
                                     val target =

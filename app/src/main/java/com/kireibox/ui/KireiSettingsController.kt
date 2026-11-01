@@ -301,7 +301,7 @@ internal class KireiSettingsController(host: KireiViewModel) : KireiViewModelCon
         mutableState.value =
             mutableState.value.copy(
                 diagnosticLoggingEnabled = DevLogger.isEnabled(),
-                notice = if (value) "诊断日志已开启" else "诊断日志已关闭",
+                notice = if (value) "Diagnostic logging is enabled" else "Diagnostic logging is turned off",
             )
     }
 
@@ -313,9 +313,9 @@ internal class KireiSettingsController(host: KireiViewModel) : KireiViewModelCon
         val normalized = DashboardLayouts.normalize(layout, profile)
         mutableState.value =
             if (profile == DashboardProfile.COMPACT) {
-                mutableState.value.copy(dashboardCompact = normalized, notice = "手机首页布局已保存")
+                mutableState.value.copy(dashboardCompact = normalized, notice = "Mobile homepage layout saved")
             } else {
-                mutableState.value.copy(dashboardWide = normalized, notice = "宽屏首页布局已保存")
+                mutableState.value.copy(dashboardWide = normalized, notice = "Widescreen homepage layout saved")
             }
         reload()
     }

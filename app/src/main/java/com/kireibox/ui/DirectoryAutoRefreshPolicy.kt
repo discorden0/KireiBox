@@ -18,14 +18,14 @@ internal object DirectoryAutoRefreshPolicy {
         val parts = ArrayList<String>(4)
         when {
             added == 1 -> {
-                val title = summary.addedGames.first().title?.takeIf { it.isNotBlank() } ?: "未命名游戏"
-                parts += "发现并添加 1 个新游戏：$title"
+                val title = summary.addedGames.first().title?.takeIf { it.isNotBlank() } ?: "Unnamed game"
+                parts += "Found and added 1 new game: $title"
             }
-            added > 1 -> parts += "添加 $added 个新游戏"
+            added > 1 -> parts += "Added $added new games"
         }
-        if (prunedCount > 0) parts += "已清理 $prunedCount 张失效卡片"
-        if (failedDirectoryCount > 0) parts += "$failedDirectoryCount 个目录扫描失败"
-        return "自动更新：" + parts.joinToString("，")
+        if (prunedCount > 0) parts += "Cleaned $prunedCount expired cards"
+        if (failedDirectoryCount > 0) parts += "$failedDirectoryCount directory scan failed"
+        return "Automatic updates:" + parts.joinToString("，")
     }
 
     /** Tone of [notice]: a refresh that also changed the library is a warning when some directory failed. */

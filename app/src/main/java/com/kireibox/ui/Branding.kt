@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
 @Composable
 internal fun KireiMascot(
     modifier: Modifier = Modifier,
-    contentDescription: String? = "ChisaKi 吉祥物",
+    contentDescription: String? = "ChisaKi mascot",
 ) {
     val resources = LocalContext.current.resources
     val mark by produceState(initialValue = KireiMascotBitmap.cached, resources) {

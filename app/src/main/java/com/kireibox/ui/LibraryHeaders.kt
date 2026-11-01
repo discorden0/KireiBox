@@ -136,10 +136,10 @@ internal fun LibraryPortraitHeader(
     val colors = model.colors
     Column(Modifier.fillMaxWidth()) {
         Column(Modifier.graphicsLayer { alpha = KireiTopBarDefaults.largeTitleAlpha(frame.collapse()) }) {
-            KireiLargeTitle("游戏库", colors)
+            KireiLargeTitle("Game library", colors)
             // An empty library has nothing to count, search, sort or filter: the empty state below says so.
             if (!model.libraryEmpty) {
-                Text("${model.visibleCount} 部游戏", color = colors.secondary, style = AppleTypography.bodyMedium, maxLines = 1)
+                Text("${model.visibleCount} games", color = colors.secondary, style = AppleTypography.bodyMedium, maxLines = 1)
             }
         }
         if (!model.libraryEmpty) {
@@ -176,7 +176,7 @@ private fun LibrarySearchField(
             colors = model.colors,
             options =
                 KireiSearchFieldOptions(
-                    placeholder = "搜索游戏",
+                    placeholder = "Search games",
                     onFocusChange = actions.onSearchFocusChange,
                     onSearch = { focusManager.clearFocus() },
                 ),
@@ -215,7 +215,7 @@ internal fun LibraryTopBar(
         )
     } else {
         KireiLargeTopBar(
-            title = "游戏库",
+            title = "Game library",
             collapse = frame.collapse,
             colors = model.colors,
             modifier = modifier,
@@ -244,7 +244,7 @@ private fun LibraryPortraitActions(
         taskAnchor()
         Spacer(Modifier.width(KireiSpacing.xxs))
     }
-    GlassIconButton(Icons.Rounded.Add, "添加游戏", model.colors, model.haze, onClick = actions.onAddGame, opaqueFill = true)
+    GlassIconButton(Icons.Rounded.Add, "add game", model.colors, model.haze, onClick = actions.onAddGame, opaqueFill = true)
 }
 
 @Composable
@@ -252,17 +252,17 @@ private fun LibraryDoneButton(
     colors: KireiColors,
     onFinishEdit: () -> Unit,
 ) {
-    KireiButton("完成", colors, options = KireiButtonOptions(size = KireiButtonSize.MEDIUM, icon = Icons.Rounded.Done), onClick = onFinishEdit)
+    KireiButton("Done", colors, options = KireiButtonOptions(size = KireiButtonSize.MEDIUM, icon = Icons.Rounded.Done), onClick = onFinishEdit)
 }
 
 @Composable
 private fun LibraryLandscapeTitle(model: LibraryHeaderModel) {
     val colors = model.colors
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("游戏库", color = colors.text, style = AppleTypography.headlineMedium, maxLines = 1, modifier = Modifier.semantics { heading() })
+        Text("Game library", color = colors.text, style = AppleTypography.headlineMedium, maxLines = 1, modifier = Modifier.semantics { heading() })
         if (!model.libraryEmpty) {
             Text(
-                "${model.visibleCount} 部",
+                "${model.visibleCount} Department",
                 color = colors.secondary,
                 style = AppleTypography.labelLarge,
                 maxLines = 1,
@@ -299,7 +299,7 @@ private fun LibraryLandscapeActions(
         taskAnchor()
         Spacer(Modifier.width(KireiSpacing.xxs))
     }
-    GlassIconButton(Icons.Rounded.Add, "添加游戏", colors, model.haze, onClick = actions.onAddGame, opaqueFill = true)
+    GlassIconButton(Icons.Rounded.Add, "add game", colors, model.haze, onClick = actions.onAddGame, opaqueFill = true)
 }
 
 @Composable
@@ -311,13 +311,13 @@ private fun LibraryEngineFilterButton(
     val filter = model.filter
     // The capsule names the current filter (accent while one engine is picked), so no separate label is needed.
     val tint = if (filter != null) colors.accent else colors.text
-    val label = filter?.displayName ?: "全部"
+    val label = filter?.displayName ?: "All"
     Box {
         GlassSurface(
             colors,
             model.haze,
             Modifier.height(FilterButtonHeight).widthIn(max = FilterButtonMaxWidth).semantics {
-                contentDescription = "筛选游戏：$label"
+                contentDescription = "Screening Game: $label"
                 role = Role.Button
             },
             KireiShapes.full,
@@ -340,7 +340,7 @@ private fun LibraryEngineFilterButton(
             colors = model.colors,
             modifier = Modifier.widthIn(min = FilterMenuMinWidth),
         ) {
-            KireiMenuItem(KireiMenuItemSpec("全部", selected = model.filter == null), model.colors) { actions.onSelectFilter(null) }
+            KireiMenuItem(KireiMenuItemSpec("All", selected = model.filter == null), model.colors) { actions.onSelectFilter(null) }
             model.engines.forEach { engine ->
                 KireiMenuItem(KireiMenuItemSpec(engine.displayName, selected = model.filter == engine), model.colors) {
                     actions.onSelectFilter(engine)
@@ -376,7 +376,7 @@ internal fun LibraryEngineChipRow(
             .padding(start = spec.bleedStart, end = spec.bleedEnd),
         horizontalArrangement = Arrangement.spacedBy(KireiSpacing.xs),
     ) {
-        KireiChip("全部", spec.selected == null, colors) { onSelect(null) }
+        KireiChip("All", spec.selected == null, colors) { onSelect(null) }
         spec.engines.forEach { engine ->
             KireiChip(engine.displayName, spec.selected == engine, colors, icon = libraryEngineIcon(engine)) { onSelect(engine) }
         }

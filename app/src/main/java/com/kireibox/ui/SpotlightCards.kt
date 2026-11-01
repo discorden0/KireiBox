@@ -114,11 +114,11 @@ internal fun LandscapeSpotlightPage(
                 .then(
                     if (centerActionEnabled) {
                         Modifier.semantics {
-                            contentDescription = "查看 ${game.title.orEmpty()}"
+                            contentDescription = "View ${game.title.orEmpty()}"
                         }
                     } else if (exposeSwitchSemantics) {
                         Modifier.semantics(mergeDescendants = true) {
-                            contentDescription = "切换到 ${game.title.orEmpty()}"
+                            contentDescription = "Switch to ${game.title.orEmpty()}"
                             role = Role.Button
                         }
                     } else {
@@ -187,14 +187,14 @@ internal fun LandscapeSpotlightPage(
                         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
                             PlayTriangleButton(
                                 colors = colors,
-                                description = "启动 ${game.title.orEmpty()}",
+                                description = "Start ${game.title.orEmpty()}",
                                 size = 54.dp,
                                 onClick = onLaunch,
                                 enabled = focused,
                             )
                         }
                         Text(
-                            game.engine?.displayName ?: "游戏",
+                            game.engine?.displayName ?: "Games",
                             color = Color.White.copy(alpha = .78f),
                             style = AppleTypography.labelLarge,
                             maxLines = 1,
@@ -269,7 +269,7 @@ internal fun SpotlightPage(
                     Text(game.title.orEmpty(), color = colors.text, style = AppleTypography.headlineSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Text(game.engine?.displayName.orEmpty(), color = colors.secondary, style = AppleTypography.labelLarge)
                 }
-                PlayTriangleButton(colors, "启动 ${game.title.orEmpty()}", 48.dp, onClick = onLaunch)
+                PlayTriangleButton(colors, "Start ${game.title.orEmpty()}", 48.dp, onClick = onLaunch)
             }
         }
         return
@@ -306,7 +306,7 @@ internal fun SpotlightPage(
                 Modifier.align(Alignment.BottomStart).fillMaxWidth()
                     .padding(start = inset, top = inset, end = inset + playSize + 12.dp, bottom = inset)
             ) {
-                Text(game.engine?.displayName ?: "游戏", color = ink.copy(alpha = .78f), style = AppleTypography.bodySmall)
+                Text(game.engine?.displayName ?: "Games", color = ink.copy(alpha = .78f), style = AppleTypography.bodySmall)
                 Text(
                     game.title.orEmpty(),
                     color = ink,
@@ -319,7 +319,7 @@ internal fun SpotlightPage(
             Box(Modifier.align(Alignment.BottomEnd).padding(inset)) {
                 PlayTriangleButton(
                     colors = colors,
-                    description = "启动 ${game.title.orEmpty()}",
+                    description = "Start ${game.title.orEmpty()}",
                     size = playSize,
                     onClick = onLaunch
                 )
@@ -341,15 +341,15 @@ internal fun HomeEmptySpotlight(
             when (emptyState) {
                 ImmersiveGalleryEmptyState.BUILD_LIBRARY -> {
                     Icon(Icons.Rounded.CollectionsBookmark, null, tint = colors.accent, modifier = Modifier.size(48.dp))
-                    Text("开始建立游戏库", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.md))
+                    Text("Start building a game library", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.md))
                     Text(
-                        "选择目录后，YukiHub 会识别 KRKR、ONS、Tyrano 与 Artemis。",
+                        "After selecting a directory, YukiHub will recognize KRKR, ONS, Tyrano, and Artemis.",
                         color = colors.secondary,
                         style = AppleTypography.bodyMedium,
                         modifier = Modifier.padding(top = KireiSpacing.xs),
                     )
                     KireiButton(
-                        label = "选择游戏目录",
+                        label = "Select game directory",
                         colors = colors,
                         modifier = Modifier.padding(top = KireiSpacing.lg),
                         onClick = onChooseDirectory,
@@ -357,21 +357,21 @@ internal fun HomeEmptySpotlight(
                 }
                 ImmersiveGalleryEmptyState.SELECT_GAMES -> {
                     Icon(Icons.Rounded.Edit, null, tint = colors.accent, modifier = Modifier.size(48.dp))
-                    Text("请选择游戏", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.md))
-                    Text("在设置中选择要展示的游戏。", color = colors.secondary, style = AppleTypography.bodyMedium, modifier = Modifier.padding(top = KireiSpacing.xs))
+                    Text("Please select a game", color = colors.text, style = AppleTypography.headlineSmall, modifier = Modifier.padding(top = KireiSpacing.md))
+                    Text("Select the games you want to showcase in settings.", color = colors.secondary, style = AppleTypography.bodyMedium, modifier = Modifier.padding(top = KireiSpacing.xs))
                     KireiButton(
-                        label = "打开设置",
+                        label = "Open settings",
                         colors = colors,
                         modifier = Modifier.padding(top = KireiSpacing.lg),
                         onClick = onOpenSpotlightEditor,
                     )
                 }
                 ImmersiveGalleryEmptyState.NO_PLAY_HISTORY -> {
-                    Text("暂无游玩记录", color = colors.text, style = AppleTypography.headlineSmall)
-                    Text("游玩任意游戏后，这里会显示最近游玩。", color = colors.secondary, style = AppleTypography.bodyMedium, modifier = Modifier.padding(top = KireiSpacing.xs))
+                    Text("No play records yet", color = colors.text, style = AppleTypography.headlineSmall)
+                    Text("After playing any game, recent games will be displayed here.", color = colors.secondary, style = AppleTypography.bodyMedium, modifier = Modifier.padding(top = KireiSpacing.xs))
                 }
                 ImmersiveGalleryEmptyState.NO_FAVORITES -> {
-                    Text("暂无收藏", color = colors.text, style = AppleTypography.headlineSmall)
+                    Text("No favorites yet", color = colors.text, style = AppleTypography.headlineSmall)
                 }
             }
         }

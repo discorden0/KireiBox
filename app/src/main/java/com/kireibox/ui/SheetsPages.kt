@@ -186,7 +186,7 @@ internal fun RemovedGamesSheet(
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val listHeight = (screenHeight * .52f).coerceIn(280.dp, 430.dp)
     KireiActionSheet(
-        title = "已移除的游戏 · ${games.size} 部",
+        title = "Removed games · ${games.size}",
         colors = colors,
         onDismiss = onDismiss,
         scrollableContent = false,
@@ -196,7 +196,7 @@ internal fun RemovedGamesSheet(
                 Modifier.fillMaxWidth().height(listHeight).background(Color.Transparent),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("没有已移除的游戏", color = colors.secondary, style = AppleTypography.bodyMedium)
+                Text("No removed games", color = colors.secondary, style = AppleTypography.bodyMedium)
             }
         } else {
             LazyColumn(
@@ -219,14 +219,14 @@ internal fun RemovedGamesSheet(
                                 overflow = TextOverflow.Ellipsis,
                             )
                             Text(
-                                game.engine?.displayName ?: "游戏",
+                                game.engine?.displayName ?: "Games",
                                 color = colors.secondary,
                                 style = AppleTypography.bodySmall,
                                 maxLines = 1,
                             )
                         }
                         KireiButton(
-                            "恢复",
+                            "Recover",
                             colors,
                             options = KireiButtonOptions(style = KireiButtonStyle.SECONDARY, size = KireiButtonSize.SMALL),
                             onClick = { onRestore(game) },
@@ -268,13 +268,13 @@ internal fun LibraryOverviewSheet(
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val listHeight = (screenHeight * .52f).coerceIn(280.dp, 430.dp)
     KireiActionSheet(
-        title = "游玩记录 · ${games.size} 部游戏",
+        title = "Game records · ${games.size} games",
         colors = colors,
         onDismiss = onDismiss,
         scrollableContent = false
     ) {
         KireiSegmented(
-            KireiSegmentedSpec("排序", OverviewSortSegments, sort),
+            KireiSegmentedSpec("Sort", OverviewSortSegments, sort),
             selectSort,
             colors,
             Modifier.padding(horizontal = KireiSpacing.xl, vertical = KireiSpacing.md),
@@ -284,7 +284,7 @@ internal fun LibraryOverviewSheet(
                 Modifier.fillMaxWidth().height(listHeight).background(Color.Transparent),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("游戏库还没有内容", color = colors.secondary, style = AppleTypography.bodyMedium)
+                Text("There is no content in the game library yet", color = colors.secondary, style = AppleTypography.bodyMedium)
             }
         } else {
             LazyColumn(
@@ -297,7 +297,7 @@ internal fun LibraryOverviewSheet(
                         spec =
                             KireiListRowSpec(
                                 title = game.title.orEmpty(),
-                                subtitle = game.engine?.displayName ?: "游戏",
+                                subtitle = game.engine?.displayName ?: "Games",
                                 trailing = KireiRowTrailing.Value(LibraryOverviewPolicy.compactPlayTime(game.totalPlayTime), chevron = false),
                                 tileSize = OverviewRankWidth + SheetCoverWidth,
                                 horizontalPadding = KireiSpacing.xl,
@@ -316,8 +316,8 @@ internal fun LibraryOverviewSheet(
 
 private val OverviewSortSegments =
     listOf(
-        KireiSegment(LibraryOverviewSort.RECENT, "最近游玩"),
-        KireiSegment(LibraryOverviewSort.PLAY_TIME, "游玩时长"),
+        KireiSegment(LibraryOverviewSort.RECENT, "Recently visited"),
+        KireiSegment(LibraryOverviewSort.PLAY_TIME, "Play time"),
     )
 
 private val OverviewRankWidth = 32.dp
@@ -350,7 +350,7 @@ internal fun GameActionSheet(
     val context = LocalContext.current
     var artemisVersionMenuExpanded by remember(game.id) { mutableStateOf(false) }
     val selectedArtemisVersion = com.yuki.yukihub.launcher.ArtemisVersion.fromStored(game.emulatorPackage)
-    KireiActionSheet(game.title ?: "游戏操作", colors, onDismiss, expanded = true, grouped = true) {
+    KireiActionSheet(game.title ?: "Game operation", colors, onDismiss, expanded = true, grouped = true) {
         Text(
             GameLocationLabel.forGame(context, game),
             color = colors.secondary,
@@ -361,11 +361,11 @@ internal fun GameActionSheet(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(start = KireiSpacing.xl, end = KireiSpacing.xl, top = KireiSpacing.xxs, bottom = KireiSpacing.md)
         )
-        SheetRowGroup(colors, title = "启动") {
+        SheetRowGroup(colors, title = "start up") {
             item {
                 SheetActionRow(
                     icon = Icons.Rounded.PlayArrow,
-                    title = "启动游戏",
+                    title = "Start the game",
                     subtitle = GameLocationLabel.launchSubtitle(game),
                     colors = colors,
                     prominent = true
@@ -378,7 +378,7 @@ internal fun GameActionSheet(
                 item {
                     SheetActionRow(
                         icon = Icons.Rounded.Description,
-                        title = "KRKR 启动文件",
+                        title = "KRKR startup file",
                         subtitle = GameLocationLabel.xp3LaunchSubtitle(game),
                         colors = colors,
                         trailing = Icons.Rounded.ChevronRight,
@@ -389,8 +389,8 @@ internal fun GameActionSheet(
                 item {
                     SheetActionRow(
                         icon = Icons.Rounded.Tune,
-                        title = "KRKR 游戏设置",
-                        subtitle = "启动、渲染、性能和字体",
+                        title = "KRKR game settings",
+                        subtitle = "Launch, rendering, performance and fonts",
                         colors = colors,
                         trailing = Icons.Rounded.ChevronRight
                     ) {
@@ -402,7 +402,7 @@ internal fun GameActionSheet(
                 item {
                     SheetActionRow(
                         icon = Icons.Rounded.Description,
-                        title = "启动程序",
+                        title = "Start the program",
                         subtitle = GameLocationLabel.exeLaunchSubtitle(game),
                         colors = colors,
                         trailing = Icons.Rounded.ChevronRight,
@@ -413,8 +413,8 @@ internal fun GameActionSheet(
                 item {
                     SheetActionRow(
                         icon = Icons.Rounded.Tune,
-                        title = "Winlator 游戏设置",
-                        subtitle = "容器、图形和语言环境",
+                        title = "Winlator Game Settings",
+                        subtitle = "Containers, graphics, and locales",
                         colors = colors,
                         trailing = Icons.Rounded.ChevronRight
                     ) {
@@ -427,7 +427,7 @@ internal fun GameActionSheet(
                     Box(Modifier.fillMaxWidth()) {
                         SheetActionRow(
                             icon = Icons.Rounded.Tune,
-                            title = "Artemis 版本",
+                            title = "Artemis version",
                             subtitle = selectedArtemisVersion.displayName,
                             colors = colors,
                             trailing = if (artemisVersionMenuExpanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
@@ -447,9 +447,9 @@ internal fun GameActionSheet(
                                         label = version.displayName,
                                         supporting =
                                             if (version == com.yuki.yukihub.launcher.ArtemisVersion.AUTO) {
-                                                "自动探测并保留兼容回退"
+                                                "Automatically detect and preserve compatible fallbacks"
                                             } else {
-                                                "固定使用 Artemis ${version.displayName}"
+                                                "Fixed use Artemis ${version.displayName}"
                                             },
                                         selected = version == selectedArtemisVersion,
                                     ),
@@ -464,21 +464,21 @@ internal fun GameActionSheet(
                 }
             }
         }
-        SheetRowGroup(colors, title = "封面与信息") {
-            item { SheetActionRow(Icons.Rounded.Edit, "游戏名称", "只修改 KireiBox 中的显示名称", colors, onClick = onRename) }
+        SheetRowGroup(colors, title = "Cover and information") {
+            item { SheetActionRow(Icons.Rounded.Edit, "Game name", "Only modify the display name in KireiBox", colors, onClick = onRename) }
             item {
-                SheetActionRow(Icons.Rounded.CollectionsBookmark, "游戏封面", "搜索并选择新的封面", colors) {
+                SheetActionRow(Icons.Rounded.CollectionsBookmark, "Game cover", "Search and select a new cover", colors) {
                     onDismiss()
                     viewModel.openCoverSearch(game)
                 }
             }
             item {
-                SheetToggleRow(Icons.Rounded.BlurOn, "模糊封面", "仅影响 KireiBox 内的封面显示", game.nsfw, colors) { viewModel.toggleNsfwCover(game) }
+                SheetToggleRow(Icons.Rounded.BlurOn, "Blur cover", "Only affects the cover display within KireiBox", game.nsfw, colors) { viewModel.toggleNsfwCover(game) }
             }
         }
-        SheetRowGroup(colors, title = "管理") {
+        SheetRowGroup(colors, title = "Manage") {
             item {
-                SheetActionRow(Icons.Rounded.Home, "桌面快捷方式", "添加由 KireiBox 启动的快捷方式", colors) {
+                SheetActionRow(Icons.Rounded.Home, "Desktop shortcut", "Add a shortcut launched by KireiBox", colors) {
                     onDismiss()
                     actions.pinGameShortcut(game)
                 }
@@ -486,14 +486,14 @@ internal fun GameActionSheet(
             item {
                 SheetActionRow(
                     if (game.favorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-                    if (game.favorite) "取消收藏" else "加入收藏",
+                    if (game.favorite) "Cancel favorites" else "Add to favorites",
                     null,
                     colors
                 ) { viewModel.toggleFavorite(game) }
             }
         }
         SheetRowGroup(colors) {
-            item { SheetActionRow(Icons.Rounded.DeleteOutline, "移出游戏库", "保留游戏文件和游玩记录", colors, destructive = true, onClick = onRemove) }
+            item { SheetActionRow(Icons.Rounded.DeleteOutline, "Move out of game library", "Keep game files and play records", colors, destructive = true, onClick = onRemove) }
         }
         SheetCancelButton(colors, onDismiss)
     }
@@ -619,7 +619,7 @@ internal fun ColumnScope.SheetCancelButton(
     onDismiss: () -> Unit,
 ) {
     KireiButton(
-        "取消",
+        "Cancel",
         colors,
         Modifier.align(Alignment.CenterHorizontally).padding(top = KireiSpacing.xxs),
         KireiButtonOptions(style = KireiButtonStyle.PLAIN, size = KireiButtonSize.MEDIUM),
@@ -639,15 +639,15 @@ internal fun RenameGameDialog(
     KireiDialog(
         spec =
             KireiDialogSpec(
-                title = "修改游戏名称",
+                title = "Modify game name",
                 message = game.originalTitle?.takeIf(String::isNotBlank),
-                confirm = KireiDialogAction("保存", onSave, enabled = value.isNotBlank()),
-                dismiss = KireiDialogAction("取消", onDismiss, style = KireiButtonStyle.PLAIN),
+                confirm = KireiDialogAction("Save", onSave, enabled = value.isNotBlank()),
+                dismiss = KireiDialogAction("Cancel", onDismiss, style = KireiButtonStyle.PLAIN),
             ),
         colors = colors,
         onDismissRequest = onDismiss,
     ) {
-        KireiTextField(value, onValueChange, colors, options = KireiTextFieldOptions(label = "游戏名称", placeholder = "输入新的游戏名称"))
+        KireiTextField(value, onValueChange, colors, options = KireiTextFieldOptions(label = "Game name", placeholder = "Enter new game name"))
     }
 }
 
@@ -659,14 +659,14 @@ internal fun RemoveGameSheet(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    KireiActionSheet("移出游戏库", colors, onDismiss) {
+    KireiActionSheet("Move out of game library", colors, onDismiss) {
         Text(
-            "只从游戏库移除；游戏文件和游玩记录会保留。",
+            "Only removed from the game library; game files and play history will be retained.",
             color = colors.secondary,
             style = AppleTypography.bodyMedium,
             modifier = Modifier.padding(horizontal = KireiSpacing.xl, vertical = KireiSpacing.md)
         )
-        SheetActionRow(Icons.Rounded.DeleteOutline, "移出 ${game.title ?: "游戏"}", "5 秒内可撤销", colors, destructive = true, onClick = onConfirm)
+        SheetActionRow(Icons.Rounded.DeleteOutline, "Remove ${game.title ?:"游戏"}", "Can be revoked within 5 seconds", colors, destructive = true, onClick = onConfirm)
         SheetCancelButton(colors, onDismiss)
     }
 }

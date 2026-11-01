@@ -203,9 +203,9 @@ private fun CoverPickerHeader(
 ) {
     val colors = scope.colors
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        GlassIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "稍后处理", colors, haze, scope.viewModel::dismissCoverSearch)
+        GlassIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Deal with it later", colors, haze, scope.viewModel::dismissCoverSearch)
         Column(Modifier.padding(start = KireiSpacing.sm).weight(1f)) {
-            Text("选择封面", color = colors.text, style = AppleTypography.headlineMedium, maxLines = 1, modifier = Modifier.semantics { heading() })
+            Text("Select cover", color = colors.text, style = AppleTypography.headlineMedium, maxLines = 1, modifier = Modifier.semantics { heading() })
             Text(scope.search.game?.title.orEmpty(), color = colors.secondary, style = AppleTypography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
@@ -233,10 +233,10 @@ private fun CoverSearchRow(
             scope.viewModel::updateCoverKeyword,
             scope.colors,
             Modifier.weight(1f),
-            KireiSearchFieldOptions(placeholder = "输入游戏名称", onSearch = runSearch),
+            KireiSearchFieldOptions(placeholder = "Enter game name", onSearch = runSearch),
         )
         KireiButton(
-            "搜索",
+            "Search",
             scope.colors,
             options = KireiButtonOptions(style = KireiButtonStyle.SECONDARY, size = KireiButtonSize.MEDIUM, enabled = !scope.search.saving),
             onClick = runSearch,
@@ -312,14 +312,14 @@ private fun CoverAlternatives(
     val search = scope.search
     val options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL, enabled = !search.saving && !search.loading)
     Column(modifier.fillMaxWidth()) {
-        if (sidePane) Text("其他方式", color = scope.colors.secondary, style = AppleTypography.labelLarge, modifier = Modifier.padding(start = KireiSpacing.xxs))
+        if (sidePane) Text("Other ways", color = scope.colors.secondary, style = AppleTypography.labelLarge, modifier = Modifier.padding(start = KireiSpacing.xxs))
         FlowRow(
             Modifier.fillMaxWidth(),
             horizontalArrangement = if (sidePane) Arrangement.spacedBy(KireiSpacing.xxs) else Arrangement.spacedBy(KireiSpacing.xxs, Alignment.CenterHorizontally),
         ) {
-            KireiButton("从相册选择", scope.colors, options = options, onClick = scope.actions.chooseCoverFromAlbum)
-            KireiButton("从手机文件选择", scope.colors, options = options, onClick = scope.actions.chooseCoverFromFiles)
-            KireiButton("默认封面", scope.colors, options = options.copy(enabled = !search.saving), onClick = scope.viewModel::useDefaultCover)
+            KireiButton("Select from album", scope.colors, options = options, onClick = scope.actions.chooseCoverFromAlbum)
+            KireiButton("Select from mobile files", scope.colors, options = options, onClick = scope.actions.chooseCoverFromFiles)
+            KireiButton("Default cover", scope.colors, options = options.copy(enabled = !search.saving), onClick = scope.viewModel::useDefaultCover)
         }
     }
 }
@@ -334,14 +334,14 @@ private fun CoverPickerActions(
     val search = scope.search
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(KireiSpacing.sm, Alignment.End), verticalAlignment = Alignment.CenterVertically) {
         KireiButton(
-            "稍后处理",
+            "Deal with it later",
             scope.colors,
             if (fill) Modifier.weight(1f) else Modifier,
             KireiButtonOptions(style = KireiButtonStyle.PLAIN, enabled = !search.saving),
             scope.viewModel::dismissCoverSearch,
         )
         KireiButton(
-            if (search.saving) "正在保存…" else "使用此封面",
+            if (search.saving) "Saving…" else "Use this cover",
             scope.colors,
             if (fill) Modifier.weight(PRIMARY_WEIGHT) else Modifier.widthIn(min = PRIMARY_MIN_WIDTH),
             KireiButtonOptions(enabled = search.selectedKey != null && !search.loading && !search.saving),

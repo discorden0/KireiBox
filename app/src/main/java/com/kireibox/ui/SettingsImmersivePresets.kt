@@ -68,10 +68,10 @@ internal val RecommendedImmersivePreset = ImmersiveFxPreset.STANDARD
  */
 internal fun immersivePresetDescription(preset: ImmersiveFxPreset): String =
     when (preset) {
-        ImmersiveFxPreset.MINIMAL -> "仅氛围色"
-        ImmersiveFxPreset.STANDARD -> "封面氛围、光晕、立体卡片"
-        ImmersiveFxPreset.RICH -> "流光极光、光尘、视差"
-        ImmersiveFxPreset.CUSTOM -> "逐项调整"
+        ImmersiveFxPreset.MINIMAL -> "Ambient color only"
+        ImmersiveFxPreset.STANDARD -> "Cover atmosphere, halo, three-dimensional card"
+        ImmersiveFxPreset.RICH -> "Streamer aurora, light dust, parallax"
+        ImmersiveFxPreset.CUSTOM -> "Adjustments item by item"
     }
 
 /** What TalkBack reads for a card: name, 推荐 when it is the default, then the description. */
@@ -79,8 +79,8 @@ internal fun immersivePresetCardDescription(
     preset: ImmersiveFxPreset,
     description: String = immersivePresetDescription(preset),
 ): String {
-    val recommended = if (preset == RecommendedImmersivePreset) "，推荐" else ""
-    return "效果预设：${preset.displayName}$recommended。$description"
+    val recommended = if (preset == RecommendedImmersivePreset) ",recommend" else ""
+    return "Effect preset: ${preset.displayName}$recommended. $description"
 }
 
 private const val WORD_JOINER = '\u2060'
@@ -241,7 +241,7 @@ private fun PresetCardLabel(
     Column(Modifier.fillMaxWidth().padding(start = KireiSpacing.xxs, top = KireiSpacing.xs).clearAndSetSemantics {}) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(KireiSpacing.xs)) {
             Text(preset.displayName, color = nameColor, style = AppleTypography.bodyMediumEmphasis, maxLines = 1)
-            if (preset == RecommendedImmersivePreset) KireiBadge("推荐", colors, tone = KireiBadgeTone.ACCENT)
+            if (preset == RecommendedImmersivePreset) KireiBadge("Recommend", colors, tone = KireiBadgeTone.ACCENT)
         }
         Text(
             immersivePresetDisplayLine(description),

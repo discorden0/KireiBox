@@ -80,19 +80,19 @@ object EngineDetector {
                 features.hasRootPfs || features.hasAnyPfsFile
 
         when {
-            features.hasIndex && tyranoRuntime -> score(result, EngineType.TYRANO, 96, "[游戏目录]")
-            features.hasAppAsar -> score(result, EngineType.TYRANO, 82, "[游戏目录]")
-            features.hasIndex && !electronWrapper -> score(result, EngineType.TYRANO, 70, "[游戏目录]")
+            features.hasIndex && tyranoRuntime -> score(result, EngineType.TYRANO, 96, "[Game Catalog]")
+            features.hasAppAsar -> score(result, EngineType.TYRANO, 82, "[Game Catalog]")
+            features.hasIndex && !electronWrapper -> score(result, EngineType.TYRANO, 70, "[Game Catalog]")
             artemisRuntime ->
                 score(
                     result,
                     EngineType.ARTEMIS,
                     if ((features.hasSystemIni && features.hasFirstIet) || features.hasRootPfs) 95 else 90,
-                    "[游戏目录]",
+                    "[Game Catalog]",
                 )
             firstXp3 != null || features.hasStartupTjs || features.hasConfigTjs || krkrExes.isNotEmpty() -> {
                 val entry = krkrExes.firstOrNull() ?: firstXp3
-                score(result, EngineType.KIRIKIRI, if (entry != null) 95 else 80, entry ?: "[游戏目录]")
+                score(result, EngineType.KIRIKIRI, if (entry != null) 95 else 80, entry ?: "[Game Catalog]")
                 result.xp3Candidates.addAll(krkrExes)
                 when {
                     features.dataXp3 == null && features.xp3Files.size > 1 -> result.xp3Candidates.addAll(features.xp3Files)
@@ -104,7 +104,7 @@ object EngineDetector {
                     result,
                     EngineType.ONS,
                     if (features.hasOnsScript) 90 else 70,
-                    "[游戏目录]",
+                    "[Game Catalog]",
                 )
         }
         return result

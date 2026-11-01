@@ -36,7 +36,7 @@ object HttpClient {
 
     @JvmStatic fun checkRateLimit(host: String) {
         val remaining = (rateLimits[host] ?: 0L) - System.currentTimeMillis()
-        if (remaining > 0) throw HttpFailure(429, "请求受限，请在 ${(remaining + 999) / 1000} 秒后重试")
+        if (remaining > 0) throw HttpFailure(429, "Request restricted, please try again in ${(remaining + 999) / 1000} seconds")
     }
 
     @JvmStatic fun recordRateLimit(
@@ -171,16 +171,16 @@ object HttpClient {
                 val code = response.code()
                 if (code == 429) {
                     val seconds = response.headers()["Retry-After"]?.toLongOrNull()?.coerceAtLeast(1) ?: 60
-                    throw HttpFailure(429, "请求受限，请在 $seconds 秒后重试")
+                    throw HttpFailure(429, "Request restricted, please try again in $seconds seconds")
                 }
-                if (code < 500 || attempt == attempts) throw HttpFailure(code, "搜索失败（HTTP $code）")
-                lastError = IOException("服务暂时不可用（HTTP $code）")
+                if (code < 500 || attempt == attempts) throw HttpFailure(code, "Search failed (HTTP $code)")
+                lastError = IOException("The service is temporarily unavailable (HTTP $code)")
             } finally {
                 closeQuietly(response)
             }
             sleep(baseDelayMs)
         }
-        throw lastError ?: IOException("请求失败")
+        throw lastError ?: IOException("Request failed")
     }
 
     /**
@@ -223,7 +223,7 @@ object HttpClient {
             Thread.sleep(maxOf(0L, ms))
         } catch (_: InterruptedException) {
             Thread.currentThread().interrupt()
-            throw java.util.concurrent.CancellationException("请求已取消")
+            throw java.util.concurrent.CancellationException("Request canceled")
         }
     }
 }

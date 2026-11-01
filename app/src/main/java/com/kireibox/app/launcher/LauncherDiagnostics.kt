@@ -20,12 +20,12 @@ internal fun LauncherActivity.copyDiagnosticLogs() {
             }
         val text = result.getOrNull()
         if (text == null) {
-            showMessage("复制失败", result.exceptionOrNull()?.message ?: "无法读取诊断日志")
+            showMessage("Copy failed", result.exceptionOrNull()?.message ?: "Unable to read diagnostic log")
             return@launch
         }
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText("KireiBox 日志", text))
-        showMessage("日志已复制", "设备信息与最近日志已复制，常见 Token 已自动遮盖。")
+        clipboard.setPrimaryClip(ClipData.newPlainText("KireiBox Log", text))
+        showMessage("Log copied", "Device information and recent logs have been copied, and common tokens have been automatically covered.")
     }
 }
 
@@ -40,7 +40,7 @@ internal fun LauncherActivity.exportDiagnosticLogs() {
             }
         val file = result.getOrNull()
         if (file == null) {
-            showMessage("导出失败", result.exceptionOrNull()?.message ?: "无法生成诊断日志")
+            showMessage("Export failed", result.exceptionOrNull()?.message ?: "Unable to generate diagnostic log")
             return@launch
         }
         val uri =
@@ -53,10 +53,10 @@ internal fun LauncherActivity.exportDiagnosticLogs() {
             Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_STREAM, uri)
-                putExtra(Intent.EXTRA_SUBJECT, "KireiBox 诊断日志")
+                putExtra(Intent.EXTRA_SUBJECT, "KireiBox diagnostic log")
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-        runCatching { startActivity(Intent.createChooser(share, "导出日志")) }
-            .onFailure { showMessage("导出失败", it.message ?: "没有可用的分享应用") }
+        runCatching { startActivity(Intent.createChooser(share, "Export log")) }
+            .onFailure { showMessage("Export failed", it.message ?: "No sharing apps available") }
     }
 }

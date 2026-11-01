@@ -57,16 +57,16 @@ internal fun LauncherActivity.showBuiltinFileAccessDialog(pick: AddGamePick? = n
     if (isFinishing || isDestroyed) return
     showPrompt(
         KireiPrompt(
-            title = "允许 KireiBox 浏览文件",
+            title = "Allow KireiBox to browse files",
             message =
                 buildString {
-                    append("Android 11 及以上需要“所有文件访问权限”才能使用内置浏览器。授权后会自动继续刚才的操作；KireiBox 本版本只浏览和选择，不会复制、移动、重命名或删除文件。")
+                    append("Android 11 and above require \"All File Access\" to use the built-in browser. After authorization, the previous operation will be automatically continued; this version of KireiBox only browses and selects, and does not copy, move, rename or delete files.")
                     if (EngineStorageProbe.isHuaweiFamily()) {
-                        append("\n\n华为/HarmonyOS 路径：设置 → 应用 → KireiBox → 权限管理 → 存储 → 允许；HarmonyOS 3 及以上还需开启“所有文件访问”。")
+                        append("Huawei/HarmonyOS path: Settings → Application → KireiBox → Permission Management → Storage → Allow; HarmonyOS 3 and above also need to turn on \"All File Access\".")
                     }
                 },
-            confirmLabel = "前往授权",
-            dismissLabel = "使用系统 SAF",
+            confirmLabel = "Go to Authorization",
+            dismissLabel = "Using System SAF",
             onConfirm = {
                 val manageApp =
                     Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
@@ -95,14 +95,14 @@ internal fun LauncherActivity.showBuiltinFileAccessDialog(pick: AddGamePick? = n
 internal fun LauncherActivity.storagePermissionGuide(android11Plus: Boolean): String =
     if (EngineStorageProbe.isHuaweiFamily()) {
         buildString {
-            append("华为/HarmonyOS 路径：设置 → 应用 → KireiBox → 权限管理 → 存储 → 允许。")
-            if (android11Plus) append("HarmonyOS 3 及以上还需开启“所有文件访问”。")
-            append("已开启仍无法写入，请把游戏目录移到 Download 等常规位置后重试。")
+            append("Huawei/HarmonyOS path: Settings → Application → KireiBox → Permission Management → Storage → Allow.")
+            if (android11Plus) append("HarmonyOS 3 and above also need to turn on \"All File Access\".")
+            append("It has been opened but still cannot be written. Please move the game directory to a regular location such as Download and try again.")
         }
     } else if (android11Plus) {
-        "Android 11 及以上需要“所有文件访问权限”：设置 → 应用 → KireiBox → 权限 → 所有文件访问 → 允许。授权后返回会自动继续；仍无法写入请把游戏目录移到内部存储常规位置后重试。"
+        "Android 11 and above requires \"All File Access\": Settings → Apps → KireiBox → Permissions → All File Access → Allow. Returning after authorization will automatically continue; if still unable to write, please move the game directory to a regular location in internal storage and try again."
     } else {
-        "Android 10 及以下请授予 KireiBox“存储”权限：设置 → 应用 → KireiBox → 权限 → 存储 → 允许。已开启仍无法写入，请把游戏目录移到 Download 等常规位置后重试。"
+        "For Android 10 and below, please grant KireiBox \"Storage\" permission: Settings → Apps → KireiBox → Permissions → Storage → Allow. It has been opened but still cannot be written. Please move the game directory to a regular location such as Download and try again."
     }
 
 /**
@@ -139,24 +139,24 @@ internal fun LauncherActivity.requestNativeFileAccess() {
 internal fun LauncherActivity.showNativeFileAccessDialog(hint: String? = null) {
     if (isFinishing || isDestroyed) return
     val android11Plus = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-    val permissionName = if (android11Plus) "所有文件访问" else "存储"
+    val permissionName = if (android11Plus) "All file access" else "Storage"
     showPrompt(
         KireiPrompt(
-            title = "允许 KRKR 读取游戏",
+            title = "Allow KRKR to read games",
             message =
                 buildString {
-                    append("目录授权用于扫描和管理；KRKR 原生内核还需要“")
+                    append("Directory authorization is used for scanning and management; KRKR native kernel also requires \"")
                     append(permissionName)
-                    append("”权限才能直接读取 XP3，并在游戏目录的 savedata 中保存进度。KireiBox 不会修改 XP3。")
+                    append("” permission to directly read XP3 and save the progress in the savedata of the game directory. KireiBox will not modify XP3.")
                     if (!hint.isNullOrBlank()) {
-                        append("\n\n上次失败原因：")
+                        append("Reason for last failure:")
                         append(hint)
                     }
                     append("\n\n")
                     append(storagePermissionGuide(android11Plus))
                 },
-            confirmLabel = "前往授权",
-            dismissLabel = "稍后",
+            confirmLabel = "Go to Authorization",
+            dismissLabel = "Later",
             onConfirm = {
                 val details =
                     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -170,10 +170,10 @@ internal fun LauncherActivity.showNativeFileAccessDialog(hint: String? = null) {
                     runCatching { startActivity(manageApp) }
                         .recoverCatching { startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)) }
                         .recoverCatching { startActivity(details) }
-                        .onFailure { showMessage("无法打开设置", "请在系统设置中手动允许 KireiBox 的“所有文件访问”后再试。") }
+                        .onFailure { showMessage("Can't open settings", "Please manually allow KireiBox's \"All File Access\" in the system settings and try again.") }
                 } else {
                     runCatching { startActivity(details) }
-                        .onFailure { showMessage("无法打开设置", "请在系统设置中手动允许 KireiBox 的“存储”权限后再试。") }
+                        .onFailure { showMessage("Can't open settings", "Please manually allow KireiBox's \"Storage\" permission in the system settings and try again.") }
                 }
             }
         )
@@ -185,22 +185,22 @@ internal fun LauncherActivity.checkPermissions() {
     val persisted = contentResolver.persistedUriPermissions.associateBy { it.uri.toString() }
     val details =
         buildString {
-            append("KRKR 原生文件访问：")
-            append(if (hasNativeFileAccess()) "正常" else "需要授权")
+            append("KRKR native file access:")
+            append(if (hasNativeFileAccess()) "Normal" else "Authorization required")
             append('\n')
-            if (roots.isEmpty()) append("尚未添加扫描目录。")
+            if (roots.isEmpty()) append("No scan directories have been added yet.")
             roots.forEachIndexed { index, root ->
                 val grant = persisted[root]
                 val doc = runCatching { DocumentFile.fromTreeUri(this@checkPermissions, Uri.parse(root)) }.getOrNull()
-                append("目录 ${index + 1}：")
-                append(if (grant?.isReadPermission == true && doc?.canRead() == true) "可读取" else "需要重新授权")
-                append(if (grant?.isWritePermission == true && doc?.canWrite() == true) " / 可写入" else " / 只读")
+                append("Directory ${index + 1}:")
+                append(if (grant?.isReadPermission == true && doc?.canRead() == true) "Readable" else "Requires reauthorization")
+                append(if (grant?.isWritePermission == true && doc?.canWrite() == true) "/ writable" else "/readonly")
                 append('\n')
             }
-            append("\nSAF 负责扫描、封面与目录管理；KRKR 原生内核使用物理文件路径。\n")
+            append("SAF is responsible for scanning, cover and directory management; KRKR native kernel uses physical file paths.")
             append(storagePermissionGuide(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R))
         }
-    showMessage("权限检查", details)
+    showMessage("Permission check", details)
 }
 
 internal fun LauncherActivity.repairPermission(root: String?) {

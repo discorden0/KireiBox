@@ -93,12 +93,12 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         KrLaunchLogger.info(
                 KrLaunchLogger.Stage.CHECK_PATH,
                 requestedPath == null || requestedPath.trim().isEmpty()
-                        ? "未收到游戏启动路径"
-                        : "已检查游戏路径与启动目标");
+                        ? "Game launch path not received"
+                        : "Game path and launch target checked");
         String engineVersion = getIntent() == null ? "auto" : getIntent().getStringExtra("krEngineVersion");
         KrLaunchLogger.info(
                 KrLaunchLogger.Stage.SELECT_ENGINE,
-                "选择 Kirikiri " + (engineVersion == null || engineVersion.isEmpty() ? "自动版本" : engineVersion));
+                "Choose Kirikiri" + (engineVersion == null || engineVersion.isEmpty() ? "Automatic version" : engineVersion));
         Intent launchIntent = getIntent();
         int earlyBackgroundColor = launchIntent == null
                 ? Color.rgb(244, 245, 245)
@@ -136,10 +136,10 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
 
         KrLaunchProgressView progress = new KrLaunchProgressView(this);
         progress.setColors(primaryColor, withAlpha(primaryColor, 48), textColor);
-        progress.setContentDescription("游戏加载进度");
+        progress.setContentDescription("Game loading progress");
 
         TextView title = new TextView(this);
-        title.setText("正在启动游戏");
+        title.setText("Starting game");
         title.setTextColor(textColor);
         title.setTextSize(16.0f);
         title.setTypeface(null, Typeface.BOLD);
@@ -154,7 +154,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         loadingPanel.addView(progress, spinnerParams);
 
         TextView hint = new TextView(this);
-        hint.setText("请稍候，正在准备游戏内容");
+        hint.setText("Please wait, game content is being prepared");
         hint.setTextColor(mutedTextColor);
         hint.setTextSize(11.0f);
         hint.setGravity(Gravity.CENTER);
@@ -175,7 +175,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         loadingPanel.addView(logs, logsParams);
 
         TextView action = new TextView(this);
-        action.setText("查看全部  ·  复制日志");
+        action.setText("View all · Copy log");
         action.setTextColor(primaryColor);
         action.setTextSize(11f);
         action.setGravity(Gravity.CENTER);
@@ -184,9 +184,9 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
             expandedLog = !expandedLog;
             if (launchLogView != null) launchLogView.setMaxLines(expandedLog ? 12 : 4);
             if (expandedLog) {
-                action.setText("收起日志  ·  长按复制");
+                action.setText("Collapse log · Long press to copy");
             } else {
-                action.setText("查看全部  ·  复制日志");
+                action.setText("View all · Copy log");
                 copyLaunchLog();
             }
         });
@@ -242,7 +242,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
                 KrLaunchLogger.error(
                         KrLaunchLogger.Stage.STORAGE,
                         "savedata write probe failed: " + probe.logMessage());
-                showLaunchFailure("启动失败：" + probe.userMessage());
+                showLaunchFailure("Startup failed:" + probe.userMessage());
                 return;
             }
             requestGameLaunch(path, false);
@@ -252,25 +252,25 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
     }
     @Override
     public void onLoadNativeLibraries() {
-        KrLaunchLogger.info(KrLaunchLogger.Stage.LOAD_NATIVE, "正在加载 " + soName() + " Native 库");
+        KrLaunchLogger.info(KrLaunchLogger.Stage.LOAD_NATIVE, "Loading" + soName() + "Native library");
         boolean initialized = NativeBridge.initialize(soName());
         nativeBridgeInitialized = initialized;
         Log.i(TAG, "native initialize result=" + initialized + " so=" + soName());
         if (!initialized) {
-            KrLaunchLogger.error(KrLaunchLogger.Stage.INIT_BRIDGE, "NativeBridge 初始化失败");
+            KrLaunchLogger.error(KrLaunchLogger.Stage.INIT_BRIDGE, "NativeBridge initialization failed");
             Log.e(TAG, "native bridge initialization failed; skip KRKR hook setup");
             return;
         }
         if (NativeBridge.isConsoleLogHookInstalled()) {
             KrLaunchLogger.info(
                     KrLaunchLogger.Stage.INIT_BRIDGE,
-                    "TVPConsoleLog 已连接，正在显示 KRKR 原始控制台日志");
+                    "TVPConsoleLog Connected, showing KRKR raw console log");
         } else {
             KrLaunchLogger.warning(
                     KrLaunchLogger.Stage.INIT_BRIDGE,
-                    "当前内核无法接管 TVPConsoleLog，已降级为结构化启动日志");
+                    "The current kernel cannot take over TVPConsoleLog and has been downgraded to structured boot log");
         }
-        KrLaunchLogger.info(KrLaunchLogger.Stage.INIT_BRIDGE, "NativeBridge 初始化完成");
+        KrLaunchLogger.info(KrLaunchLogger.Stage.INIT_BRIDGE, "NativeBridge initialization completed");
         // Do not bypass TVPMainScene's internal delay. It serializes teardown of
         // the selector UI before the game UI is created; forcing it to zero can
         // leave the KRKR shell above an otherwise running game.
@@ -287,7 +287,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         }
         KrLaunchLogger.info(
                 KrLaunchLogger.Stage.STORAGE,
-                "使用游戏原目录与 savedata");
+                "Use the original game directory and savedata");
         if (intent == null) {
             Log.i(TAG, "native interceptor skipped: no launch intent");
             return;
@@ -310,7 +310,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
                 }
             }
         } catch (Throwable t) {
-            KrLaunchLogger.warning(KrLaunchLogger.Stage.STORAGE, "兼容存储路径准备失败：" + safeMessage(t));
+            KrLaunchLogger.warning(KrLaunchLogger.Stage.STORAGE, "Compatible storage path preparation failed:" + safeMessage(t));
             Log.w(TAG, "resolve scoped hook prefix failed", t);
         }
         if (prefix != null) {
@@ -319,7 +319,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
                 NativeBridge.relocate();
                 Log.i(TAG, "native interceptor enabled prefix=" + prefix);
             } catch (Throwable t) {
-                KrLaunchLogger.error(KrLaunchLogger.Stage.STORAGE, "文件兼容桥启用失败：" + safeMessage(t));
+                KrLaunchLogger.error(KrLaunchLogger.Stage.STORAGE, "File Compatibility Bridge enablement failed:" + safeMessage(t));
                 Log.e(TAG, "enable native interceptor failed", t);
             }
         } else {
@@ -330,7 +330,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
     private synchronized void requestGameLaunch(String path, boolean maps) {
         if (!nativeBridgeInitialized) {
             Log.e(TAG, "skip launch because native bridge was not initialized");
-            showLaunchFailure("KRKR 引擎初始化失败");
+            showLaunchFailure("KRKR engine initialization failed");
             return;
         }
         pendingGamePath = path;
@@ -340,7 +340,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
 
     @Override
     protected void onCocosRendererReady() {
-        KrLaunchLogger.info(KrLaunchLogger.Stage.RENDERER, "渲染器已创建，等待第一个画面");
+        KrLaunchLogger.info(KrLaunchLogger.Stage.RENDERER, "The renderer has been created, waiting for the first image");
         // nativeInit only constructs the scene.  Its initial UI tasks are still
         // queued until the first render pass, so starting a game here lets the
         // shell initialise after (and above) the game scene.
@@ -352,7 +352,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
             firstFrameRendered = true;
             if (!rendererLogged) {
                 rendererLogged = true;
-                KrLaunchLogger.info(KrLaunchLogger.Stage.RENDERER, "已收到第一个渲染帧");
+                KrLaunchLogger.info(KrLaunchLogger.Stage.RENDERER, "First rendered frame received");
             }
         }
         // The file selector is registered a few frames after the renderer. Keep
@@ -366,22 +366,22 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
             launchReadinessFrames++;
             return;
         }
-        KrLaunchLogger.info(KrLaunchLogger.Stage.SCENE_READY, "KR 场景已就绪");
+        KrLaunchLogger.info(KrLaunchLogger.Stage.SCENE_READY, "KR scenario is ready");
         launchDispatched = true;
         try {
             launchSucceeded = NativeBridge.launch(soName(), pendingGamePath, pendingMaps);
             if (launchSucceeded) {
                 launchDispatchedElapsed = SystemClock.elapsedRealtime();
-                KrLaunchLogger.info(KrLaunchLogger.Stage.DISPATCH, "已派发启动文件：" + new File(pendingGamePath).getName());
+                KrLaunchLogger.info(KrLaunchLogger.Stage.DISPATCH, "Startup files have been distributed:" + new File(pendingGamePath).getName());
             }
             Log.i(TAG, "renderer-ready launch result=" + launchSucceeded + " path=" + pendingGamePath
                     + " frames=" + launchReadinessFrames);
         } catch (Throwable t) {
-            KrLaunchLogger.error(KrLaunchLogger.Stage.DISPATCH, "启动派发异常：" + safeMessage(t));
+            KrLaunchLogger.error(KrLaunchLogger.Stage.DISPATCH, "Start dispatch exception:" + safeMessage(t));
             Log.e(TAG, "renderer-ready launch failed", t);
         }
         if (!launchSucceeded) {
-            showLaunchFailure("启动失败");
+            showLaunchFailure("Startup failed");
         } else if (mask != null) {
             // Keep the KRKR shell hidden until the native update hook reports
             // that doStartup and the menu transition completed. The fallback
@@ -392,7 +392,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
 
     private void revealGameWithFallback() {
         fallbackReveal = true;
-        KrLaunchLogger.warning(KrLaunchLogger.Stage.DISPATCH, "未收到就绪回调，使用兼容启动回退");
+        KrLaunchLogger.warning(KrLaunchLogger.Stage.DISPATCH, "Ready callback not received, use compatible startup fallback");
         hideLaunchMask(false);
     }
 
@@ -402,7 +402,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         launchMaskState = LaunchMaskState.GAME_VISIBLE;
         if (maskRevealRequested) {
             launchMaskState = LaunchMaskState.COMPLETE;
-            KrLaunchLogger.info(KrLaunchLogger.Stage.GAME_READY, "游戏窗口已完成首帧渲染");
+            KrLaunchLogger.info(KrLaunchLogger.Stage.GAME_READY, "The game window has completed rendering the first frame");
             return;
         }
         fallbackReveal = false;
@@ -421,7 +421,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         launchMaskState = LaunchMaskState.COMPLETE;
         KrLaunchLogger.info(
                 KrLaunchLogger.Stage.GAME_READY,
-                fallbackReveal ? "兼容启动完成，正在切换到游戏" : "游戏已就绪");
+                fallbackReveal ? "Compatible startup completed, switching to game" : "Game is ready");
         mask.post(() -> {
             if (!destroyed && mask != null) {
                 Log.i(TAG, "hide KRKR launch mask after game-ready signal");
@@ -456,7 +456,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
     private void onEngineDialogShown() {
         dialogWaiting = true;
         if (mask != null) mask.removeCallbacks(fallbackRevealRunnable);
-        KrLaunchLogger.info(KrLaunchLogger.Stage.DISPATCH, "检测到游戏启动弹窗，保持稳定背景并等待玩家选择");
+        KrLaunchLogger.info(KrLaunchLogger.Stage.DISPATCH, "Detects the game startup pop-up window, maintains a stable background and waits for player selection");
         keepMaskBehindEngineDialog();
     }
 
@@ -470,20 +470,20 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
             mask.animate().cancel();
             mask.setAlpha(1f);
             mask.setVisibility(View.VISIBLE);
-            if (maskHint != null) maskHint.setText("请确认游戏提示，之后将继续启动");
+            if (maskHint != null) maskHint.setText("Please confirm the game prompts and the game will continue to launch.");
         });
     }
 
     private void onEngineDialogDismissed() {
         dialogWaiting = false;
-        KrLaunchLogger.info(KrLaunchLogger.Stage.DISPATCH, "游戏启动弹窗已处理，继续启动");
+        KrLaunchLogger.info(KrLaunchLogger.Stage.DISPATCH, "The game startup pop-up window has been processed and continues to start.");
         if (gameReadyConfirmed || gameReadyWhileDialog) {
             gameReadyWhileDialog = false;
             revealGame();
             return;
         }
         launchMaskState = LaunchMaskState.LAUNCHING;
-        if (maskHint != null) maskHint.setText("请稍候，正在准备游戏内容");
+        if (maskHint != null) maskHint.setText("Please wait, game content is being prepared");
         if (mask != null && launchSucceeded && !maskRevealRequested) {
             long elapsed = launchDispatchedElapsed <= 0L
                     ? 0L
@@ -521,7 +521,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         runOnUiThread(() -> {
             if (destroyed || isFinishing() || mask == null) return;
             if (maskMessage != null) maskMessage.setText(message);
-            if (maskHint != null) maskHint.setText("请返回后重试");
+            if (maskHint != null) maskHint.setText("Please go back and try again");
         });
     }
 
@@ -536,8 +536,8 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
     private void copyLaunchLog() {
         try {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-            clipboard.setPrimaryClip(ClipData.newPlainText("KRKR 启动日志", KrLaunchLogger.allText()));
-            if (maskHint != null) maskHint.setText("日志已复制");
+            clipboard.setPrimaryClip(ClipData.newPlainText("KRKR startup log", KrLaunchLogger.allText()));
+            if (maskHint != null) maskHint.setText("Log copied");
         } catch (Throwable ignored) { }
     }
 
@@ -554,7 +554,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
     }
 
     private static String safeMessage(Throwable throwable) {
-        if (throwable == null || throwable.getMessage() == null) return "未知错误";
+        if (throwable == null || throwable.getMessage() == null) return "Unknown error";
         String message = throwable.getMessage().replace('\n', ' ').replace('\r', ' ').trim();
         return message.length() > 120 ? message.substring(0, 120) : message;
     }
@@ -668,7 +668,7 @@ public abstract class KirikiroidLauncherBaseActivity extends KR2Activity {
         String oldPath = oldIntent.getStringExtra("path");
         String newPath = intent.getStringExtra("path");
         if (newPath != null && !newPath.equals(oldPath)) {
-            Toast.makeText(this, "已有游戏在运行，请先存档并退出游戏后再启动新游戏", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "There is already a game running. Please save and exit the game before starting a new game.", Toast.LENGTH_SHORT).show();
         }
     }
 

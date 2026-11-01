@@ -81,7 +81,7 @@ internal object LibraryCardLayoutPolicy {
     }
 }
 
-internal fun libraryCardEngineLabel(engine: EngineType?): String = engine?.displayName ?: "游戏"
+internal fun libraryCardEngineLabel(engine: EngineType?): String = engine?.displayName ?: "Games"
 
 internal enum class CoverTaskBadgePlacement {
     INNER_BUTTON_CLIP,
@@ -156,7 +156,7 @@ internal object Alpha11KireiBoxAppIntegration {
         return CoverSourceAccessibility(
             role = CoverSourceAccessibilityRole.RADIO_BUTTON,
             selected = presentation.isSelected,
-            stateDescription = if (presentation.isSelected) "已选择" else "未选择",
+            stateDescription = if (presentation.isSelected) "Selected" else "Not selected",
             enabled = presentation.enabled,
             alpha = presentation.alpha,
             tokenVisible = presentation.tokenVisible,

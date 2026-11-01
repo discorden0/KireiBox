@@ -97,7 +97,7 @@ internal fun KireiMenuItem(
         leadingIcon = spec.icon?.let { icon -> { Icon(icon, contentDescription = null, tint = if (spec.destructive) colors.dangerSolid.accent else colors.secondary) } },
         trailingIcon =
             if (spec.selected) {
-                { Icon(Icons.Rounded.Check, contentDescription = "已选择", tint = colors.accent) }
+                { Icon(Icons.Rounded.Check, contentDescription = "Selected", tint = colors.accent) }
             } else {
                 null
             },

@@ -20,33 +20,33 @@ object GameLocationLabel {
     ): String {
         if (game.engine == EngineType.ANDROID_APP) {
             ExternalShortcutIdentity.fromGame(game)?.let {
-                return "应用快捷方式 / ${it.packageName} / ${it.shortcutId}"
+                return "Application shortcuts / ${it.packageName} / ${it.shortcutId}"
             }
             return listOfNotNull(
                 game.emulatorPackage?.trim()?.takeIf(String::isNotEmpty),
                 game.launchTarget?.trim()?.takeIf(String::isNotEmpty)
-            ).joinToString(" / ").ifBlank { "Android 应用" }
+            ).joinToString(" / ").ifBlank { "Android App" }
         }
         val root = format(context, game.rootUri)
         val entry = game.entryKey.trim().takeIf(String::isNotEmpty)
         return listOfNotNull(root.takeIf(String::isNotEmpty), entry?.let(::formatSegments))
             .joinToString(" / ")
-            .ifBlank { "游戏目录" }
+            .ifBlank { "Game directory" }
     }
 
     fun launchSubtitle(game: Game): String =
         when {
-            ExternalShortcutDirectLaunch.fromGame(game) != null -> "直接启动应用快捷方式"
-            ExternalShortcutIdentity.isExternalShortcut(game) -> "通过 Shizuku 启动"
-            game.engine == EngineType.KIRIKIRI -> "使用 KRKR 启动"
-            game.engine == EngineType.ANDROID_APP -> "直接启动 Android 应用"
-            game.engine == EngineType.WINDOWS -> "经外置 Winlator 运行"
-            else -> "使用当前引擎启动"
+            ExternalShortcutDirectLaunch.fromGame(game) != null -> "Launch application shortcut directly"
+            ExternalShortcutIdentity.isExternalShortcut(game) -> "Started by Shizuku"
+            game.engine == EngineType.KIRIKIRI -> "Launch using KRKR"
+            game.engine == EngineType.ANDROID_APP -> "Launch Android apps directly"
+            game.engine == EngineType.WINDOWS -> "Run via external Winlator"
+            else -> "Start with current engine"
         }
 
-    fun exeLaunchSubtitle(game: Game): String = launchFileName(game, "自动选择启动程序")
+    fun exeLaunchSubtitle(game: Game): String = launchFileName(game, "Automatically select startup programs")
 
-    fun xp3LaunchSubtitle(game: Game): String = launchFileName(game, "自动选择合适的 XP3")
+    fun xp3LaunchSubtitle(game: Game): String = launchFileName(game, "Automatically select the right XP3")
 
     private fun launchFileName(
         game: Game,
@@ -66,7 +66,7 @@ object GameLocationLabel {
         raw: String?
     ): String {
         val value = raw?.trim().orEmpty()
-        if (value.isEmpty()) return "未设置目录"
+        if (value.isEmpty()) return "Directory not set"
         if (value.startsWith("file://", ignoreCase = true)) {
             return formatStorageIdentity(StorageRootIdentity.key(value))
         }
@@ -92,9 +92,9 @@ object GameLocationLabel {
         val relative = decoded.substringAfter(':', missingDelimiterValue = decoded).trim('/')
         val root =
             when {
-                volume.equals("primary", ignoreCase = true) -> "内部存储"
-                volume.equals("home", ignoreCase = true) -> "内部存储 / Documents"
-                volume.isNotEmpty() -> "存储卡 $volume"
+                volume.equals("primary", ignoreCase = true) -> "Internal storage"
+                volume.equals("home", ignoreCase = true) -> "Internal Storage/Documents"
+                volume.isNotEmpty() -> "Memory card $volume"
                 else -> ""
             }
         return listOfNotNull(root.takeIf(String::isNotEmpty), relative.takeIf(String::isNotEmpty)?.let(::formatSegments))
@@ -107,7 +107,7 @@ object GameLocationLabel {
         return when {
             value.startsWith("primary:/") ->
                 listOf(
-                    "内部存储",
+                    "Internal storage",
                     value.removePrefix("primary:/").takeIf(String::isNotBlank)?.let(::formatSegments),
                 ).filterNotNull().joinToString(" / ")
             value.startsWith("volume:") -> {
@@ -115,7 +115,7 @@ object GameLocationLabel {
                 val volume = volumeAndPath.substringBefore(":/")
                 val relative = volumeAndPath.substringAfter(":/", "")
                 listOf(
-                    "存储卡 $volume",
+                    "Memory card $volume",
                     relative.takeIf(String::isNotBlank)?.let(::formatSegments),
                 ).filterNotNull().joinToString(" / ")
             }

@@ -34,9 +34,9 @@ internal fun ImmersiveEmptyState(
 ) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         KireiMascot(Modifier.size(112.dp).clip(KireiShapes.lg), contentDescription = null)
-        Text("还没有游戏", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
-        Text("选择游戏目录后开始你的故事", color = palette.secondary, style = AppleTypography.bodyMedium, modifier = Modifier.padding(top = 10.dp))
-        ImmersiveEmptyAction("选择目录", palette, onChooseDirectory)
+        Text("No games yet", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
+        Text("Start your story after selecting the game directory", color = palette.secondary, style = AppleTypography.bodyMedium, modifier = Modifier.padding(top = 10.dp))
+        ImmersiveEmptyAction("Select directory", palette, onChooseDirectory)
     }
 }
 
@@ -76,9 +76,9 @@ internal fun ImmersiveNoPlayHistoryState(
         verticalArrangement = Arrangement.Center,
     ) {
         KireiMascot(Modifier.size(112.dp).clip(KireiShapes.lg), contentDescription = null)
-        Text("暂无游玩记录", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
+        Text("No play records yet", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
         Text(
-            "游玩任意游戏后，这里会按最近游玩展示游戏",
+            "After playing any game, the games will be displayed here according to the most recently played games.",
             color = palette.secondary,
             style = AppleTypography.bodyMedium,
             modifier = Modifier.padding(top = 10.dp),
@@ -88,7 +88,7 @@ internal fun ImmersiveNoPlayHistoryState(
 }
 
 /** The empty states' way out: the 编辑沉浸式展示图 editor, where the source or the games change. */
-internal const val IMMERSIVE_CHANGE_GALLERY_LABEL = "更换展示内容"
+internal const val IMMERSIVE_CHANGE_GALLERY_LABEL = "Change display content"
 
 @Composable
 internal fun ImmersiveSelectGamesState(
@@ -101,15 +101,15 @@ internal fun ImmersiveSelectGamesState(
         verticalArrangement = Arrangement.Center,
     ) {
         KireiMascot(Modifier.size(112.dp).clip(KireiShapes.lg), contentDescription = null)
-        Text("请选择游戏", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
+        Text("Please select a game", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
         // The action opens the gallery editor (编辑沉浸式展示图), not Settings: say so.
         Text(
-            "选择要在沉浸式首页展示的游戏",
+            "Choose games to feature on the immersive homepage",
             color = palette.secondary,
             style = AppleTypography.bodyMedium,
             modifier = Modifier.padding(top = 10.dp),
         )
-        ImmersiveEmptyAction("选择游戏", palette, onOpenEditor)
+        ImmersiveEmptyAction("Select game", palette, onOpenEditor)
     }
 }
 
@@ -125,9 +125,9 @@ internal fun ImmersiveNoFavoritesState(
         verticalArrangement = Arrangement.Center,
     ) {
         KireiMascot(Modifier.size(112.dp).clip(KireiShapes.lg), contentDescription = null)
-        Text("暂无收藏", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
+        Text("No favorites yet", color = palette.primary, style = AppleTypography.headlineSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
         Text(
-            "在游戏库收藏游戏后，这里会展示你的收藏",
+            "After collecting games in the game library, your collection will be displayed here",
             color = palette.secondary,
             style = AppleTypography.bodyMedium,
             modifier = Modifier.padding(top = 10.dp),
@@ -146,7 +146,7 @@ internal fun HomePresentationModeRow(
     Box(Modifier.testTag("home-mode-current")) {
         SettingsSegmentedRow(
             SettingsSegmentedRowSpec(
-                title = "首页样式",
+                title = "Home page style",
                 segments = HomePresentationMode.entries.map { KireiSegment(it, it.displayName) },
                 selected = value,
             ),

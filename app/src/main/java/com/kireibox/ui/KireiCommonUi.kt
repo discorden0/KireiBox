@@ -228,9 +228,9 @@ internal data class DockTabSpec(
     val badge: DockTabBadge = DockTabBadge.None,
 ) {
     companion object {
-        val HOME = DockTabSpec("首页", Icons.Rounded.Home, Icons.Outlined.Home)
-        val GAMES = DockTabSpec("游戏", Icons.Rounded.Gamepad, Icons.Outlined.Gamepad)
-        val SETTINGS = DockTabSpec("设置", Icons.Rounded.Settings, Icons.Outlined.Settings)
+        val HOME = DockTabSpec("front page", Icons.Rounded.Home, Icons.Outlined.Home)
+        val GAMES = DockTabSpec("Games", Icons.Rounded.Gamepad, Icons.Outlined.Gamepad)
+        val SETTINGS = DockTabSpec("Settings", Icons.Rounded.Settings, Icons.Outlined.Settings)
     }
 }
 
@@ -492,7 +492,7 @@ internal fun CountBadge(
         modifier =
             modifier.height(presentation.heightDp.dp)
                 .sizeIn(minWidth = presentation.minWidthDp.dp)
-                .clearAndSetSemantics { contentDescription = "${presentation.accessibilityCount} 个封面待处理" },
+                .clearAndSetSemantics { contentDescription = "${presentation.accessibilityCount} covers pending" },
     )
 }
 

@@ -64,28 +64,28 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
             val current = repository.findById(picker.game.id)
             val result =
                 runCatching {
-                    check(current != null) { "游戏记录不存在" }
-                    check(current.engine == picker.kind.engine) { "这个游戏不能选择这种启动文件" }
+                    check(current != null) { "Game records do not exist" }
+                    check(current.engine == picker.kind.engine) { "This game cannot select this kind of startup file" }
                     val updated =
                         current.copy(
                             launchTarget = target,
                             updatedAt = System.currentTimeMillis(),
                         )
-                    check(repository.update(updated) == 1) { "保存启动文件失败" }
+                    check(repository.update(updated) == 1) { "Failed to save startup file" }
                 }
             withContext(Dispatchers.Main) {
                 mutableState.value =
                     if (result.isSuccess) {
                         mutableState.value.copy(
                             xp3Picker = null,
-                            notice = "已选择启动文件：$target",
+                            notice = "Startup file selected: $target",
                         )
                     } else {
                         mutableState.value.copy(
                             xp3Picker =
                                 mutableState.value.xp3Picker?.copy(
                                     loading = false,
-                                    error = result.exceptionOrNull()?.message ?: "保存启动文件失败",
+                                    error = result.exceptionOrNull()?.message ?: "Failed to save startup file",
                                 ),
                         )
                     }
@@ -163,7 +163,7 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
                         externalShortcutPicker =
                             ExternalShortcutPickerUi(
                                 loading = false,
-                                error = result.exceptionOrNull()?.message ?: "无法请求 Shizuku 权限",
+                                error = result.exceptionOrNull()?.message ?: "Unable to request Shizuku permission",
                             ),
                     )
             }
@@ -204,7 +204,7 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
                             ),
                         shortcutServiceStatus =
                             if (
-                                result.exceptionOrNull()?.message?.contains("shell 读取桌面快捷方式") == true
+                                result.exceptionOrNull()?.message?.contains("Shell reads desktop shortcuts") == true
                             ) {
                                 ShortcutServiceStatus.SYSTEM_PERMISSION_MISSING
                             } else {
@@ -226,7 +226,7 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
                     externalShortcutPicker =
                         mutableState.value.externalShortcutPicker?.copy(
                             loading = false,
-                            error = "未授权 KireiBox 使用 Shizuku。",
+                            error = "KireiBox is not authorized to use Shizuku.",
                         ),
                 )
         }
@@ -274,7 +274,7 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
                             if (!existing.hidden) return@count false
                             existing.hidden = false
                             existing.updatedAt = System.currentTimeMillis()
-                            check(repository.update(existing) == 1) { "无法恢复已移出的快捷方式卡片" }
+                            check(repository.update(existing) == 1) { "Unable to restore removed shortcut card" }
                             return@count true
                         }
                         val game =
@@ -302,14 +302,14 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
                         mutableState.value.copy(
                             externalShortcutPicker = null,
                             addGame = null,
-                            notice = if (count > 0) "已导入 $count 个应用快捷方式" else "所选快捷方式已在游戏库中",
+                            notice = if (count > 0) "Imported $count app shortcuts" else "The selected shortcut is already in the game library",
                         )
                     } else {
                         mutableState.value.copy(
                             externalShortcutPicker =
                                 mutableState.value.externalShortcutPicker?.copy(
                                     loading = false,
-                                    error = result.exceptionOrNull()?.message ?: "导入应用快捷方式失败",
+                                    error = result.exceptionOrNull()?.message ?: "Failed to import app shortcuts",
                                 ),
                         )
                     }
@@ -352,16 +352,16 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
 
     private fun shortcutStatusMessage(status: ShortcutServiceStatus): String =
         when (status) {
-            ShortcutServiceStatus.NOT_INSTALLED -> "未安装 Shizuku。"
-            ShortcutServiceStatus.NOT_RUNNING -> "Shizuku 未运行，请先完成无线调试配对。"
-            ShortcutServiceStatus.PERMISSION_REQUIRED -> "需要授权 KireiBox 使用 Shizuku。"
-            ShortcutServiceStatus.PERMISSION_DENIED -> "Shizuku 权限已被拒绝，请在授权应用中重新允许。"
-            ShortcutServiceStatus.UNSUPPORTED_VERSION -> "需要 Shizuku 13.1.5 或更新版本。"
+            ShortcutServiceStatus.NOT_INSTALLED -> "Shizuku is not installed."
+            ShortcutServiceStatus.NOT_RUNNING -> "Shizuku is not running, please complete wireless debugging pairing first."
+            ShortcutServiceStatus.PERMISSION_REQUIRED -> "KireiBox needs to be authorized to use Shizuku."
+            ShortcutServiceStatus.PERMISSION_DENIED -> "Shizuku permission has been denied, please allow it again in the authorized application."
+            ShortcutServiceStatus.UNSUPPORTED_VERSION -> "Requires Shizuku 13.1.5 or newer."
             ShortcutServiceStatus.UNSUPPORTED_IDENTITY -> "只支持无线调试启动的 Shizuku，不支持 Root/Sui 模式。"
-            ShortcutServiceStatus.SYSTEM_PERMISSION_MISSING -> "当前系统未向 shell 开放快捷方式权限。"
-            ShortcutServiceStatus.BINDING -> "正在连接 Shizuku。"
-            ShortcutServiceStatus.CONNECTION_LOST -> "Shizuku 连接已失效。"
-            ShortcutServiceStatus.READY -> "Shizuku 快捷方式服务已连接。"
+            ShortcutServiceStatus.SYSTEM_PERMISSION_MISSING -> "The current system does not open shortcut permissions to the shell."
+            ShortcutServiceStatus.BINDING -> "Connecting to Shizuku."
+            ShortcutServiceStatus.CONNECTION_LOST -> "Shizuku connection has expired."
+            ShortcutServiceStatus.READY -> "Shizuku shortcut service is connected."
         }
 
     fun addAndroidApp(
@@ -376,7 +376,7 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
             game.launchTarget = activity.orEmpty()
             game.emulatorPackage = packageName
             repository.insertIfNotExists(game)
-            withContext(Dispatchers.Main) { mutableState.value = mutableState.value.copy(notice = "已添加 Android 应用：$label") }
+            withContext(Dispatchers.Main) { mutableState.value = mutableState.value.copy(notice = "Android app added: $label") }
             reloadInternal()
         }
     }
@@ -384,16 +384,16 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
     fun restoreRemovedGame(game: Game) {
         viewModelScope.launch(Dispatchers.IO) {
             val restored = game.copy(hidden = false, updatedAt = System.currentTimeMillis())
-            val result = runCatching { check(repository.update(restored) == 1) { "恢复失败" } }
+            val result = runCatching { check(repository.update(restored) == 1) { "Recovery failed" } }
             withContext(Dispatchers.Main) {
                 mutableState.value =
                     if (result.isSuccess) {
                         mutableState.value.copy(
                             removedGames = mutableState.value.removedGames.filterNot { it.id == game.id },
-                            notice = "已恢复 ${game.title ?: "游戏"}",
+                            notice = "Restored ${game.title ?:"游戏"}",
                         )
                     } else {
-                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "恢复失败", NoticeTone.ERROR)
+                        mutableState.value.withNotice(result.exceptionOrNull()?.message ?: "Recovery failed", NoticeTone.ERROR)
                     }
             }
             if (result.isSuccess) reloadInternal()
@@ -422,9 +422,9 @@ internal class KireiLibraryEntryController(host: KireiViewModel) : KireiViewMode
             withContext(Dispatchers.Main) {
                 mutableState.value =
                     if (result.isSuccess) {
-                        mutableState.value.copy(krkrSettings = settings, krkrEditorGame = null, notice = "KRKR 设置已保存")
+                        mutableState.value.copy(krkrSettings = settings, krkrEditorGame = null, notice = "KRKR settings saved")
                     } else {
-                        mutableState.value.copy(krkrSettings = settings).withNotice(result.exceptionOrNull()?.message ?: "保存失败", NoticeTone.ERROR)
+                        mutableState.value.copy(krkrSettings = settings).withNotice(result.exceptionOrNull()?.message ?: "Save failed", NoticeTone.ERROR)
                     }
             }
         }

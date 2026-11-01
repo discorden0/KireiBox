@@ -122,38 +122,38 @@ object ImmersiveGalleryEditorPolicy {
 
     fun automaticSourceLabel(source: SpotlightSource): String =
         when (source) {
-            SpotlightSource.RECENT -> "最近打开"
-            SpotlightSource.FAVORITES -> "收藏"
-            SpotlightSource.ALL -> "全部游戏"
-            SpotlightSource.FIXED -> "全部游戏"
+            SpotlightSource.RECENT -> "Recently opened"
+            SpotlightSource.FAVORITES -> "collect"
+            SpotlightSource.ALL -> "All games"
+            SpotlightSource.FIXED -> "All games"
         }
 
     fun autoSourceLabel(source: ImmersiveGalleryAutoSource): String =
         when (source) {
-            ImmersiveGalleryAutoSource.RECENT_FIVE -> "最近游玩 5 个"
-            ImmersiveGalleryAutoSource.RECENT_ALL -> "最近游玩全部"
-            ImmersiveGalleryAutoSource.FAVORITES -> "收藏优先"
+            ImmersiveGalleryAutoSource.RECENT_FIVE -> "Recently played 5"
+            ImmersiveGalleryAutoSource.RECENT_ALL -> "All recently played"
+            ImmersiveGalleryAutoSource.FAVORITES -> "Collection first"
         }
 
     fun autoSourceDescription(source: ImmersiveGalleryAutoSource): String =
         when (source) {
-            ImmersiveGalleryAutoSource.RECENT_FIVE -> "默认：按最后游玩时间展示最多 5 个游戏"
-            ImmersiveGalleryAutoSource.RECENT_ALL -> "按最后游玩时间展示全部游戏"
-            ImmersiveGalleryAutoSource.FAVORITES -> "只从收藏游戏中选择"
+            ImmersiveGalleryAutoSource.RECENT_FIVE -> "Default: Display up to 5 games by last play time"
+            ImmersiveGalleryAutoSource.RECENT_ALL -> "Display all games by last play time"
+            ImmersiveGalleryAutoSource.FAVORITES -> "Select only from favorite games"
         }
 
     fun automaticSourceDescription(source: SpotlightSource): String =
         when (source) {
-            SpotlightSource.RECENT -> "优先显示最近实际启动过的游戏"
-            SpotlightSource.FAVORITES -> "只从收藏游戏中选择"
-            SpotlightSource.ALL -> "从当前游戏库中选择"
-            SpotlightSource.FIXED -> "从当前游戏库中选择"
+            SpotlightSource.RECENT -> "Prioritize games that have been actually launched recently"
+            SpotlightSource.FAVORITES -> "Select only from favorite games"
+            SpotlightSource.ALL -> "Select from current game library"
+            SpotlightSource.FIXED -> "Select from current game library"
         }
 
     fun strategyLabel(strategy: SpotlightStrategy): String =
         when (strategy) {
-            SpotlightStrategy.FIRST -> "按顺序"
-            SpotlightStrategy.RANDOM_EACH_LAUNCH -> "每次启动随机"
-            SpotlightStrategy.DAILY_RANDOM -> "每日随机"
+            SpotlightStrategy.FIRST -> "In order"
+            SpotlightStrategy.RANDOM_EACH_LAUNCH -> "Randomly starts every time"
+            SpotlightStrategy.DAILY_RANDOM -> "Daily random"
         }
 }

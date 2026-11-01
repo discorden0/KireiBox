@@ -92,7 +92,7 @@ internal fun LibraryEditSortMenu(
     var expanded by remember { mutableStateOf(false) }
     val selected = value.ifBlank { "recent" }
     Box {
-        GlassIconButton(Icons.AutoMirrored.Rounded.Sort, "排序：${choiceLabel(selected)}", colors, haze, onClick = { expanded = true }, opaqueFill = true)
+        GlassIconButton(Icons.AutoMirrored.Rounded.Sort, "Sort: ${choiceLabel(selected)}", colors, haze, onClick = { expanded = true }, opaqueFill = true)
         KireiMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
@@ -202,8 +202,8 @@ internal fun GameCard(
                 if (editMode && customOrderPosition != null) {
                     KireiBadge(customOrderPosition.toString(), colors, tone = KireiBadgeTone.ACCENT)
                 }
-                if (game.favorite) LibraryCoverBadge(Icons.Rounded.Favorite, "已收藏", compact)
-                if (nsfwBlurred) LibraryCoverBadge(Icons.Rounded.VisibilityOff, "已模糊", compact)
+                if (game.favorite) LibraryCoverBadge(Icons.Rounded.Favorite, "Collected", compact)
+                if (nsfwBlurred) LibraryCoverBadge(Icons.Rounded.VisibilityOff, "Blurred", compact)
             }
             if (editMode) LibraryRemoveButton(colors, compact, Modifier.align(Alignment.TopEnd), onRemove)
         }
@@ -329,7 +329,7 @@ private fun LibraryRemoveButton(
                 .background(colors.danger, KireiShapes.full),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(Icons.Rounded.Remove, "移出游戏库", tint = colors.onDanger, modifier = Modifier.size(if (compact) COMPACT_REMOVE_GLYPH else REMOVE_GLYPH))
+            Icon(Icons.Rounded.Remove, "Move out of game library", tint = colors.onDanger, modifier = Modifier.size(if (compact) COMPACT_REMOVE_GLYPH else REMOVE_GLYPH))
         }
     }
 }

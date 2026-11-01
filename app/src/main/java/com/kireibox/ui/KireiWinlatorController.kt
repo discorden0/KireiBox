@@ -27,9 +27,9 @@ internal object WinlatorGuidePolicy {
 
     fun noticeMessage(availability: WinlatorAvailability): String =
         when (availability) {
-            WinlatorAvailability.READY -> "首次使用 Winlator 前，需要先在其中创建一个默认容器"
-            WinlatorAvailability.NOT_INSTALLED -> "未安装 Winlator，安装并创建容器后才能运行 PC 游戏"
-            WinlatorAvailability.UNSUPPORTED -> "Winlator 版本过旧，不支持外置启动，请更新"
+            WinlatorAvailability.READY -> "Before using Winlator for the first time, you need to create a default container in it."
+            WinlatorAvailability.NOT_INSTALLED -> "Winlator is not installed. PC games cannot be run until a container is installed and created."
+            WinlatorAvailability.UNSUPPORTED -> "The Winlator version is too old and does not support external boot. Please update."
         }
 }
 
@@ -52,7 +52,7 @@ internal class KireiWinlatorController(host: KireiViewModel) : KireiViewModelCon
         viewModelScope.launch(Dispatchers.IO) {
             store.saveGame(game.id, override)
             withContext(Dispatchers.Main) {
-                mutableState.value = mutableState.value.copy(winlatorOverride = override, winlatorEditorGame = null, notice = "Winlator 设置已保存")
+                mutableState.value = mutableState.value.copy(winlatorOverride = override, winlatorEditorGame = null, notice = "Winlator settings saved")
             }
         }
     }

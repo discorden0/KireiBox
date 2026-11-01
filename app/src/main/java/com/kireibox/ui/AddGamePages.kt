@@ -55,7 +55,7 @@ internal fun AddGameHost(
         AddGameStage.SINGLE -> AddSingleGamePage(state, colors, haze, viewModel::addGameBack, actions)
         AddGameStage.BATCH -> AddBatchPage(ui, colors, haze, viewModel, actions)
         AddGameStage.DETECTING ->
-            PickerPage(PickerPageSpec("正在识别", viewModel::addGameBack), colors, haze) { groupSkeleton(colors) }
+            PickerPage(PickerPageSpec("Recognizing", viewModel::addGameBack), colors, haze) { groupSkeleton(colors) }
         AddGameStage.REVIEW -> AddGameReviewPage(ui, colors, haze, viewModel)
     }
 }
@@ -68,19 +68,19 @@ private fun AddSingleGamePage(
     onBack: () -> Unit,
     actions: KireiActions,
 ) {
-    PickerPage(PickerPageSpec("添加单个游戏", onBack), colors, haze) {
+    PickerPage(PickerPageSpec("Add a single game", onBack), colors, haze) {
         state.addGame?.error?.let {
             pickerErrorRow(it, colors)
             pickerGap("single-error-gap")
         }
         groupItems(listOf("auto"), colors, { it }) {
             KireiListRow(
-                KireiListRowSpec("选择游戏目录", "自动识别引擎", Icons.Rounded.Folder, KireiTileColor.BLUE, KireiRowTrailing.Chevron),
+                KireiListRowSpec("Select game directory", "Automatic recognition engine", Icons.Rounded.Folder, KireiTileColor.BLUE, KireiRowTrailing.Chevron),
                 colors,
             ) { actions.pickAddGame(AddGamePick(AddGamePick.Kind.SINGLE_FOLDER)) }
         }
         pickerGap("single-engines-gap")
-        groupCaption("选择引擎", colors, "single-engines")
+        groupCaption("Select engine", colors, "single-engines")
         groupItems(SINGLE_ENGINE_ROWS, colors, { it.title }) { row ->
             KireiListRow(
                 KireiListRowSpec(row.title, row.subtitle ?: row.shortcutSubtitle(state.shortcutServiceStatus), row.icon, row.tile, KireiRowTrailing.Chevron),
@@ -109,13 +109,13 @@ private fun folderEngineRow(engine: EngineType) =
 private val SINGLE_ENGINE_ROWS =
     AddGamePolicy.FOLDER_ENGINES.map(::folderEngineRow) +
         listOf(
-            SingleEngineRow("Android 应用", Icons.Rounded.Apps, KireiTileColor.GREEN, open = { it.chooseAndroidApp() }),
-            SingleEngineRow("盖世游戏（快捷方式）", Icons.AutoMirrored.Rounded.Shortcut, KireiTileColor.INDIGO, shortcut = true, open = { it.chooseExternalShortcuts() }),
+            SingleEngineRow("Android App", Icons.Rounded.Apps, KireiTileColor.GREEN, open = { it.chooseAndroidApp() }),
+            SingleEngineRow("Unrivaled Game (Shortcut)", Icons.AutoMirrored.Rounded.Shortcut, KireiTileColor.INDIGO, shortcut = true, open = { it.chooseExternalShortcuts() }),
             SingleEngineRow(
-                "Winlator 外置启动",
+                "Winlator external boot",
                 Icons.Rounded.DesktopWindows,
                 KireiTileColor.ORANGE,
-                "选择游戏目录，自动选择启动程序",
+                "Select the game directory and automatically select the startup program",
                 open = { it.pickAddGame(AddGamePick(AddGamePick.Kind.SINGLE_FOLDER, EngineType.WINDOWS)) },
             ),
         )
@@ -131,11 +131,11 @@ private fun AddBatchPage(
     val context = LocalContext.current
     val spec =
         PickerPageSpec(
-            title = "批量添加",
+            title = "Add in batches",
             onBack = viewModel::addGameBack,
             bottomAction =
                 PickerAction(
-                    if (ui.folders.isEmpty()) "开始识别" else "开始识别（${ui.folders.size}）",
+                    if (ui.folders.isEmpty()) "Start identifying" else "Start recognition (${ui.folders.size})",
                     viewModel::startBatchDetect,
                     enabled = ui.folders.isNotEmpty(),
                 ),
@@ -147,13 +147,13 @@ private fun AddBatchPage(
         }
         groupItems(listOf("add"), colors, { it }) {
             KireiListRow(
-                KireiListRowSpec("添加文件夹", "游戏目录，或包含多个游戏的目录", Icons.Rounded.Add, KireiTileColor.BLUE, KireiRowTrailing.Chevron),
+                KireiListRowSpec("Add folder", "A game directory, or a directory containing multiple games", Icons.Rounded.Add, KireiTileColor.BLUE, KireiRowTrailing.Chevron),
                 colors,
             ) { actions.pickAddGame(AddGamePick(AddGamePick.Kind.BATCH_FOLDER)) }
         }
         if (ui.folders.isNotEmpty()) {
             pickerGap("batch-folders-gap")
-            groupCaption("已选择", colors, "batch-folders")
+            groupCaption("Selected", colors, "batch-folders")
             groupItems(ui.folders, colors, AddGameFolder::uri) { folder ->
                 KireiListRow(
                     KireiListRowSpec(
@@ -164,7 +164,7 @@ private fun AddBatchPage(
                         trailing =
                             KireiRowTrailing.Custom {
                                 KireiButton(
-                                    "移除",
+                                    "Remove",
                                     colors,
                                     options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL),
                                     onClick = { viewModel.removeBatchFolder(folder.uri) },
@@ -201,9 +201,9 @@ private fun AddGameSingleReview(
     val context = LocalContext.current
     val spec =
         PickerPageSpec(
-            title = "确认游戏",
+            title = "Confirm game",
             onBack = viewModel::addGameBack,
-            bottomAction = PickerAction(if (candidate.inLibrary) "更新游戏" else "添加", viewModel::confirmAddGame, enabled = ui.canConfirm),
+            bottomAction = PickerAction(if (candidate.inLibrary) "Update game" else "Add", viewModel::confirmAddGame, enabled = ui.canConfirm),
             scrollResetKey = candidate.key,
         )
     PickerPage(spec, colors, haze) {
@@ -217,21 +217,21 @@ private fun AddGameSingleReview(
                     title = GameLocationLabel.format(context, candidate.rootUri),
                     leading = { SettingsCoverThumbnail(candidate.previewGame(), colors) },
                     tileSize = SettingsCoverThumbWidth,
-                    trailing = if (candidate.inLibrary) KireiRowTrailing.Custom { KireiStatusChip("已在游戏库中", KireiStatusTone.NEUTRAL, colors) } else KireiRowTrailing.None,
+                    trailing = if (candidate.inLibrary) KireiRowTrailing.Custom { KireiStatusChip("Already in the game library", KireiStatusTone.NEUTRAL, colors) } else KireiRowTrailing.None,
                     subtitleMaxLines = 1,
                 ),
                 colors,
             )
         }
         pickerGap("review-title-gap")
-        groupCaption("名称", colors, "review-title")
+        groupCaption("Name", colors, "review-title")
         groupItems(listOf("title"), colors, { it }) {
             KireiTextField(
                 value = candidate.title,
                 onValueChange = { viewModel.setAddGameTitle(candidate.key, it) },
                 colors = colors,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = KireiSpacing.groupInner, vertical = KireiSpacing.sm),
-                options = KireiTextFieldOptions(label = "游戏名称", placeholder = "默认使用文件夹名"),
+                options = KireiTextFieldOptions(label = "Game name", placeholder = "Use folder name by default"),
             )
         }
         pickerGap("review-engine-gap")
@@ -254,17 +254,17 @@ private fun AddGameListReview(
     val allSelected = ui.queue.filter(AddGameCandidate::ready).let { ready -> ready.isNotEmpty() && ready.all { it.key in ui.selected } }
     val spec =
         PickerPageSpec(
-            title = "确认游戏（${ui.queue.size}）",
+            title = "Confirm game (${ui.queue.size})",
             onBack = viewModel::addGameBack,
             topActions = {
                 KireiButton(
-                    if (allSelected) "取消全选" else "全选",
+                    if (allSelected) "Deselect all" else "Select all",
                     colors,
                     options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL, enabled = !ui.saving),
                     onClick = viewModel::toggleAllAddGames,
                 )
             },
-            bottomAction = PickerAction("添加所选（${ui.importable.size}）", viewModel::confirmAddGame, enabled = ui.canConfirm),
+            bottomAction = PickerAction("Add Selected (${ui.importable.size})", viewModel::confirmAddGame, enabled = ui.canConfirm),
         )
     PickerPage(spec, colors, haze) {
         ui.error?.let {
@@ -283,7 +283,7 @@ private fun AddGameListReview(
                         KireiRowTrailing.Custom {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 KireiButton(
-                                    "修改",
+                                    "Revise",
                                     colors,
                                     options = KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL),
                                     onClick = { viewModel.editAddGame(candidate.key) },
@@ -294,7 +294,7 @@ private fun AddGameListReview(
                     subtitleMaxLines = 1,
                 ),
                 colors,
-                Modifier.semantics { if (candidate.ready) stateDescription = if (checked) "已选择" else "未选择" },
+                Modifier.semantics { if (candidate.ready) stateDescription = if (checked) "Selected" else "Not selected" },
             ) { viewModel.toggleAddGame(candidate.key) }
         }
     }
@@ -309,28 +309,28 @@ private fun AddGameEditSheet(
     viewModel: KireiViewModel,
 ) {
     KireiActionSheet(candidate.title, colors, { viewModel.editAddGame(null) }, expanded = true, grouped = true) {
-        SheetRowGroup(colors, title = "名称") {
+        SheetRowGroup(colors, title = "Name") {
             item {
                 KireiTextField(
                     value = candidate.title,
                     onValueChange = { viewModel.setAddGameTitle(candidate.key, it) },
                     colors = colors,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = KireiSpacing.groupInner, vertical = KireiSpacing.sm),
-                    options = KireiTextFieldOptions(label = "游戏名称"),
+                    options = KireiTextFieldOptions(label = "Game name"),
                 )
             }
         }
-        SheetRowGroup(colors, title = if (candidate.engine == EngineType.UNKNOWN) "未识别到引擎，请选择" else "引擎") {
+        SheetRowGroup(colors, title = if (candidate.engine == EngineType.UNKNOWN) "Engine not recognized, please select" else "Engine") {
             AddGamePolicy.REVIEW_ENGINES.forEach { engine ->
                 item {
-                    SheetChoiceRow(addGameEngineLabel(engine), "识别结果".takeIf { engine == candidate.detectedEngine }, engine == candidate.engine, colors) {
+                    SheetChoiceRow(addGameEngineLabel(engine), "Recognition results".takeIf { engine == candidate.detectedEngine }, engine == candidate.engine, colors) {
                         viewModel.selectAddGameEngine(candidate.key, engine)
                     }
                 }
             }
         }
         if (candidate.launchOptions.size > 1) {
-            SheetRowGroup(colors, title = "启动文件") {
+            SheetRowGroup(colors, title = "Startup file") {
                 candidate.launchOptions.forEach { target ->
                     item {
                         val checked = target.equals(candidate.launchTarget, ignoreCase = true)
@@ -341,7 +341,7 @@ private fun AddGameEditSheet(
                 }
             }
         }
-        KireiButton("完成", colors, Modifier.fillMaxWidth().padding(horizontal = KireiSpacing.md)) { viewModel.editAddGame(null) }
+        KireiButton("Done", colors, Modifier.fillMaxWidth().padding(horizontal = KireiSpacing.md)) { viewModel.editAddGame(null) }
     }
 }
 
@@ -350,13 +350,13 @@ private fun LazyListScope.engineSection(
     colors: KireiColors,
     onEngine: (EngineType) -> Unit,
 ) {
-    groupCaption(if (candidate.engine == EngineType.UNKNOWN) "未识别到引擎，请选择" else "引擎", colors, "review-engines")
+    groupCaption(if (candidate.engine == EngineType.UNKNOWN) "Engine not recognized, please select" else "Engine", colors, "review-engines")
     groupItems(AddGamePolicy.REVIEW_ENGINES, colors, { it.name }) { engine ->
         val checked = engine == candidate.engine
         KireiListRow(
             KireiListRowSpec(
                 title = addGameEngineLabel(engine),
-                subtitle = "识别结果".takeIf { engine == candidate.detectedEngine },
+                subtitle = "Recognition results".takeIf { engine == candidate.detectedEngine },
                 icon = libraryEngineIcon(engine),
                 tile = addGameEngineTile(engine),
                 trailing = if (checked) KireiRowTrailing.Check else KireiRowTrailing.None,
@@ -372,7 +372,7 @@ private fun LazyListScope.launchSection(
     colors: KireiColors,
     onTarget: (String) -> Unit,
 ) {
-    groupCaption("启动文件", colors, "review-launch")
+    groupCaption("Startup file", colors, "review-launch")
     if (candidate.launchOptions.size > 1) {
         groupItems(candidate.launchOptions, colors, { it }) { target ->
             val checked = target.equals(candidate.launchTarget, ignoreCase = true)
@@ -405,12 +405,12 @@ private fun LazyListScope.launchSection(
     }
 }
 
-private fun launchFileName(target: String): String = if (target == AddGamePolicy.DIRECTORY_TARGET) "游戏目录" else target.substringAfterLast('/')
+private fun launchFileName(target: String): String = if (target == AddGamePolicy.DIRECTORY_TARGET) "Game directory" else target.substringAfterLast('/')
 
 /** 「KRKR · data.xp3」: what the list shows under a folder name. */
 internal fun addGameSummary(candidate: AddGameCandidate): String =
     if (candidate.engine == EngineType.UNKNOWN) {
-        "未识别到引擎，点击修改"
+        "The engine is not recognized, click to modify"
     } else {
         "${addGameEngineShortLabel(candidate.engine)} · ${launchFileName(candidate.launchTarget)}"
     }
@@ -424,9 +424,9 @@ internal fun addGameEngineLabel(engine: EngineType): String =
         EngineType.ONS -> "ONScripter"
         EngineType.TYRANO -> "Tyrano"
         EngineType.ARTEMIS -> "Artemis"
-        EngineType.ANDROID_APP -> "Android 应用"
-        EngineType.WINDOWS -> "Winlator 外置启动"
-        EngineType.UNKNOWN -> "未识别"
+        EngineType.ANDROID_APP -> "Android App"
+        EngineType.WINDOWS -> "Winlator external boot"
+        EngineType.UNKNOWN -> "Not recognized"
     }
 
 internal fun addGameEngineShortLabel(engine: EngineType): String =
@@ -437,7 +437,7 @@ internal fun addGameEngineShortLabel(engine: EngineType): String =
         EngineType.ARTEMIS -> "Artemis"
         EngineType.ANDROID_APP -> "Android"
         EngineType.WINDOWS -> "PC"
-        EngineType.UNKNOWN -> "未识别"
+        EngineType.UNKNOWN -> "Not recognized"
     }
 
 internal fun addGameEngineTile(engine: EngineType): KireiTileColor =
@@ -452,14 +452,14 @@ internal fun addGameEngineTile(engine: EngineType): KireiTileColor =
 
 internal fun shortcutServiceSubtitle(status: ShortcutServiceStatus): String =
     when (status) {
-        ShortcutServiceStatus.READY -> "扫描桌面游戏图标 · 支持的盖世游戏只需导入一次"
-        ShortcutServiceStatus.NOT_INSTALLED -> "未安装 Shizuku"
-        ShortcutServiceStatus.NOT_RUNNING -> "Shizuku 未运行 · 请先完成无线调试配对"
-        ShortcutServiceStatus.PERMISSION_REQUIRED -> "等待授权 KireiBox 使用 Shizuku"
-        ShortcutServiceStatus.PERMISSION_DENIED -> "权限已拒绝 · 请在 Shizuku 中重新允许"
-        ShortcutServiceStatus.BINDING -> "正在绑定 Shizuku 快捷方式服务"
+        ShortcutServiceStatus.READY -> "Scan desktop game icons · Import supported games only once"
+        ShortcutServiceStatus.NOT_INSTALLED -> "Shizuku is not installed"
+        ShortcutServiceStatus.NOT_RUNNING -> "Shizuku is not running · Please complete wireless debugging and pairing first"
+        ShortcutServiceStatus.PERMISSION_REQUIRED -> "Waiting for authorization for KireiBox to use Shizuku"
+        ShortcutServiceStatus.PERMISSION_DENIED -> "Permission denied · Please allow again in Shizuku"
+        ShortcutServiceStatus.BINDING -> "Binding Shizuku shortcut service"
         ShortcutServiceStatus.UNSUPPORTED_IDENTITY -> "不支持 Root/Sui · 请使用 shell 模式"
-        ShortcutServiceStatus.SYSTEM_PERMISSION_MISSING -> "当前系统未向 shell 开放快捷方式权限"
-        ShortcutServiceStatus.UNSUPPORTED_VERSION -> "需要 Shizuku 13.1.5 或更新版本"
-        ShortcutServiceStatus.CONNECTION_LOST -> "连接已失效 · 请重新启动 Shizuku"
+        ShortcutServiceStatus.SYSTEM_PERMISSION_MISSING -> "The current system does not open shortcut permissions to the shell"
+        ShortcutServiceStatus.UNSUPPORTED_VERSION -> "Requires Shizuku 13.1.5 or newer"
+        ShortcutServiceStatus.CONNECTION_LOST -> "The connection has expired · Please restart Shizuku"
     }

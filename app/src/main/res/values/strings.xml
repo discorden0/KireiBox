@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">KireiBox</string>
-    <string name="game_center">游戏中心</string>
-    <string name="launcher_action_save_slot">存档点</string>
-    <string name="launcher_action_resources">资讯站</string>
-    <string name="launcher_action_toolbox">工具箱</string>
-    <string name="launcher_action_agent">智能体</string>
+    <string name="game_center">Game center</string>
+    <string name="launcher_action_save_slot">Save point</string>
+    <string name="launcher_action_resources">Information station</string>
+    <string name="launcher_action_toolbox">Toolbox</string>
+    <string name="launcher_action_agent">Agent</string>
 
 </resources>

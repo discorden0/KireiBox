@@ -125,7 +125,7 @@ internal class GameBackupCodec(
             val incomingUpdatedAt = Math.max(0L, o.optLong("updated_at", existingUpdatedAt))
             val applyDetails = !exists || incomingUpdatedAt >= existingUpdatedAt
             if (applyDetails) {
-                g.title = o.optString("title", g.title ?: "未命名游戏")
+                g.title = o.optString("title", g.title ?: "Unnamed game")
                 g.originalTitle = o.optString("original_title", g.originalTitle ?: "")
                 g.engine = EngineType.fromString(o.optString("engine", g.engine?.name ?: EngineType.UNKNOWN.name))
                 val gRootUri = g.rootUri
@@ -152,7 +152,7 @@ internal class GameBackupCodec(
                 if ((rootUriValue == null || rootUriValue.trim().isEmpty()) && rootUri.isNotEmpty()) g.rootUri = rootUri
             }
             val titleValue = g.title
-            if (titleValue == null || titleValue.trim().isEmpty()) g.title = "未命名游戏"
+            if (titleValue == null || titleValue.trim().isEmpty()) g.title = "Unnamed game"
             if (g.engine == null) g.engine = EngineType.UNKNOWN
             val incomingResetAt = Math.max(0L, o.optLong("playtime_reset_at", 0L))
             val incomingTotalPlayTime = Math.max(0L, o.optLong("total_play_time", 0L))
@@ -180,7 +180,7 @@ internal class GameBackupCodec(
             if (g.updatedAt <= 0) g.updatedAt = g.createdAt
             if (exists) {
                 if (db.update("games", GameMapper.toValues(g), "id=?", arrayOf(g.id.toString())) <= 0) {
-                    throw IllegalStateException("更新云端游戏失败: ${g.id}")
+                    throw IllegalStateException("Failed to update cloud game: ${g.id}")
                 }
             } else {
                 val id = db.insertWithOnConflict("games", null, GameMapper.toValues(g), SQLiteDatabase.CONFLICT_IGNORE)
@@ -191,13 +191,13 @@ internal class GameBackupCodec(
                     // Reapply this already-merged snapshot to that canonical row.
                     val concurrent =
                         repo.findByIdentity(db, rootUri, incomingEntryKey)
-                            ?: throw IllegalStateException("并发插入后无法找到云端游戏: ${g.title}")
+                            ?: throw IllegalStateException("Unable to find cloud game after concurrent insertion: ${g.title}")
                     g.id = concurrent.id
                     if (db.update("games", GameMapper.toValues(g), "id=?", arrayOf(g.id.toString())) != 1) {
-                        throw IllegalStateException("并发合并云端游戏失败: ${g.title}")
+                        throw IllegalStateException("Concurrent merging of cloud games failed: ${g.title}")
                     }
                 } else {
-                    throw IllegalStateException("插入云端游戏失败: ${g.title}")
+                    throw IllegalStateException("Failed to insert cloud game: ${g.title}")
                 }
             }
             if (resetAdvanced && g.id > 0) {
@@ -273,11 +273,11 @@ internal class GameBackupCodec(
             v.put("deleted", 0)
             if (existingSessionId > 0) {
                 if (db.update("play_sessions", v, "id=?", arrayOf(existingSessionId.toString())) <= 0) {
-                    throw IllegalStateException("更新云端游玩记录失败: $uuid")
+                    throw IllegalStateException("Failed to update cloud play history: $uuid")
                 }
             } else {
                 if (db.insert("play_sessions", null, v) <= 0) {
-                    throw IllegalStateException("插入云端游玩记录失败: $uuid")
+                    throw IllegalStateException("Failed to insert cloud game history: $uuid")
                 }
             }
             changed++

@@ -19,7 +19,7 @@ import java.io.IOException
 class NextmoeLimitException(
     val dailyQuota: Boolean,
     val untilMillis: Long,
-) : IOException(if (dailyQuota) "NextMoe 今日调用额度已用尽" else "NextMoe 请求过于频繁")
+) : IOException(if (dailyQuota) "NextMoe’s calling quota has been exhausted today" else "NextMoe requests too frequently")
 
 /** The signed-in account can no longer be used (refresh failed or was revoked); it is already marked for re-login. */
 class NextmoeAuthException(message: String) : IOException(message)
@@ -123,7 +123,7 @@ class NextmoeUserApi(
                 }
             }
         }
-        throw IOException("NextMoe 授权刷新后仍被拒绝")
+        throw IOException("NextMoe authorization is still rejected after refreshing")
     }
 
     /** A refused request: a second 401 also marks the account for re-login. */
@@ -135,10 +135,10 @@ class NextmoeUserApi(
         when (code) {
             401 -> {
                 accounts.markExpired(SOURCE)
-                NextmoeAuthException("NextMoe 授权已失效，请重新登录")
+                NextmoeAuthException("NextMoe authorization has expired, please log in again")
             }
             429 -> limit(body, retryAfter)
-            else -> IOException("NextMoe 请求失败（HTTP $code）")
+            else -> IOException("NextMoe request failed (HTTP $code)")
         }
 
     companion object {

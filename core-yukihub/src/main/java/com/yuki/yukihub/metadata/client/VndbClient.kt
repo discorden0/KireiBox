@@ -216,7 +216,7 @@ object VndbClient {
         m.released = o.optString("released", "")
         val rating = o.optInt("rating", 0)
         if (rating > 0) {
-            m.ratingText = String.format(Locale.US, "评分：%.1f/10", rating / 10.0f)
+            m.ratingText = String.format(Locale.US, "Rating: %.1f/10", rating / 10.0f)
         }
         m.lengthMinutes = o.optInt("length_minutes", 0)
         m.lengthVotes = o.optInt("length_votes", 0)
@@ -301,25 +301,25 @@ object VndbClient {
     ): String {
         val label =
             when (length) {
-                1 -> "很短"
-                2 -> "短"
-                3 -> "中等"
-                4 -> "长"
-                5 -> "很长"
+                1 -> "Very short"
+                2 -> "Short"
+                3 -> "Medium"
+                4 -> "Long"
+                5 -> "Very long"
                 else -> ""
             }
         val hoursText =
             if (minutes > 0) {
-                String.format(Locale.US, "%.1f小时", minutes / 60.0f)
+                String.format(Locale.US, "%.1f hours", minutes / 60.0f)
             } else {
                 ""
             }
-        val voteText = if (votes > 0) "，${votes}人统计" else ""
+        val voteText = if (votes > 0) ", ${votes} people statistics" else ""
         return when {
             label.isNotEmpty() && hoursText.isNotEmpty() ->
-                "游玩时长：$label（${hoursText}$voteText）"
-            hoursText.isNotEmpty() -> "游玩时长：${hoursText}$voteText"
-            label.isNotEmpty() -> "游玩时长：$label"
+                "Play time: $label (${hoursText}$voteText)"
+            hoursText.isNotEmpty() -> "Play time: ${hoursText}$voteText"
+            label.isNotEmpty() -> "Play time: $label"
             else -> ""
         }
     }

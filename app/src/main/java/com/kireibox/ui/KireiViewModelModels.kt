@@ -139,10 +139,10 @@ data class CoverCandidateUi(
     val matchBadges: List<String> get() =
         buildList {
             val lexical = CoverMatchDecision.Reason.LEXICAL in matchReasons
-            if (crossSource && bestRank == 1) add("跨源一致")
-            if (aliasHit || linkedById || CoverMatchDecision.Reason.ID_LINK in matchReasons) add("别名命中")
+            if (crossSource && bestRank == 1) add("Consistent across sources")
+            if (aliasHit || linkedById || CoverMatchDecision.Reason.ID_LINK in matchReasons) add("Alias ​​hit")
             // A sole result is a hint only; suppress it when a stronger lexical hit already explains it.
-            if (isUniqueResult && !lexical) add("唯一结果")
+            if (isUniqueResult && !lexical) add("Only result")
         }
 }
 
@@ -183,8 +183,8 @@ enum class LaunchFileKind(
     val pageTitle: String,
     val emptyText: String,
 ) {
-    XP3(EngineType.KIRIKIRI, ".xp3", "选择启动文件", "这个游戏目录中没有找到 XP3 或内含 XP3 的 exe，请检查目录授权或重新添加游戏。"),
-    EXE(EngineType.WINDOWS, ".exe", "选择启动程序", "目录内未找到可启动的 .exe，请检查目录授权或重新添加游戏。"),
+    XP3(EngineType.KIRIKIRI, ".xp3", "Select startup file", "XP3 or the exe containing XP3 was not found in this game directory. Please check the directory authorization or add the game again."),
+    EXE(EngineType.WINDOWS, ".exe", "Select startup program", "The launchable .exe was not found in the directory. Please check the directory authorization or add the game again."),
 }
 
 data class Xp3PickerUi(

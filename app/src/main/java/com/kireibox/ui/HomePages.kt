@@ -253,8 +253,8 @@ internal fun ComponentsHomePage(
                         KireiShapes.lg,
                     ) {
                         Column(Modifier.fillMaxSize().padding(KireiSpacing.xl), verticalArrangement = Arrangement.Center) {
-                            Text("首页还没有组件", color = colors.text, style = AppleTypography.headlineMedium)
-                            Text("从右上角收纳菜单进入编辑模式并添加组件。", color = colors.secondary, style = AppleTypography.bodyMedium)
+                            Text("There are no components on the homepage yet", color = colors.text, style = AppleTypography.headlineMedium)
+                            Text("Enter edit mode from the storage menu in the upper right corner and add components.", color = colors.secondary, style = AppleTypography.bodyMedium)
                         }
                     }
                 } else {
@@ -315,7 +315,7 @@ internal fun ComponentsHomePage(
                 expanded = menuExpanded,
                 colors = colors,
                 haze = haze,
-                editLabel = "编辑首页",
+                editLabel = "Edit home page",
                 menuDiameterDp = topChrome.menuDiameterDp.dp,
                 menuIconSizeDp = topChrome.menuIconSizeDp.dp,
                 opaqueFill = true,
@@ -378,7 +378,7 @@ internal fun HomeControlMenu(
         ) {
             HomeMenuAction(
                 if (colors.isDark) Icons.Rounded.LightMode else Icons.Rounded.DarkMode,
-                if (colors.isDark) "切换浅色模式" else "切换深色模式",
+                if (colors.isDark) "Toggle light mode" else "Toggle dark mode",
                 colors,
                 haze,
                 onTheme
@@ -396,7 +396,7 @@ internal fun HomeControlMenu(
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Icon(
                     Icons.Rounded.MoreHoriz,
-                    if (expanded) "收起首页操作" else "更多首页操作",
+                    if (expanded) "Close homepage operation" else "More home page operations",
                     tint = colors.accent,
                     modifier = Modifier.size(menuIconSizeDp),
                 )

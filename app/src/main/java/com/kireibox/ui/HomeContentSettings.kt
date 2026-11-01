@@ -144,11 +144,11 @@ internal fun HomeContentSettingsPanel(
         ) {
             item(key = "selection-settings-section") {
                 HomeContentSegmentedGroup(
-                    title = "选择方式",
+                    title = "Select method",
                     segments =
                         listOf(
-                            KireiSegment(SpotlightSelectionMode.MANUAL, "手动选择"),
-                            KireiSegment(SpotlightSelectionMode.AUTOMATIC, "自动推荐"),
+                            KireiSegment(SpotlightSelectionMode.MANUAL, "Manual selection"),
+                            KireiSegment(SpotlightSelectionMode.AUTOMATIC, "Automatic recommendation"),
                         ),
                     selected = current.mode,
                     colors = colors,
@@ -161,11 +161,11 @@ internal fun HomeContentSettingsPanel(
                     KireiListGroup(
                         colors,
                         Modifier.padding(horizontal = KireiSpacing.md),
-                        title = "展示顺序",
-                        footer = "点击游戏加入或移除；选中后可调整顺序。",
+                        title = "Display order",
+                        footer = "Click a game to add or remove it; select it to adjust the order.",
                     ) {
                         if (games.isEmpty()) {
-                            item { KireiListRow(KireiListRowSpec(title = "当前没有可选择的游戏。"), colors) }
+                            item { KireiListRow(KireiListRowSpec(title = "There are currently no games to select."), colors) }
                         } else {
                             HomeContentSettingsPolicy.orderedManualGames(games, current.manualGameIds).forEach { game ->
                                 val index = current.manualGameIds.indexOf(game.id)
@@ -200,12 +200,12 @@ internal fun HomeContentSettingsPanel(
             } else {
                 item(key = "source-settings-section") {
                     HomeContentSegmentedGroup(
-                        title = "内容来源",
+                        title = "Content source",
                         segments =
                             listOf(
-                                KireiSegment(SpotlightSource.RECENT, "最近打开"),
-                                KireiSegment(SpotlightSource.FAVORITES, "收藏"),
-                                KireiSegment(SpotlightSource.ALL, "全部游戏"),
+                                KireiSegment(SpotlightSource.RECENT, "Recently opened"),
+                                KireiSegment(SpotlightSource.FAVORITES, "collect"),
+                                KireiSegment(SpotlightSource.ALL, "All games"),
                             ),
                         selected = current.source,
                         colors = colors,
@@ -214,11 +214,11 @@ internal fun HomeContentSettingsPanel(
                 }
                 item(key = "strategy-settings-section") {
                     // Each option needs its sentence, so these stay radio rows instead of a segmented control.
-                    KireiListGroup(colors, Modifier.padding(horizontal = KireiSpacing.md), title = "展示方式") {
+                    KireiListGroup(colors, Modifier.padding(horizontal = KireiSpacing.md), title = "Display method") {
                         listOf(
-                            HomeContentChoice(SpotlightStrategy.FIRST, "按顺序", "最近打开按时间排序，其余来源使用稳定顺序"),
-                            HomeContentChoice(SpotlightStrategy.RANDOM_EACH_LAUNCH, "每次启动随机", "本次打开 KireiBox 期间保持不变"),
-                            HomeContentChoice(SpotlightStrategy.DAILY_RANDOM, "每日随机", "每天自动切换一次并保持稳定"),
+                            HomeContentChoice(SpotlightStrategy.FIRST, "In order", "Recently opened sorted by time, other sources use stable order"),
+                            HomeContentChoice(SpotlightStrategy.RANDOM_EACH_LAUNCH, "Randomly starts every time", "It will remain unchanged during this opening of KireiBox."),
+                            HomeContentChoice(SpotlightStrategy.DAILY_RANDOM, "Daily random", "Automatically switches once a day and remains stable"),
                         ).forEach { option ->
                             item(key = option.value) {
                                 HomeContentChoiceRow(option, option.value == current.strategy, colors) {
@@ -233,7 +233,7 @@ internal fun HomeContentSettingsPanel(
             item(key = "count-settings-row") {
                 Box(Modifier.testTag("home-content-settings-count")) {
                     HomeContentSegmentedGroup(
-                        title = "展示数量",
+                        title = "Impression quantity",
                         segments = (HomeContentSettings.MIN_COUNT..HomeContentSettings.MAX_COUNT).map { KireiSegment(it, it.toString()) },
                         selected = current.count,
                         colors = colors,
@@ -311,16 +311,16 @@ private fun HomeContentManualGameRow(
     KireiListRow(
         spec =
             KireiListRowSpec(
-                title = game.title.orEmpty().ifBlank { "未命名游戏" },
-                subtitle = if (selected) "第 ${selectedIndex + 1} 位" else game.engine?.displayName.orEmpty(),
+                title = game.title.orEmpty().ifBlank { "Unnamed game" },
+                subtitle = if (selected) "Position ${selectedIndex + 1}" else game.engine?.displayName.orEmpty(),
                 leading = { SettingsCoverThumbnail(game, colors) },
                 tileSize = SettingsCoverThumbWidth,
                 trailing =
                     KireiRowTrailing.Custom {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             if (selected) {
-                                HomeContentMoveButton(Icons.Rounded.KeyboardArrowUp, "上移", selectedIndex > 0, colors) { onMove(selectedIndex - 1) }
-                                HomeContentMoveButton(Icons.Rounded.KeyboardArrowDown, "下移", selectedIndex < selectedCount - 1, colors) { onMove(selectedIndex + 1) }
+                                HomeContentMoveButton(Icons.Rounded.KeyboardArrowUp, "Move up", selectedIndex > 0, colors) { onMove(selectedIndex - 1) }
+                                HomeContentMoveButton(Icons.Rounded.KeyboardArrowDown, "Move down", selectedIndex < selectedCount - 1, colors) { onMove(selectedIndex + 1) }
                             }
                             HomeContentSelectionIndicator(selected, colors)
                         }

@@ -5,7 +5,7 @@ enum class EngineType(val displayName: String) {
     ONS("ONScripter"),
     TYRANO("Tyrano"),
     ARTEMIS("Artemis"),
-    ANDROID_APP("Android 应用"),
+    ANDROID_APP("Android App"),
     WINDOWS("PC"),
     UNKNOWN("Unknown"),
     ;

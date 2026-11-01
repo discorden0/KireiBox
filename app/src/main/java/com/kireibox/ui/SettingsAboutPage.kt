@@ -56,24 +56,24 @@ internal fun DiagnosticSettings(
     viewModel: KireiViewModel,
     actions: KireiActions,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "记录") {
-        item { SwitchRow("记录诊断日志", state.diagnosticLoggingEnabled, colors, viewModel::setDiagnosticLogging) }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Record") {
+        item { SwitchRow("Record diagnostic log", state.diagnosticLoggingEnabled, colors, viewModel::setDiagnosticLogging) }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "分享") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Share") {
         item {
-            SettingsAnchor("导出日志") {
+            SettingsAnchor("Export log") {
                 KireiListRow(
-                    KireiListRowSpec("导出日志", icon = Icons.Rounded.Description, tile = KireiTileColor.BLUE, trailing = KireiRowTrailing.Chevron),
+                    KireiListRowSpec("Export log", icon = Icons.Rounded.Description, tile = KireiTileColor.BLUE, trailing = KireiRowTrailing.Chevron),
                     colors,
                     onClick = actions.exportLogs,
                 )
             }
         }
         item {
-            SettingsAnchor("复制日志") {
+            SettingsAnchor("Copy log") {
                 KireiListRow(
                     // A command (copies at once): ACTION tone, like every other immediate command row.
-                    KireiListRowSpec("复制日志", icon = Icons.Rounded.ContentCopy, tile = KireiTileColor.SLATE, tone = KireiRowTone.ACTION),
+                    KireiListRowSpec("Copy log", icon = Icons.Rounded.ContentCopy, tile = KireiTileColor.SLATE, tone = KireiRowTone.ACTION),
                     colors,
                     onClick = actions.copyLogs,
                 )
@@ -89,11 +89,11 @@ internal fun AboutSettings(
     viewModel: KireiViewModel,
 ) {
     val context = LocalContext.current
-    val open: (String) -> Unit = { url -> openKireiLink(context, url) { viewModel.showNotice("无法打开浏览器") } }
+    val open: (String) -> Unit = { url -> openKireiLink(context, url) { viewModel.showNotice("Can't open browser") } }
     AboutBrandHeader(colors)
-    KireiListGroup(colors, SettingsGroupSpacing, title = "版本") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Version") {
         item {
-            SettingsAnchor("检查更新") {
+            SettingsAnchor("Check for updates") {
                 KireiListRow(
                     updateRowSpec(state.updateState, KireiTileColor.INDIGO, lastUpdateCheckLabel(state.settings?.lastUpdateCheckAt)),
                     colors,
@@ -102,7 +102,7 @@ internal fun AboutSettings(
             }
         }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "社区与许可") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Community and Licensing") {
         item {
             SettingsAnchor("GitHub") {
                 KireiListRow(
@@ -113,9 +113,9 @@ internal fun AboutSettings(
             }
         }
         item {
-            SettingsAnchor("第三方声明") {
+            SettingsAnchor("Third party statement") {
                 KireiListRow(
-                    KireiListRowSpec("第三方声明", icon = Icons.Rounded.Gavel, tile = KireiTileColor.GRAY, trailing = KireiRowTrailing.Chevron),
+                    KireiListRowSpec("Third party statement", icon = Icons.Rounded.Gavel, tile = KireiTileColor.GRAY, trailing = KireiRowTrailing.Chevron),
                     colors,
                     onClick = { open(KIREI_THIRD_PARTY_NOTICES_URL) },
                 )

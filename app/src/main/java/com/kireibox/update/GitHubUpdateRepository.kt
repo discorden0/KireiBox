@@ -62,7 +62,7 @@ internal class GitHubUpdateRepository(
                     }
                     if (!response.isSuccessful) {
                         return@use UpdateCheckResponse(
-                            UpdateCheckResult.Failed("GitHub 更新检查失败（HTTP ${response.code}）"),
+                            UpdateCheckResult.Failed("GitHub update check failed (HTTP ${response.code})"),
                             response.header("ETag") ?: etag,
                         )
                     }
@@ -89,7 +89,7 @@ internal class GitHubUpdateRepository(
                 }
             }.getOrElse { error ->
                 UpdateCheckResponse(
-                    UpdateCheckResult.Failed(error.message?.takeIf(String::isNotBlank) ?: "无法连接 GitHub"),
+                    UpdateCheckResult.Failed(error.message?.takeIf(String::isNotBlank) ?: "Unable to connect to GitHub"),
                     etag,
                 )
             }

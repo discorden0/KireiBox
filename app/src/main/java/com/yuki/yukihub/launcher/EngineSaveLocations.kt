@@ -31,8 +31,8 @@ internal object EngineSaveLocations {
         launchTarget: String?,
         gameId: Long = 0L,
     ): Location {
-        if (context == null) return Location.unavailable("应用上下文不可用")
-        if (engine == null) return Location.unavailable("游戏引擎信息不可用")
+        if (context == null) return Location.unavailable("Application context is not available")
+        if (engine == null) return Location.unavailable("Game engine information is not available")
         return try {
             when (engine) {
                 EngineType.KIRIKIRI -> {
@@ -85,11 +85,11 @@ internal object EngineSaveLocations {
                     Location(location.directory, location.description, location.available)
                 }
 
-                else -> Location.unavailable("该内置引擎未提供可管理的存档目录")
+                else -> Location.unavailable("The built-in engine does not provide a manageable archive directory")
             }
         } catch (error: Throwable) {
             logWarn("resolve actual save location failed engine=$engine root=$rootUri", error)
-            Location.unavailable("无法解析实际存档目录")
+            Location.unavailable("Unable to resolve actual archive directory")
         }
     }
 

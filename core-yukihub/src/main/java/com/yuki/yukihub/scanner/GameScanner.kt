@@ -45,12 +45,12 @@ object GameScanner {
             runCatching { StorageNodes.resolve(context, rootUri) }.getOrElse { error ->
                 Log.w(TAG, "resolve storage node failed uri=$rootUri", error)
                 report.setStopReason(ScanReport.StopReason.INVALID_ROOT)
-                report.addError("无法访问扫描目录：$rootUri")
+                report.addError("Unable to access scan directory: $rootUri")
                 return report
             }
         if (root == null || !runCatching { root.isDirectory }.getOrDefault(false)) {
             report.setStopReason(ScanReport.StopReason.INVALID_ROOT)
-            report.addError("扫描目标不是可读目录：$rootUri")
+            report.addError("Scan target is not a readable directory: $rootUri")
             return report
         }
 
@@ -160,13 +160,13 @@ object GameScanner {
                 directory.children()
             } catch (error: Throwable) {
                 Log.w(TAG, "listFiles failed uri=$uri", error)
-                report.addError("无法读取目录：$uri")
+                report.addError("Unable to read directory: $uri")
                 return
             }
         val detected =
             runCatching { EngineDetector.detect(directory, 2, files) { KrkrBoundExe.isBound(context, it) } }.getOrElse { error ->
                 Log.w(TAG, "engine detection failed uri=$uri", error)
-                report.addError("识别游戏目录失败：$uri")
+                report.addError("Failed to identify game directory: $uri")
                 EngineDetector.Result()
             }
         val matched = detected.confidence > 0 && SupportedEngines.contains(detected.engine)
@@ -215,7 +215,7 @@ object GameScanner {
         return when {
             lower == "cover.jpg" || lower == "cover.png" || lower == "cover.webp" -> 100
             lower == "folder.jpg" || lower == "folder.png" || lower == "folder.webp" -> 95
-            "cover" in lower || "folder" in lower || "封面" in lower -> 80
+            "cover" in lower || "folder" in lower || "Cover" in lower -> 80
             "poster" in lower || "package" in lower || "main" in lower -> 60
             else -> 10
         }
@@ -223,7 +223,7 @@ object GameScanner {
 
     private fun safeName(file: StorageNode): String =
         runCatching { file.name }
-            .getOrDefault("").ifBlank { "未命名游戏" }
+            .getOrDefault("").ifBlank { "Unnamed game" }
 
     private fun safeUri(file: StorageNode): String = runCatching { file.uri.toString() }.getOrDefault("unknown")
 

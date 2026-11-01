@@ -62,7 +62,7 @@ import kotlin.math.roundToInt
  * matching the title, or nearly matching with a clear lead) may bind automatically; several sources
  * agreeing on a work no longer does (CoverMatchConfidence).
  */
-internal const val COVER_STRICT_MATCH_TITLE = "仅标题一致时自动设置"
+internal const val COVER_STRICT_MATCH_TITLE = "Automatically set only if the title matches"
 
 @Composable
 internal fun CoverSettings(
@@ -88,11 +88,11 @@ private fun CoverSourceGroup(
     onEditBangumiBase: () -> Unit,
 ) {
     val source = CoverSourceMode.selected(state.settings?.metadataSource)
-    KireiListGroup(colors, SettingsGroupSpacing, title = "来源与匹配") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Source and match") {
         item {
             SettingsChoiceRow(
                 SettingsChoiceSpec(
-                    title = "默认来源",
+                    title = "Default source",
                     options = CoverSourceMode.active.map { SettingsChoiceOption(it, it.label, KireiPublicCopy.coverSourceDescription(it)) },
                     selected = source,
                 ),
@@ -102,14 +102,14 @@ private fun CoverSourceGroup(
         }
         item {
             KireiListRow(
-                KireiListRowSpec(title = "封面来源账号", trailing = KireiRowTrailing.Value(coverAccountSummary(state))),
+                KireiListRowSpec(title = "Cover source account", trailing = KireiRowTrailing.Value(coverAccountSummary(state))),
                 colors,
                 onClick = { viewModel.openSettingsPage(KireiSettingsPage.COVER_ACCOUNTS) },
             )
         }
         item {
-            SettingsAnchor("Bangumi 镜像地址") {
-                KireiListRow(KireiListRowSpec(title = "Bangumi 镜像地址", trailing = KireiRowTrailing.Value(bangumiBaseLabel(state))), colors, onClick = onEditBangumiBase)
+            SettingsAnchor("Bangumi mirror address") {
+                KireiListRow(KireiListRowSpec(title = "Bangumi mirror address", trailing = KireiRowTrailing.Value(bangumiBaseLabel(state))), colors, onClick = onEditBangumiBase)
             }
         }
     }
@@ -123,14 +123,14 @@ private fun CoverMatchingGroups(
     viewModel: KireiViewModel,
 ) {
     val settings = state.settings
-    KireiListGroup(colors, SettingsGroupSpacing, title = "自动匹配") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Automatic matching") {
         item {
-            SettingsToggleRow("同时查找多个来源", settings?.coverHybridAutoMatch != false, colors, subtitle = "关闭后只查默认来源") {
+            SettingsToggleRow("Find multiple sources at the same time", settings?.coverHybridAutoMatch != false, colors, subtitle = "After closing, only check the default source") {
                 viewModel.setCoverHybridAutoMatch(it)
             }
         }
         item {
-            SettingsToggleRow("仅 Wi-Fi 自动匹配", settings?.coverAutoMatchWifiOnly == true, colors) {
+            SettingsToggleRow("Wi-Fi only auto-match", settings?.coverAutoMatchWifiOnly == true, colors) {
                 viewModel.setCoverAutoMatchWifiOnly(it)
             }
         }
@@ -138,14 +138,14 @@ private fun CoverMatchingGroups(
             SettingsToggleRow(COVER_STRICT_MATCH_TITLE, settings?.coverStrictL2 == true, colors, onCheckedChange = viewModel::setCoverStrictL2)
         }
         item {
-            SettingsAnchor("清除无结果记录") {
-                KireiListRow(KireiListRowSpec(title = "清除无结果记录", tone = KireiRowTone.ACTION), colors, onClick = viewModel::clearCoverNoMatchStore)
+            SettingsAnchor("Clear records with no results") {
+                KireiListRow(KireiListRowSpec(title = "Clear records with no results", tone = KireiRowTone.ACTION), colors, onClick = viewModel::clearCoverNoMatchStore)
             }
         }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "成人内容") {
-        item { SwitchRow("模糊成人内容封面", settings?.nsfwBlurEnabled != false, colors, viewModel::setNsfwBlurEnabled) }
-        item { SwitchRow("搜索结果包含成人作品", state.includeAdult, colors, viewModel::setIncludeAdult) }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Adult content") {
+        item { SwitchRow("Blurred adult content cover", settings?.nsfwBlurEnabled != false, colors, viewModel::setNsfwBlurEnabled) }
+        item { SwitchRow("Search results include adult works", state.includeAdult, colors, viewModel::setIncludeAdult) }
     }
 }
 
@@ -154,14 +154,14 @@ internal fun coverAccountSummary(state: KireiUiState): String {
     val statuses = CoverAccountSources.mapNotNull { state.coverAccounts[it] }
     val connected = statuses.count { it.connected && !it.needsReauth }
     return when {
-        statuses.any { it.needsReauth } -> "需要重新授权"
-        connected > 0 -> "$connected 个已登录"
-        else -> "未登录"
+        statuses.any { it.needsReauth } -> "Requires reauthorization"
+        connected > 0 -> "$connected logged in"
+        else -> "Not logged in"
     }
 }
 
 private fun bangumiBaseLabel(state: KireiUiState): String {
-    val base = state.settings?.bangumiApiBase?.takeIf(String::isNotBlank) ?: return "自动"
+    val base = state.settings?.bangumiApiBase?.takeIf(String::isNotBlank) ?: return "Auto"
     return runCatching { Uri.parse(base).host }.getOrNull()?.takeIf(String::isNotBlank) ?: base
 }
 
@@ -176,14 +176,14 @@ private fun BangumiBaseDialog(
     KireiDialog(
         spec =
             KireiDialogSpec(
-                title = "Bangumi 镜像地址",
-                message = "留空则自动选择：先试官方 api.bgm.tv，失败再用社区镜像。",
+                title = "Bangumi mirror address",
+                message = "Leave it blank to automatically select: try the official api.bgm.tv first, and then use the community mirror if it fails.",
                 confirm =
-                    KireiDialogAction("保存", {
+                    KireiDialogAction("Save", {
                         viewModel.setBangumiApiBase(bangumiBaseInput)
                         onClose()
                     }),
-                dismiss = KireiDialogAction("取消", onClose, style = KireiButtonStyle.PLAIN),
+                dismiss = KireiDialogAction("Cancel", onClose, style = KireiButtonStyle.PLAIN),
             ),
         colors = colors,
         onDismissRequest = onClose,
@@ -192,7 +192,7 @@ private fun BangumiBaseDialog(
             bangumiBaseInput,
             { bangumiBaseInput = it },
             colors,
-            options = KireiTextFieldOptions(label = "镜像地址", placeholder = "例如 https://api.bangumi.vip", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)),
+            options = KireiTextFieldOptions(label = "Mirror address", placeholder = "For example https://api.bangumi.vip", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)),
         )
     }
 }
@@ -212,25 +212,25 @@ internal fun BangumiTokenDialog(
     KireiDialog(
         spec =
             KireiDialogSpec(
-                title = "设置 Bangumi 令牌",
-                message = "在 Bangumi 官方页面生成个人令牌，验证后加密保存。",
+                title = "Set up Bangumi token",
+                message = "Generate a personal token on the Bangumi official page, encrypt it and save it after verification.",
                 confirm =
-                    KireiDialogAction("验证并保存", {
+                    KireiDialogAction("Verify and save", {
                         viewModel.setBangumiToken(token.trim())
                         onClose()
                     }, enabled = token.isNotBlank()),
-                dismiss = KireiDialogAction("取消", onClose, style = KireiButtonStyle.PLAIN),
+                dismiss = KireiDialogAction("Cancel", onClose, style = KireiButtonStyle.PLAIN),
             ),
         colors = colors,
         onDismissRequest = onClose,
     ) {
         KireiButton(
-            "打开官方令牌页面",
+            "Open the official token page",
             colors,
             Modifier.padding(bottom = KireiSpacing.xs),
             KireiButtonOptions(style = KireiButtonStyle.TEXT, size = KireiButtonSize.SMALL),
-        ) { openKireiLink(context, BANGUMI_TOKEN_URL) { viewModel.showNotice("无法打开浏览器") } }
-        KireiTextField(token, { token = it }, colors, options = KireiTextFieldOptions(label = "个人令牌", placeholder = "粘贴从官方页面生成的令牌", secret = true))
+        ) { openKireiLink(context, BANGUMI_TOKEN_URL) { viewModel.showNotice("Can't open browser") } }
+        KireiTextField(token, { token = it }, colors, options = KireiTextFieldOptions(label = "Personal token", placeholder = "Paste the token generated from the official page", secret = true))
     }
 }
 
@@ -295,10 +295,10 @@ private fun CoverManagementGroups(
     RevealPendingCovers(context, scroll, pendingTop, hasPending = pendingFirst.isNotEmpty())
     CoverGameGroup(
         CoverGameGroupSpec(
-            title = "待确认封面",
+            title = "Cover to be confirmed",
             games = pendingFirst,
             shown = coverRowsShown(pendingRequested, pendingFirst.size),
-            empty = KireiListRowSpec("没有待确认的封面", icon = Icons.Rounded.TaskAlt, tile = KireiTileColor.GREEN),
+            empty = KireiListRowSpec("There are no covers to confirm", icon = Icons.Rounded.TaskAlt, tile = KireiTileColor.GREEN),
             onShowMore = { pendingRequested = coverRowsShown(pendingRequested, pendingFirst.size) + COVER_PAGE_SIZE },
             onCollapse = { pendingRequested = COVER_PREVIEW_LIMIT },
         ),
@@ -307,10 +307,10 @@ private fun CoverManagementGroups(
     )
     CoverGameGroup(
         CoverGameGroupSpec(
-            title = "已设置封面",
+            title = "Cover set",
             games = coverGroups.configured,
             shown = coverRowsShown(configuredRequested, coverGroups.configured.size),
-            empty = KireiListRowSpec("还没有已设置的封面", icon = Icons.Rounded.Image, tile = KireiTileColor.GRAY),
+            empty = KireiListRowSpec("No cover has been set yet", icon = Icons.Rounded.Image, tile = KireiTileColor.GRAY),
             onShowMore = { configuredRequested = coverRowsShown(configuredRequested, coverGroups.configured.size) + COVER_PAGE_SIZE },
             onCollapse = { configuredRequested = COVER_PREVIEW_LIMIT },
         ),
@@ -372,7 +372,7 @@ private fun CoverGameGroup(
                 item(key = "cover-list-toggle") {
                     KireiListRow(
                         KireiListRowSpec(
-                            title = if (more) "显示更多（还有 ${spec.total - spec.shown} 个）" else "收起列表",
+                            title = if (more) "Show more (${spec.total - spec.shown} more)" else "Collapse list",
                             tone = KireiRowTone.ACTION,
                             reserveIconSpace = true,
                             tileSize = SettingsCoverThumbWidth,
@@ -413,11 +413,11 @@ private fun coverBindingStatus(
     state: KireiUiState,
 ): String =
     when {
-        game.id in state.coverTaskGameIds -> "正在后台匹配…"
-        game.vndbBindingMode == "REVIEW" -> "待确认 · 最高匹配 ${game.vndbMatchScore.toInt()}%"
-        game.vndbBindingMode == "RETRY" -> "匹配失败 · 点按重试"
-        game.vndbBindingMode == "AUTO" -> "已自动匹配 ${game.vndbMatchScore.toInt()}%"
-        game.vndbBindingMode == "MANUAL" -> "已手动选择"
-        game.vndbBindingMode == "DISABLED" -> "使用引擎默认封面"
-        else -> "尚未匹配"
+        game.id in state.coverTaskGameIds -> "Matching in the background..."
+        game.vndbBindingMode == "REVIEW" -> "To be confirmed · Highest match ${game.vndbMatchScore.toInt()}%"
+        game.vndbBindingMode == "RETRY" -> "Match failed · Tap to try again"
+        game.vndbBindingMode == "AUTO" -> "Automatically matched ${game.vndbMatchScore.toInt()}%"
+        game.vndbBindingMode == "MANUAL" -> "Manually selected"
+        game.vndbBindingMode == "DISABLED" -> "Use engine default cover"
+        else -> "Not matched yet"
     }

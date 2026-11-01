@@ -4,9 +4,9 @@ import android.content.SharedPreferences
 
 /** App-wide light/dark preference. [SYSTEM] follows the device night mode. */
 enum class ThemeMode(val storedValue: String, val displayName: String) {
-    SYSTEM("system", "跟随系统"),
-    LIGHT("light", "浅色"),
-    DARK("dark", "深色"),
+    SYSTEM("system", "Follow the system"),
+    LIGHT("light", "Light color"),
+    DARK("dark", "Dark"),
     ;
 
     companion object {
@@ -31,11 +31,11 @@ enum class ThemeMode(val storedValue: String, val displayName: String) {
  * only users without a stored accent follow the default.
  */
 enum class AccentChoice(val storedValue: String, val displayName: String) {
-    CLASSIC("classic", "紫色"),
-    SAKURA("sakura", "樱粉"),
-    OCEAN("ocean", "海蓝"),
-    AMBER("amber", "琥珀"),
-    MINT("mint", "薄荷"),
+    CLASSIC("classic", "Purple"),
+    SAKURA("sakura", "Sakura powder"),
+    OCEAN("ocean", "Sea ​​blue"),
+    AMBER("amber", "Amber"),
+    MINT("mint", "Mint"),
     ;
 
     companion object {

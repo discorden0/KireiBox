@@ -110,9 +110,9 @@ internal fun AppearanceSettings(
     val settings = state.settings
     val accent = settings?.accentChoice ?: AccentChoice.DEFAULT
     val groupSpacing = Modifier.padding(bottom = KireiSpacing.groupGap)
-    KireiListGroup(colors, groupSpacing, title = "主题") {
+    KireiListGroup(colors, groupSpacing, title = "Theme") {
         item {
-            SettingsAnchor("主题") {
+            SettingsAnchor("Theme") {
                 ThemeModePicker(
                     selected = settings?.themeMode ?: ThemeMode.SYSTEM,
                     accent = accent,
@@ -122,10 +122,10 @@ internal fun AppearanceSettings(
             }
         }
     }
-    KireiListGroup(colors, groupSpacing, title = "强调色") {
-        item { SettingsAnchor("强调色") { AccentSwatchPicker(selected = accent, colors = colors, onSelect = viewModel::setAccentChoice) } }
+    KireiListGroup(colors, groupSpacing, title = "Accent color") {
+        item { SettingsAnchor("Accent color") { AccentSwatchPicker(selected = accent, colors = colors, onSelect = viewModel::setAccentChoice) } }
     }
-    KireiListGroup(colors, groupSpacing, title = "显示") {
+    KireiListGroup(colors, groupSpacing, title = "Show") {
         item {
             MotionModeRow(
                 requested = settings?.motionMode ?: MotionMode.AUTO,
@@ -136,10 +136,10 @@ internal fun AppearanceSettings(
         }
         item { OrientationModeRow(value = settings?.orientationMode ?: OrientationMode.AUTO, colors = colors, onChange = viewModel::setOrientationMode) }
         item {
-            SettingsAnchor("减少透明度") {
+            SettingsAnchor("Reduce transparency") {
                 KireiListRow(
                     KireiListRowSpec(
-                        title = "减少透明度",
+                        title = "Reduce transparency",
                         trailing = KireiRowTrailing.Toggle(settings?.reducedTransparency == true, viewModel::setReducedTransparency),
                     ),
                     colors,
@@ -147,10 +147,10 @@ internal fun AppearanceSettings(
             }
         }
         item {
-            SettingsAnchor("增强对比度") {
+            SettingsAnchor("Enhance contrast") {
                 KireiListRow(
                     KireiListRowSpec(
-                        title = "增强对比度",
+                        title = "Enhance contrast",
                         trailing = KireiRowTrailing.Toggle(settings?.increasedContrast == true, viewModel::setContrast),
                     ),
                     colors,
@@ -210,7 +210,7 @@ private fun RowScope.ThemeModeCard(
                 scaleY = pressScale
             }
             .selectable(selected = selected, interactionSource = interaction, indication = null, role = Role.RadioButton, onClick = onClick)
-            .semantics { contentDescription = "主题：${mode.displayName}" },
+            .semantics { contentDescription = "Subject: ${mode.displayName}" },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -425,7 +425,7 @@ internal fun AccentSwatchPicker(
 }
 
 /** Swatch caption and spoken name; the default accent (purple, listed first) says so: 「紫色（默认）」. */
-internal fun accentChoiceLabel(choice: AccentChoice): String = if (choice == AccentChoice.DEFAULT) "${choice.displayName}（默认）" else choice.displayName
+internal fun accentChoiceLabel(choice: AccentChoice): String = if (choice == AccentChoice.DEFAULT) "${choice.displayName} (default)" else choice.displayName
 
 /** 36dp accent circle in its own color for the current theme; selected = same-color ring + check. */
 @Composable
@@ -451,7 +451,7 @@ private fun AccentSwatch(
                 role = Role.RadioButton,
                 onClick = onClick,
             )
-            .semantics { contentDescription = "强调色：${accentChoiceLabel(choice)}" },
+            .semantics { contentDescription = "Accent color: ${accentChoiceLabel(choice)}" },
         contentAlignment = Alignment.Center,
     ) {
         SelectionRing(

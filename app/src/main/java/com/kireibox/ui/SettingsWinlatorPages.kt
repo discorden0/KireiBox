@@ -51,11 +51,11 @@ import dev.chrisbanes.haze.HazeState
 // from a game's sheet. Both only choose what is sent to Winlator-CN; a row left on 「跟随容器」 sends
 // nothing, so the container's own configuration decides.
 
-private const val FOLLOW_CONTAINER = "跟随容器"
-private const val FOLLOW_GLOBAL = "跟随全局"
-private const val CONTAINER_FOOTER = "留空时由 Winlator 选择：最近使用的容器，或唯一的容器。"
-private const val SAVE_FOOTER = "开启后每次启动都会弹出确认。"
-private const val GAME_FOOTER = "未设置的项沿用 Winlator 引擎设置。"
+private const val FOLLOW_CONTAINER = "Follow container"
+private const val FOLLOW_GLOBAL = "Follow the big picture"
+private const val CONTAINER_FOOTER = "Selected by Winlator when left blank: the most recently used container, or the only container."
+private const val SAVE_FOOTER = "After turning it on, a confirmation pop-up will appear every time it is started."
+private const val GAME_FOOTER = "Unset items inherit the Winlator engine settings."
 private const val CONTAINER_ID_DIGITS = 4
 internal const val WINLATOR_CN_RELEASES_URL = "https://github.com/hostei33/winlator-cn/releases"
 private const val WINLATOR_CN_REPO_LABEL = "github.com/hostei33/winlator-cn"
@@ -76,29 +76,29 @@ internal fun WinlatorSettingsPage(
     val installed = status.availability == WinlatorAvailability.READY
     KireiListGroup(colors, SettingsGroupSpacing) {
         item {
-            SettingsAnchor("打开 Winlator") {
+            SettingsAnchor("Open Winlator") {
                 if (installed) {
                     KireiListRow(
                         KireiListRowSpec(
-                            "打开 Winlator",
+                            "Open Winlator",
                             icon = Icons.Rounded.DesktopWindows,
                             tile = KireiTileColor.BLUE,
                             trailing = KireiRowTrailing.Value(winlatorInstallLabel(status.availability)),
                         ),
                         colors,
                         onClick = {
-                            if (!openWinlatorApp(context, status)) viewModel.showNotice("无法打开 Winlator")
+                            if (!openWinlatorApp(context, status)) viewModel.showNotice("Unable to open Winlator")
                         },
                     )
                 } else {
-                    WinlatorDownloadRow(status.availability, colors) { viewModel.showNotice("无法打开浏览器") }
+                    WinlatorDownloadRow(status.availability, colors) { viewModel.showNotice("Can't open browser") }
                 }
             }
         }
         item {
-            SettingsAnchor("创建容器教程") {
+            SettingsAnchor("Creating a container tutorial") {
                 KireiListRow(
-                    KireiListRowSpec("创建容器教程", icon = Icons.Rounded.MenuBook, tile = KireiTileColor.ORANGE, trailing = KireiRowTrailing.Chevron),
+                    KireiListRowSpec("Creating a container tutorial", icon = Icons.Rounded.MenuBook, tile = KireiTileColor.ORANGE, trailing = KireiRowTrailing.Chevron),
                     colors,
                     onClick = viewModel::openWinlatorGuide,
                 )
@@ -121,7 +121,7 @@ internal fun WinlatorDownloadRow(
     val context = LocalContext.current
     KireiListRow(
         KireiListRowSpec(
-            if (availability == WinlatorAvailability.UNSUPPORTED) "更新 Winlator-CN" else "下载 Winlator-CN",
+            if (availability == WinlatorAvailability.UNSUPPORTED) "Update Winlator-CN" else "Download Winlator-CN",
             subtitle = WINLATOR_CN_REPO_LABEL,
             icon = Icons.Rounded.Download,
             tile = KireiTileColor.BLUE,
@@ -139,15 +139,15 @@ private fun WinlatorContainerGroup(
     colors: KireiColors,
     enabled: Boolean,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "容器", footer = CONTAINER_FOOTER) {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Container", footer = CONTAINER_FOOTER) {
         item {
-            SettingsAnchor("容器名称") {
-                WinlatorTextField(settings.containerName, WinlatorTextSpec("容器名称", "自动选择", enabled = enabled), colors) { update(settings.copy(containerName = it)) }
+            SettingsAnchor("Container name") {
+                WinlatorTextField(settings.containerName, WinlatorTextSpec("Container name", "Automatic selection", enabled = enabled), colors) { update(settings.copy(containerName = it)) }
             }
         }
         item {
-            SettingsAnchor("容器 ID") {
-                WinlatorTextField(settings.containerId.takeIf { it > 0 }?.toString().orEmpty(), WinlatorTextSpec("容器 ID", "自动选择", numeric = true, enabled = enabled), colors) {
+            SettingsAnchor("Container ID") {
+                WinlatorTextField(settings.containerId.takeIf { it > 0 }?.toString().orEmpty(), WinlatorTextSpec("Container ID", "Automatic selection", numeric = true, enabled = enabled), colors) {
                     update(settings.copy(containerId = it.filter(Char::isDigit).take(CONTAINER_ID_DIGITS).toIntOrNull() ?: 0))
                 }
             }
@@ -162,22 +162,22 @@ private fun WinlatorGraphicsGroup(
     colors: KireiColors,
     enabled: Boolean,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "图形") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Graphics") {
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("图形驱动", containerOptions(WinlatorChoices.graphicsDrivers, ::graphicsDriverLabel), settings.graphicsDriver, enabled = enabled),
+                SettingsChoiceSpec("Graphics driver", containerOptions(WinlatorChoices.graphicsDrivers, ::graphicsDriverLabel), settings.graphicsDriver, enabled = enabled),
                 colors,
             ) { update(settings.copy(graphicsDriver = it)) }
         }
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("图形加速", containerOptions(WinlatorChoices.dxwrappers, ::dxwrapperLabel), settings.dxwrapper, enabled = enabled),
+                SettingsChoiceSpec("Graphics acceleration", containerOptions(WinlatorChoices.dxwrappers, ::dxwrapperLabel), settings.dxwrapper, enabled = enabled),
                 colors,
             ) { update(settings.copy(dxwrapper = it)) }
         }
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("分辨率", containerOptions(WinlatorChoices.screenSizes), settings.screenSize, enabled = enabled),
+                SettingsChoiceSpec("Resolution", containerOptions(WinlatorChoices.screenSizes), settings.screenSize, enabled = enabled),
                 colors,
             ) { update(settings.copy(screenSize = it)) }
         }
@@ -191,16 +191,16 @@ private fun WinlatorLocaleGroup(
     colors: KireiColors,
     enabled: Boolean,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "语言与时区") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Language and time zone") {
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("语言环境", containerOptions(WinlatorChoices.locales), settings.lcAll, enabled = enabled),
+                SettingsChoiceSpec("Locale", containerOptions(WinlatorChoices.locales), settings.lcAll, enabled = enabled),
                 colors,
             ) { update(settings.copy(lcAll = it)) }
         }
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("时区", containerOptions(WinlatorChoices.timezones), settings.tz, enabled = enabled),
+                SettingsChoiceSpec("Time zone", containerOptions(WinlatorChoices.timezones), settings.tz, enabled = enabled),
                 colors,
             ) { update(settings.copy(tz = it)) }
         }
@@ -214,27 +214,27 @@ private fun WinlatorAdvancedGroup(
     colors: KireiColors,
     enabled: Boolean,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "高级", footer = if (settings.save) SAVE_FOOTER else null) {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Advanced", footer = if (settings.save) SAVE_FOOTER else null) {
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("Box64 预设", containerOptions(WinlatorChoices.box64Presets, ::box64PresetLabel), settings.box64Preset, enabled = enabled),
+                SettingsChoiceSpec("Box64 default", containerOptions(WinlatorChoices.box64Presets, ::box64PresetLabel), settings.box64Preset, enabled = enabled),
                 colors,
             ) { update(settings.copy(box64Preset = it)) }
         }
         item {
-            SettingsAnchor("环境变量") {
-                WinlatorTextField(settings.envVars, WinlatorTextSpec("环境变量", ENV_VARS_HINT, enabled = enabled), colors) { update(settings.copy(envVars = it)) }
+            SettingsAnchor("Environment variables") {
+                WinlatorTextField(settings.envVars, WinlatorTextSpec("Environment variables", ENV_VARS_HINT, enabled = enabled), colors) { update(settings.copy(envVars = it)) }
             }
         }
         item {
-            SettingsAnchor("写入容器配置") {
-                KireiListRow(KireiListRowSpec("写入容器配置", trailing = KireiRowTrailing.Toggle(settings.save) { update(settings.copy(save = it)) }, enabled = enabled), colors)
+            SettingsAnchor("Write container configuration") {
+                KireiListRow(KireiListRowSpec("Write container configuration", trailing = KireiRowTrailing.Toggle(settings.save) { update(settings.copy(save = it)) }, enabled = enabled), colors)
             }
         }
     }
 }
 
-private const val ENV_VARS_HINT = "名称=值，多个用空格分隔"
+private const val ENV_VARS_HINT = "Name=value, multiple separated by spaces"
 
 /**
  * One game's own Winlator choices (from its sheet's 「Winlator 游戏设置」): the settings large-title
@@ -268,7 +268,7 @@ internal fun WinlatorGameSettingsPage(
     Column(Modifier.fillMaxSize().background(colors.background)) {
         Box(Modifier.fillMaxWidth().weight(1f)) {
             SettingsLargeTitleLayout(
-                SettingsLayoutSpec(SettingsHeaderSpec("Winlator 游戏设置", onBack = viewModel::closeWinlatorEditor), frame, haze),
+                SettingsLayoutSpec(SettingsHeaderSpec("Winlator Game Settings", onBack = viewModel::closeWinlatorEditor), frame, haze),
                 colors,
                 scroll,
             ) {
@@ -300,18 +300,18 @@ internal fun WinlatorGameEditor(
     onChange: (WinlatorGameOverride) -> Unit,
     colors: KireiColors,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "容器") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Container") {
         item {
-            SettingsAnchor("容器名称") {
-                WinlatorTextField(override.containerName.orEmpty(), WinlatorTextSpec("容器名称", global.containerName.ifBlank { FOLLOW_GLOBAL }), colors) {
+            SettingsAnchor("Container name") {
+                WinlatorTextField(override.containerName.orEmpty(), WinlatorTextSpec("Container name", global.containerName.ifBlank { FOLLOW_GLOBAL }), colors) {
                     onChange(override.copy(containerName = it.ifEmpty { null }))
                 }
             }
         }
         item {
-            SettingsAnchor("容器 ID") {
+            SettingsAnchor("Container ID") {
                 val hint = global.containerId.takeIf { it > 0 }?.toString() ?: FOLLOW_GLOBAL
-                WinlatorTextField(override.containerId?.toString().orEmpty(), WinlatorTextSpec("容器 ID", hint, numeric = true), colors) {
+                WinlatorTextField(override.containerId?.toString().orEmpty(), WinlatorTextSpec("Container ID", hint, numeric = true), colors) {
                     onChange(override.copy(containerId = it.filter(Char::isDigit).take(CONTAINER_ID_DIGITS).toIntOrNull()))
                 }
             }
@@ -328,22 +328,22 @@ private fun WinlatorGameGraphicsGroup(
     onChange: (WinlatorGameOverride) -> Unit,
     colors: KireiColors,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "图形") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Graphics") {
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("图形驱动", gameOptions(WinlatorChoices.graphicsDrivers, ::graphicsDriverLabel), override.graphicsDriver),
+                SettingsChoiceSpec("Graphics driver", gameOptions(WinlatorChoices.graphicsDrivers, ::graphicsDriverLabel), override.graphicsDriver),
                 colors,
             ) { onChange(override.copy(graphicsDriver = it)) }
         }
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("图形加速", gameOptions(WinlatorChoices.dxwrappers, ::dxwrapperLabel), override.dxwrapper),
+                SettingsChoiceSpec("Graphics acceleration", gameOptions(WinlatorChoices.dxwrappers, ::dxwrapperLabel), override.dxwrapper),
                 colors,
             ) { onChange(override.copy(dxwrapper = it)) }
         }
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("分辨率", gameOptions(WinlatorChoices.screenSizes), override.screenSize),
+                SettingsChoiceSpec("Resolution", gameOptions(WinlatorChoices.screenSizes), override.screenSize),
                 colors,
             ) { onChange(override.copy(screenSize = it)) }
         }
@@ -356,16 +356,16 @@ private fun WinlatorGameLocaleGroup(
     onChange: (WinlatorGameOverride) -> Unit,
     colors: KireiColors,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "语言与时区") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Language and time zone") {
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("语言环境", gameOptions(WinlatorChoices.locales), override.lcAll),
+                SettingsChoiceSpec("Locale", gameOptions(WinlatorChoices.locales), override.lcAll),
                 colors,
             ) { onChange(override.copy(lcAll = it)) }
         }
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("时区", gameOptions(WinlatorChoices.timezones), override.tz),
+                SettingsChoiceSpec("Time zone", gameOptions(WinlatorChoices.timezones), override.tz),
                 colors,
             ) { onChange(override.copy(tz = it)) }
         }
@@ -379,30 +379,30 @@ private fun WinlatorGameAdvancedGroup(
     onChange: (WinlatorGameOverride) -> Unit,
     colors: KireiColors,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "高级", footer = if (override.save ?: global.save) SAVE_FOOTER else null) {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Advanced", footer = if (override.save ?: global.save) SAVE_FOOTER else null) {
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("Box64 预设", gameOptions(WinlatorChoices.box64Presets, ::box64PresetLabel), override.box64Preset),
+                SettingsChoiceSpec("Box64 default", gameOptions(WinlatorChoices.box64Presets, ::box64PresetLabel), override.box64Preset),
                 colors,
             ) { onChange(override.copy(box64Preset = it)) }
         }
         item {
-            SettingsAnchor("环境变量") {
-                WinlatorTextField(override.envVars.orEmpty(), WinlatorTextSpec("环境变量", global.envVars.ifBlank { ENV_VARS_HINT }), colors) {
+            SettingsAnchor("Environment variables") {
+                WinlatorTextField(override.envVars.orEmpty(), WinlatorTextSpec("Environment variables", global.envVars.ifBlank { ENV_VARS_HINT }), colors) {
                     onChange(override.copy(envVars = it.ifEmpty { null }))
                 }
             }
         }
         item {
-            WinlatorTextField(override.execArgs.orEmpty(), WinlatorTextSpec("启动参数", "追加给游戏的命令行参数"), colors) {
+            WinlatorTextField(override.execArgs.orEmpty(), WinlatorTextSpec("Startup parameters", "Command line parameters appended to the game"), colors) {
                 onChange(override.copy(execArgs = it.ifEmpty { null }))
             }
         }
         item {
             SettingsChoiceRow(
                 SettingsChoiceSpec(
-                    "写入容器配置",
-                    listOf(SettingsChoiceOption<Boolean?>(null, FOLLOW_GLOBAL), SettingsChoiceOption<Boolean?>(true, "开"), SettingsChoiceOption<Boolean?>(false, "关")),
+                    "Write container configuration",
+                    listOf(SettingsChoiceOption<Boolean?>(null, FOLLOW_GLOBAL), SettingsChoiceOption<Boolean?>(true, "Open"), SettingsChoiceOption<Boolean?>(false, "Close")),
                     override.save,
                 ),
                 colors,
@@ -468,9 +468,9 @@ internal fun dxwrapperLabel(value: String): String =
 
 internal fun box64PresetLabel(value: String): String =
     when (value) {
-        "STABILITY" -> "稳定"
-        "CONSERVATIVE" -> "兼容"
-        "INTERMEDIATE" -> "均衡"
-        "PERFORMANCE" -> "性能"
+        "STABILITY" -> "Stablize"
+        "CONSERVATIVE" -> "compatible"
+        "INTERMEDIATE" -> "Balanced"
+        "PERFORMANCE" -> "Performance"
         else -> value
     }

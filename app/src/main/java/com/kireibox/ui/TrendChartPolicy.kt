@@ -52,12 +52,12 @@ internal object TrendChartPolicy {
         val middle = if (metric == TrendMetric.GAME_OPENS) ceil(maximum / 2f).toFloat() else maximum / 2f
         val ticks = if (compact) listOf(0f, maximum) else listOf(0f, middle, maximum)
         return TrendChartModel(
-            title = if (metric == TrendMetric.PLAY_TIME) "游玩时长" else "打开游戏数",
-            summary = "最近 ${range.days} 天 · 结果",
+            title = if (metric == TrendMetric.PLAY_TIME) "Play time" else "Number of open games",
+            summary = "Last ${range.days} days · Results",
             unit =
                 when (metric) {
-                    TrendMetric.PLAY_TIME -> if (divisor == MINUTE_MS) "分钟" else "小时"
-                    TrendMetric.GAME_OPENS -> "款"
+                    TrendMetric.PLAY_TIME -> if (divisor == MINUTE_MS) "Minute" else "Hour"
+                    TrendMetric.GAME_OPENS -> "Payment"
                 },
             values = values,
             axis = TrendAxis(maximum, ticks),

@@ -51,11 +51,11 @@ import kotlinx.coroutines.delay
 
 private fun syncButtonLabel(tone: SyncButtonTone): String =
     when (tone) {
-        SyncButtonTone.RUNNING -> "同步中…"
-        SyncButtonTone.SYNCED -> "已同步"
-        SyncButtonTone.ATTENTION -> "待确认"
-        SyncButtonTone.FAILED -> "同步失败"
-        SyncButtonTone.OFF, SyncButtonTone.IDLE -> "同步数据"
+        SyncButtonTone.RUNNING -> "Syncing..."
+        SyncButtonTone.SYNCED -> "Synced"
+        SyncButtonTone.ATTENTION -> "To be confirmed"
+        SyncButtonTone.FAILED -> "Sync failed"
+        SyncButtonTone.OFF, SyncButtonTone.IDLE -> "Sync data"
     }
 
 /** Fill and ink per tone: the accent while idle or running, the AA tile pairs otherwise. */

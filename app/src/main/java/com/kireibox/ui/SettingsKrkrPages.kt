@@ -77,11 +77,11 @@ internal fun KrkrSettings(
     viewModel: KireiViewModel,
     actions: KireiActions,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "启动") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "start up") {
         item {
-            SettingsAnchor("启动 KRKR 原生引擎") {
+            SettingsAnchor("Start KRKR native engine") {
                 KireiListRow(
-                    KireiListRowSpec("启动 KRKR 原生引擎", icon = Icons.Rounded.PlayArrow, tile = KireiTileColor.ORANGE, trailing = KireiRowTrailing.Chevron),
+                    KireiListRowSpec("Start KRKR native engine", icon = Icons.Rounded.PlayArrow, tile = KireiTileColor.ORANGE, trailing = KireiRowTrailing.Chevron),
                     colors,
                     onClick = actions.launchKrkrNative,
                 )
@@ -91,13 +91,13 @@ internal fun KrkrSettings(
     KireiListGroup(
         colors,
         SettingsGroupSpacing,
-        title = "全局默认",
-        footer = "单个游戏的设置：在游戏库长按卡片，选择「KRKR 游戏设置」。",
+        title = "Global default",
+        footer = "Settings for a single game: Long press the card in the game library and select \"KRKR Game Settings\".",
     ) {
         item {
             SettingsSegmentedRow(
                 SettingsSegmentedRowSpec(
-                    title = "引擎版本",
+                    title = "Engine version",
                     segments = KrkrEngineVersions.map { KireiSegment(it, choiceLabel(it)) },
                     selected = state.settings?.krEngineVersion ?: "auto",
                 ),
@@ -105,8 +105,8 @@ internal fun KrkrSettings(
                 viewModel::setKrEngineVersion,
             )
         }
-        item { SwitchRow("兼容模式", state.settings?.krCompatMode == true, colors, viewModel::setKrCompat) }
-        item { SwitchRow("跳过开头信息弹窗", state.settings?.krSkipStartupInfoDialog == true, colors, viewModel::setKrSkipStartupInfoDialog) }
+        item { SwitchRow("Compatibility mode", state.settings?.krCompatMode == true, colors, viewModel::setKrCompat) }
+        item { SwitchRow("Skip the opening information pop-up window", state.settings?.krSkipStartupInfoDialog == true, colors, viewModel::setKrSkipStartupInfoDialog) }
         item { EngineOrientationRow(colors) }
     }
 }
@@ -142,12 +142,12 @@ internal fun KrkrGameSettingsPage(
     Column(Modifier.fillMaxSize().background(colors.background)) {
         Box(Modifier.fillMaxWidth().weight(1f)) {
             SettingsLargeTitleLayout(
-                SettingsLayoutSpec(SettingsHeaderSpec("KRKR 游戏设置", onBack = viewModel::closeKrkrEditor), frame, haze),
+                SettingsLayoutSpec(SettingsHeaderSpec("KRKR game settings", onBack = viewModel::closeKrkrEditor), frame, haze),
                 colors,
                 scroll,
             ) {
                 // Which game these settings belong to (cover, title, folder); its footer scopes the whole page.
-                KireiListGroup(colors, SettingsGroupSpacing, footer = "下次启动时生效。") {
+                KireiListGroup(colors, SettingsGroupSpacing, footer = "It will take effect the next time you start it.") {
                     item {
                         KireiListRow(
                             KireiListRowSpec(
@@ -190,7 +190,7 @@ internal fun KrkrSaveBar(
         contentAlignment = Alignment.Center,
     ) {
         KireiButton(
-            "保存此游戏设置",
+            "Save this game settings",
             colors,
             Modifier.widthIn(max = frame.maxContentWidth).fillMaxWidth(),
             KireiButtonOptions(icon = Icons.Rounded.Check),
@@ -206,14 +206,14 @@ internal val KrkrRenderThreads = listOf("auto", "1", "2", "3", "4", "6", "8")
 
 internal fun krkrOptionLabel(value: String): String =
     when (value) {
-        "software" -> "软件渲染"
+        "software" -> "Software rendering"
         "opengl" -> "OpenGL"
-        "unlimited" -> "不限"
-        "low" -> "低"
-        "medium" -> "中"
-        "high" -> "高"
-        "auto" -> "自动"
-        else -> "$value 线程"
+        "unlimited" -> "No limit"
+        "low" -> "Low"
+        "medium" -> "Medium"
+        "high" -> "High"
+        "auto" -> "Auto"
+        else -> "$value thread"
     }
 
 @Composable
@@ -222,23 +222,23 @@ internal fun KrkrGameEditor(
     onChange: (KrkrGameSettings) -> Unit,
     colors: KireiColors,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "启动") {
-        item { SwitchRow("跳过开头信息弹窗", settings.skipStartupDialog, colors) { onChange(settings.copy(skipStartupDialog = it)) } }
+    KireiListGroup(colors, SettingsGroupSpacing, title = "start up") {
+        item { SwitchRow("Skip the opening information pop-up window", settings.skipStartupDialog, colors) { onChange(settings.copy(skipStartupDialog = it)) } }
     }
-    KireiListGroup(colors, SettingsGroupSpacing, title = "渲染") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Rendering") {
         item {
             SettingsSegmentedRow(
-                SettingsSegmentedRowSpec("渲染器", KrkrRenderers.map { KireiSegment(it, krkrOptionLabel(it)) }, settings.renderer),
+                SettingsSegmentedRowSpec("Renderer", KrkrRenderers.map { KireiSegment(it, krkrOptionLabel(it)) }, settings.renderer),
                 colors,
             ) { onChange(settings.copy(renderer = it)) }
         }
         item {
             SettingsChoiceRow(
-                SettingsChoiceSpec("渲染线程", KrkrRenderThreads.map { SettingsChoiceOption(it, krkrOptionLabel(it)) }, settings.renderThread),
+                SettingsChoiceSpec("Rendering thread", KrkrRenderThreads.map { SettingsChoiceOption(it, krkrOptionLabel(it)) }, settings.renderThread),
                 colors,
             ) { onChange(settings.copy(renderThread = it)) }
         }
-        item { SwitchRow("纹理压缩", settings.textureCompression, colors) { onChange(settings.copy(textureCompression = it)) } }
+        item { SwitchRow("Texture compression", settings.textureCompression, colors) { onChange(settings.copy(textureCompression = it)) } }
     }
     KrkrPerformanceGroup(settings, onChange, colors)
     KrkrInterfaceGroup(settings, onChange, colors)
@@ -251,10 +251,10 @@ private fun KrkrPerformanceGroup(
     onChange: (KrkrGameSettings) -> Unit,
     colors: KireiColors,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "性能") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Performance") {
         item {
             SettingsSegmentedRow(
-                SettingsSegmentedRowSpec("内存", KrkrMemoryLevels.map { KireiSegment(it, krkrOptionLabel(it)) }, settings.memoryUsage),
+                SettingsSegmentedRowSpec("Memory", KrkrMemoryLevels.map { KireiSegment(it, krkrOptionLabel(it)) }, settings.memoryUsage),
                 colors,
             ) { onChange(settings.copy(memoryUsage = it)) }
         }
@@ -262,12 +262,12 @@ private fun KrkrPerformanceGroup(
             SettingsSliderRow(
                 settings.fpsLimit.toFloat(),
                 // 5-FPS stops: TalkBack and arrow keys land on round values instead of 1/20 of the range.
-                KireiSliderSpec(label = "FPS 限制", valueText = settings.fpsLimit.toString(), valueRange = 15f..240f, steps = 44),
+                KireiSliderSpec(label = "FPS limit", valueText = settings.fpsLimit.toString(), valueRange = 15f..240f, steps = 44),
                 colors,
             ) { onChange(settings.copy(fpsLimit = it.roundToInt().coerceIn(15, 240))) }
         }
-        item { SwitchRow("显示 FPS", settings.showFps, colors) { onChange(settings.copy(showFps = it)) } }
-        item { SwitchRow("保持屏幕常亮", settings.keepScreenAwake, colors) { onChange(settings.copy(keepScreenAwake = it)) } }
+        item { SwitchRow("Show FPS", settings.showFps, colors) { onChange(settings.copy(showFps = it)) } }
+        item { SwitchRow("Keep the screen on", settings.keepScreenAwake, colors) { onChange(settings.copy(keepScreenAwake = it)) } }
     }
 }
 
@@ -277,23 +277,23 @@ private fun KrkrInterfaceGroup(
     onChange: (KrkrGameSettings) -> Unit,
     colors: KireiColors,
 ) {
-    KireiListGroup(colors, SettingsGroupSpacing, title = "界面与调试") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Interface and debugging") {
         item {
             // Kirikiroid2's menu_handler_opa is the floating menu button's opacity (default 15%).
             SettingsSliderRow(
                 settings.menuOpacity,
-                KireiSliderSpec(label = "菜单按钮不透明度", valueText = percentLabel(settings.menuOpacity), valueRange = .05f..1f, steps = 18),
+                KireiSliderSpec(label = "Menu button opacity", valueText = percentLabel(settings.menuOpacity), valueRange = .05f..1f, steps = 18),
                 colors,
             ) { onChange(settings.copy(menuOpacity = percentStop(it))) }
         }
         item {
             SettingsSliderRow(
                 settings.cursorScale,
-                KireiSliderSpec(label = "虚拟光标大小", valueText = percentLabel(settings.cursorScale), valueRange = .25f..2f, steps = 34),
+                KireiSliderSpec(label = "Virtual cursor size", valueText = percentLabel(settings.cursorScale), valueRange = .25f..2f, steps = 34),
                 colors,
             ) { onChange(settings.copy(cursorScale = percentStop(it))) }
         }
-        item { SwitchRow("输出引擎日志", settings.outputLog, colors) { onChange(settings.copy(outputLog = it)) } }
+        item { SwitchRow("Output engine log", settings.outputLog, colors) { onChange(settings.copy(outputLog = it)) } }
     }
 }
 
@@ -304,11 +304,11 @@ private fun KrkrFontGroup(
     colors: KireiColors,
 ) {
     val reducedMotion = LocalResolvedMotionMode.current == MotionMode.REDUCED
-    KireiListGroup(colors, SettingsGroupSpacing, title = "字体") {
+    KireiListGroup(colors, SettingsGroupSpacing, title = "Font") {
         item {
             SettingsChoiceRow(
                 SettingsChoiceSpec(
-                    "调整字体大小",
+                    "Adjust font size",
                     (listOf(KrkrFontScalePatch.OFF) + KrkrFontScalePatch.Presets).map { SettingsChoiceOption(it, KrkrFontScalePatch.label(it)) },
                     KrkrFontScalePatch.snap(settings.fontScale),
                 ),
@@ -319,7 +319,7 @@ private fun KrkrFontGroup(
             // One group row: the switch draws its divider only while the file-name field is shown.
             Column {
                 CompositionLocalProvider(LocalKireiListDivider provides settings.forceDefaultFont) {
-                    SwitchRow("强制使用默认字体", settings.forceDefaultFont, colors) { onChange(settings.copy(forceDefaultFont = it)) }
+                    SwitchRow("Force default font", settings.forceDefaultFont, colors) { onChange(settings.copy(forceDefaultFont = it)) }
                 }
                 // Reduced motion (spec §7): the field appears without moving the rows below.
                 AnimatedVisibility(
@@ -332,7 +332,7 @@ private fun KrkrFontGroup(
                         onValueChange = { onChange(settings.copy(defaultFont = it)) },
                         colors = colors,
                         modifier = Modifier.padding(start = KireiSpacing.groupInner, end = KireiSpacing.groupInner, top = KireiSpacing.sm, bottom = KireiSpacing.md),
-                        options = KireiTextFieldOptions(label = "默认字体文件名", placeholder = "例如 SourceHanSansSC.otf"),
+                        options = KireiTextFieldOptions(label = "Default font file name", placeholder = "For example SourceHanSansSC.otf"),
                     )
                 }
             }

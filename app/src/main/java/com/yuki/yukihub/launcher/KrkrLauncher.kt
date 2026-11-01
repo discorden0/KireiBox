@@ -64,7 +64,7 @@ internal object KrkrLauncher {
                 prepareGameSaveDirectory(context, gamePath, launchTarget)
             }
         if (!originMode && savePreparation?.available != true) {
-            throw IllegalStateException(savePreparation?.description ?: "无法准备游戏目录 savedata")
+            throw IllegalStateException(savePreparation?.description ?: "Unable to prepare game directory savedata")
         }
         if (savePreparation != null) {
             logInfo(
@@ -131,7 +131,7 @@ internal object KrkrLauncher {
         rootUri: String?,
         launchTarget: String?,
     ): SaveLocation {
-        if (context == null) return SaveLocation(null, "应用上下文不可用", false)
+        if (context == null) return SaveLocation(null, "Application context is not available", false)
         return try {
             val resolved = resolvePath(context, rootUri, launchTarget)
             val rawRoot =
@@ -140,12 +140,12 @@ internal object KrkrLauncher {
                 )
             val root = rootForPath(rawRoot, ScriptEngineLaunchers.stripFileScheme(resolved))
             if (root.isNullOrBlank() || root.startsWith("content://")) {
-                return SaveLocation(null, "无法解析 KRKR 实际游戏目录", false)
+                return SaveLocation(null, "Unable to parse KRKR actual game directory", false)
             }
-            SaveLocation(File(root, "savedata"), "KRKR 游戏目录存档", true)
+            SaveLocation(File(root, "savedata"), "KRKR game directory archive", true)
         } catch (error: Throwable) {
             logWarn("resolve KRKR save location failed root=$rootUri", error)
-            SaveLocation(null, "无法解析实际存档目录", false)
+            SaveLocation(null, "Unable to resolve actual archive directory", false)
         }
     }
 
@@ -161,7 +161,7 @@ internal object KrkrLauncher {
             )
         if (rootPath.isNullOrEmpty()) return rootUri
         val target = launchTarget?.trim().orEmpty()
-        if (target.isEmpty() || target == "[游戏目录]" || target.equals("DIR", ignoreCase = true)) {
+        if (target.isEmpty() || target == "[Game Catalog]" || target.equals("DIR", ignoreCase = true)) {
             return rootPath
         }
         if (target.equals("XP3_FIRST", ignoreCase = true)) {
@@ -288,34 +288,34 @@ internal object KrkrLauncher {
         rootUri: String?,
         launchTarget: String?,
     ): SavePreparation {
-        if (context == null) return SavePreparation(false, "应用上下文不可用")
+        if (context == null) return SavePreparation(false, "Application context is not available")
         val location = resolveSaveLocation(context, rootUri, launchTarget)
         val saveDirectory =
             location.directory
                 ?: return SavePreparation(false, location.description)
         val gameRoot =
             saveDirectory.parentFile
-                ?: return SavePreparation(false, "无法解析 KRKR 游戏根目录")
+                ?: return SavePreparation(false, "Unable to resolve KRKR game root directory")
         return try {
             if (!gameRoot.isDirectory) {
                 return SavePreparation(
                     false,
-                    "KRKR 游戏目录不存在或无法直接读取。SAF 可用于扫描，但原生内核需要可访问的物理目录。",
+                    "The KRKR game directory does not exist or cannot be read directly. SAF can be used for scanning, but the native kernel requires an accessible physical directory.",
                 )
             }
             val canonicalRoot = gameRoot.canonicalFile
             val canonicalSave = saveDirectory.canonicalFile
             if (canonicalSave.parentFile != canonicalRoot) {
-                return SavePreparation(false, "savedata 路径不在游戏目录内，已停止启动")
+                return SavePreparation(false, "The savedata path is not in the game directory and has stopped starting.")
             }
             if (isSymlink(saveDirectory)) {
-                return SavePreparation(false, "savedata 不能是符号链接，请改为游戏目录内的普通文件夹")
+                return SavePreparation(false, "Savedata cannot be a symbolic link, please change it to a normal folder in the game directory.")
             }
             if (saveDirectory.exists() && !saveDirectory.isDirectory) {
-                return SavePreparation(false, "游戏目录中的 savedata 是文件而不是文件夹")
+                return SavePreparation(false, "The savedata in the game directory is a file instead of a folder")
             }
             if (!saveDirectory.exists() && !saveDirectory.mkdirs()) {
-                return SavePreparation(false, gameLocalWriteHelp("无法创建 savedata"))
+                return SavePreparation(false, gameLocalWriteHelp("Unable to create savedata"))
             }
             val probeError = probeWritable(saveDirectory)
             if (probeError != null) {
@@ -326,16 +326,16 @@ internal object KrkrLauncher {
                 available = true,
                 description =
                     if (migration.conflicts > 0) {
-                        "游戏目录 savedata 可写；旧存档有 ${migration.conflicts} 个同名文件未覆盖"
+                        "The game directory savedata is writable; the old archive has ${migration.conflicts} files with the same name that have not been overwritten."
                     } else {
-                        "游戏目录 savedata 可写"
+                        "Game directory savedata is writable"
                     },
                 migratedFiles = migration.copied,
                 conflicts = migration.conflicts,
             )
         } catch (error: Throwable) {
             logWarn("prepare KRKR game-local savedata failed save=$saveDirectory", error)
-            SavePreparation(false, gameLocalWriteHelp(error.message ?: "写入检查失败"))
+            SavePreparation(false, gameLocalWriteHelp(error.message ?: "Write check failed"))
         }
     }
 
@@ -432,11 +432,11 @@ internal object KrkrLauncher {
                 output.flush()
                 output.fd.sync()
             }
-            if (!pending.renameTo(committed)) return "savedata 无法完成原子重命名"
-            if (!committed.delete()) return "savedata 写入测试文件无法删除"
+            if (!pending.renameTo(committed)) return "Savedata cannot complete atomic rename"
+            if (!committed.delete()) return "Savedata cannot be deleted when written to a test file"
             null
         } catch (error: Throwable) {
-            error.message ?: "savedata 无法写入"
+            error.message ?: "Savedata cannot be written"
         } finally {
             runCatching { pending.delete() }
             runCatching { committed.delete() }
@@ -448,7 +448,7 @@ internal object KrkrLauncher {
         second: File
     ): Boolean = runCatching { first.canonicalFile == second.canonicalFile }.getOrDefault(false)
 
-    private fun gameLocalWriteHelp(reason: String): String = "$reason。请授予“所有文件访问权限”；若游戏位于 SD 卡、Android/data 或只读目录，请移动到内部存储后重试。"
+    private fun gameLocalWriteHelp(reason: String): String = "$reason. Please grant \"All file access\"; if the game is located in the SD card, Android/data, or a read-only directory, please move it to internal storage and try again."
 
     private fun isSymlink(file: File): Boolean =
         try {

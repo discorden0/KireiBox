@@ -46,10 +46,10 @@ enum class DashboardProfile(val columns: Int) { COMPACT(2), WIDE(4) }
 
 enum class LandscapeHomeStyle(val storedValue: String, val label: String) {
     /** D: default 16:9 arc Cover Flow for compact landscape phones. */
-    IMMERSIVE_COVER("immersive_cover", "16:9 弧线画廊（D）"),
+    IMMERSIVE_COVER("immersive_cover", "16:9 Arc Gallery (D)"),
 
     /** C: optional stacked-focus 9:16 portrait layout with side cards tucked behind center. */
-    FOCUS_POSTER("focus_poster", "9:16 专注海报（C）"),
+    FOCUS_POSTER("focus_poster", "9:16 Focus Poster (C)"),
     ;
 
     companion object {

@@ -28,13 +28,13 @@ internal class UpdateDownloader(
         onProgress: (UpdateDownloadProgress) -> Unit,
     ): File =
         withContext(Dispatchers.IO) {
-            require(maxBytes > 0) { "更新下载上限无效" }
+            require(maxBytes > 0) { "Invalid update download limit" }
             val url = release.apkUrl.toHttpUrl()
-            require(isTrustedDownloadUrl(url)) { "更新下载地址不受信任" }
-            check(directory.exists() || directory.mkdirs()) { "无法创建更新缓存目录" }
+            require(isTrustedDownloadUrl(url)) { "Update download address is not trusted" }
+            check(directory.exists() || directory.mkdirs()) { "Unable to create update cache directory" }
             val assetName = release.apkAsset
             require(assetName.endsWith(".apk", ignoreCase = true) && '/' !in assetName && '\\' !in assetName) {
-                "更新 APK 资产名称无效"
+                "Update APK asset name is invalid"
             }
             val finalFile = File(directory, assetName)
             val partialFile = File(directory, "$assetName.part")
@@ -48,10 +48,10 @@ internal class UpdateDownloader(
                         .header("User-Agent", "KireiBox-Android-Updater")
                         .build()
                 client.newCall(request).execute().use { response ->
-                    check(response.isSuccessful) { "更新下载失败（HTTP ${response.code}）" }
+                    check(response.isSuccessful) { "Update download failed (HTTP ${response.code})" }
                     val body = response.body
                     val totalBytes = body.contentLength()
-                    check(totalBytes < 0 || totalBytes <= maxBytes) { "更新包超过大小限制" }
+                    check(totalBytes < 0 || totalBytes <= maxBytes) { "Update package exceeds size limit" }
                     val digest = MessageDigest.getInstance("SHA-256")
                     val startedAt = System.nanoTime()
                     var bytesRead = 0L
@@ -63,7 +63,7 @@ internal class UpdateDownloader(
                                 val count = input.read(buffer)
                                 if (count < 0) break
                                 bytesRead += count
-                                check(bytesRead <= maxBytes) { "更新包超过大小限制" }
+                                check(bytesRead <= maxBytes) { "Update package exceeds size limit" }
                                 digest.update(buffer, 0, count)
                                 output.write(buffer, 0, count)
                                 val elapsedSeconds =
@@ -79,13 +79,13 @@ internal class UpdateDownloader(
                             }
                         }
                     }
-                    check(totalBytes < 0 || bytesRead == totalBytes) { "更新下载不完整" }
+                    check(totalBytes < 0 || bytesRead == totalBytes) { "Incomplete update download" }
                     val actualSha256 = digest.digest().joinToString("") { "%02x".format(it) }
                     release.manifest?.let { manifest ->
-                        check(actualSha256 == manifest.sha256) { "更新包 SHA-256 校验失败" }
+                        check(actualSha256 == manifest.sha256) { "Update package SHA-256 verification failed" }
                     }
                 }
-                check(partialFile.renameTo(finalFile)) { "无法保存更新包" }
+                check(partialFile.renameTo(finalFile)) { "Unable to save update package" }
                 finalFile
             } catch (error: Throwable) {
                 partialFile.delete()

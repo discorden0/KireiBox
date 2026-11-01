@@ -18,7 +18,7 @@ internal class KireiCoverAccountController(host: KireiViewModel) : KireiViewMode
     fun setMetadataSource(source: CoverSourceMode) {
         if (!source.isActive) return
         if (!accounts.canSearch(source)) {
-            showNotice("请先连接自己的 ${source.label} 账号")
+            showNotice("Please connect your ${source.label} account first")
             return
         }
         core.settings.putString(com.yuki.yukihub.settings.YukiSettingsStore.KEY_METADATA_SOURCE, source.key)
@@ -56,7 +56,7 @@ internal class KireiCoverAccountController(host: KireiViewModel) : KireiViewMode
         coverNoMatchStore.clear()
         autoCoverGate.reset()
         reload()
-        showNotice("已清除封面无结果记录")
+        showNotice("Cleared cover page, no results recorded")
     }
 
     fun setBangumiToken(token: String) {
@@ -68,12 +68,12 @@ internal class KireiCoverAccountController(host: KireiViewModel) : KireiViewMode
                     com.yuki.yukihub.net.MetadataRequests.run(CoverSourceMode.BANGUMI) { accounts.connectBangumi(token) }
                     autoCoverGate.reset()
                     reload()
-                    showNotice("Bangumi 账号已连接")
+                    showNotice("Bangumi account is connected")
                 } catch (error: CancellationException) {
                     throw error
                 } catch (error: Exception) {
                     // Exception text ("Token 无效或已过期…") carries no failure wording: tag the tone.
-                    mutableState.value = mutableState.value.withNotice(error.message ?: "账号验证失败", NoticeTone.ERROR)
+                    mutableState.value = mutableState.value.withNotice(error.message ?: "Account verification failed", NoticeTone.ERROR)
                 } finally {
                     mutableState.value = mutableState.value.copy(accountBusy = false)
                 }
@@ -110,7 +110,7 @@ internal class KireiCoverAccountController(host: KireiViewModel) : KireiViewMode
         viewModelScope.launch(Dispatchers.IO) {
             val result = runCatching { accounts.disconnect(source) }
             withContext(Dispatchers.Main) {
-                showNotice(if (result.isSuccess) "${source.label} 已断开" else "清除账号失败，请重试")
+                showNotice(if (result.isSuccess) "${source.label} is disconnected" else "Failed to clear account, please try again")
                 host.onCoverAccountChanged(source)
             }
         }
@@ -158,7 +158,7 @@ internal class KireiCoverAccountController(host: KireiViewModel) : KireiViewMode
             mutableState.value.copy(
                 settings = mutableState.value.settings?.copy(bangumiApiBase = base.trim()),
             )
-        showNotice(if (base.isBlank()) "Bangumi 镜像地址已设为自动" else "Bangumi 镜像地址已保存")
+        showNotice(if (base.isBlank()) "Bangumi mirror address has been set to automatic" else "Bangumi mirror address has been saved")
     }
 }
 

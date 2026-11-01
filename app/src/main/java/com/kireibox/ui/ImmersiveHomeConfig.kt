@@ -34,7 +34,7 @@ internal fun ImmersiveGalleryConfigSheet(
             count = count,
         ).normalized()
     KireiActionSheet(
-        "编辑沉浸式展示图",
+        "Edit an immersive presentation",
         colors,
         onDismiss,
         expanded = true,

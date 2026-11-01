@@ -27,7 +27,7 @@ object KrkrFontScalePatch {
     /** The nearest step, or [OFF] for a value that is no step. */
     fun snap(value: Float): Float = Presets.firstOrNull { kotlin.math.abs(it - value) < .001f } ?: OFF
 
-    fun label(value: Float): String = if (snap(value) == OFF) "关闭" else "${formatFactor(value)} 倍"
+    fun label(value: Float): String = if (snap(value) == OFF) "Close" else "${formatFactor(value)} times"
 
     fun formatFactor(value: Float): String = BigDecimal(value.toString()).stripTrailingZeros().toPlainString()
 
@@ -70,8 +70,8 @@ object KrkrFontScalePatch {
         factor: Float,
     ): Result<Unit> =
         runCatching {
-            val rootUri = game.rootUri?.takeIf(String::isNotBlank) ?: error("无法访问游戏目录")
-            val root = StorageNodes.resolve(context, rootUri) ?: error("无法访问游戏目录")
+            val rootUri = game.rootUri?.takeIf(String::isNotBlank) ?: error("Unable to access game directory")
+            val root = StorageNodes.resolve(context, rootUri) ?: error("Unable to access game directory")
             val file = root.findChild(FILE_NAME)
             val enabled = snap(factor) != OFF
             if (file == null && !enabled) return@runCatching
@@ -80,8 +80,8 @@ object KrkrFontScalePatch {
             val old = codec.decode(bytes)
             val updated = merge(old, factor)
             if (updated == old && file != null) return@runCatching
-            val target = file ?: root.createFile(context, "application/octet-stream", FILE_NAME) ?: error("无法在游戏目录创建 patch.tjs")
-            val output = target.openOutputStream(context) ?: error("无法写入 patch.tjs")
+            val target = file ?: root.createFile(context, "application/octet-stream", FILE_NAME) ?: error("Unable to create patch.tjs in the game directory")
+            val output = target.openOutputStream(context) ?: error("Unable to write to patch.tjs")
             output.use { it.write(codec.encode(updated)) }
         }
 

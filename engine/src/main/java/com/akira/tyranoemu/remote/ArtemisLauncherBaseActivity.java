@@ -116,7 +116,7 @@ public abstract class ArtemisLauncherBaseActivity extends com.ies_net.artemis.Ar
         text.setTextSize(14f);
         text.setLineSpacing(0f, 1.15f);
         TextView close = new TextView(this);
-        close.setText("返回");
+        close.setText("Back");
         close.setTextColor(Color.rgb(120, 170, 255));
         close.setTextSize(16f);
         close.setGravity(Gravity.CENTER);

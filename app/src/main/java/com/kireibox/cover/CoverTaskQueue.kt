@@ -316,7 +316,7 @@ internal class CoverTaskQueue(
         record.candidates = result.candidates.toList()
         if (record.candidates.isEmpty()) {
             if (record.request.automaticSearch) actions += QueueAction.NoMatch(record.request)
-            failLocked(record, generation, IllegalStateException("未找到匹配的封面，可手动搜索或重试"), actions)
+            failLocked(record, generation, IllegalStateException("No matching cover found, please search manually or try again"), actions)
             return
         }
         // A confident automatic result always applies, even over a stale REVIEW binding: the user

@@ -90,10 +90,10 @@ internal object CoverPickerLayoutPolicy {
         includeAdult: Boolean,
     ): KireiEmptyStateSpec =
         when {
-            allUnreachable -> KireiEmptyStateSpec("全部来源都连不上", "请检查网络后再试一次", "重新搜索")
+            allUnreachable -> KireiEmptyStateSpec("All sources cannot be connected", "Please check the network and try again", "Search again")
             // The option lives in settings, so point there instead of duplicating the control here.
-            !includeAdult -> KireiEmptyStateSpec("没有找到可用封面", "「搜索结果包含成人作品」已关闭，可在「设置 › 封面与元数据」里打开", "重新搜索")
-            else -> KireiEmptyStateSpec("没有找到可用封面", "换个名称再试试", "重新搜索")
+            !includeAdult -> KireiEmptyStateSpec("No available cover found", "\"Search results contain adult works\" is turned off and can be turned on in \"Settings › Cover and Metadata\"", "Search again")
+            else -> KireiEmptyStateSpec("No available cover found", "Try another name and try again", "Search again")
         }
 }
 
@@ -117,9 +117,9 @@ internal object CoverVariantCaption {
             }
         return when {
             level == null -> null
-            level < .5 -> "全年龄"
-            level < 1.5 -> "轻微暗示"
-            else -> "成人向"
+            level < .5 -> "All ages"
+            level < 1.5 -> "Slight hint"
+            else -> "Adult oriented"
         }
     }
 }

@@ -72,7 +72,7 @@ internal data class ImmersivePlayButtonLook(
  * Spoken name of the play button for [title]. A plain verb + the game, so TalkBack users hear what
  * the button starts (the card itself reads 「<title>，已选中」).
  */
-internal fun immersivePlayButtonDescription(title: String?): String = "开始游戏 ${title.orEmpty()}".trimEnd()
+internal fun immersivePlayButtonDescription(title: String?): String = "Start game ${title.orEmpty()}".trimEnd()
 
 /**
  * Reveal progress of the portrait play button: springs to 1 (AppleMotion.Spring.Emphasized) once
@@ -352,7 +352,7 @@ internal fun ImmersivePlayTimeIndicator(
                         )
                         .testTag("immersive-play-time")
                         .semantics {
-                            contentDescription = "查看${game.title.orEmpty()}游玩记录，$label"
+                            contentDescription = "View ${game.title.orEmpty()} play records, $label"
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(visualSpec.contentGapDp.dp),
@@ -414,7 +414,7 @@ internal fun ImmersivePlayTimeIndicator(
                             )
                             .testTag("immersive-play-time")
                             .semantics {
-                                contentDescription = "查看${game.title.orEmpty()}游玩记录，$label"
+                                contentDescription = "View ${game.title.orEmpty()} play records, $label"
                             },
                 )
             }
@@ -462,7 +462,7 @@ internal fun ImmersivePager(
                 if (orientation == HomeOrientation.PORTRAIT) CircleShape else RoundedCornerShape(99.dp)
             ).background(if (index == currentIndex) palette.accentBright else palette.primary.copy(alpha = .25f)).clickable {
                 onSelect(index)
-            }.zIndex(8f).semantics { contentDescription = "切换到第${index + 1}项" }
+            }.zIndex(8f).semantics { contentDescription = "Switch to item ${index + 1}" }
         )
     }
 }

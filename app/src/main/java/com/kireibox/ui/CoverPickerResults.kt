@@ -112,7 +112,7 @@ private fun CoverResultsList(
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = KireiSpacing.sm), verticalArrangement = Arrangement.spacedBy(KireiSpacing.sm)) {
         item(key = "count") {
             Text(
-                "找到 ${search.candidates.size} 部作品",
+                "${search.candidates.size} works found",
                 color = scope.colors.secondary,
                 style = AppleTypography.labelLarge,
                 modifier = Modifier.padding(start = KireiSpacing.xxs).semantics { liveRegion = LiveRegionMode.Polite },
@@ -190,7 +190,7 @@ private fun CoverCandidateText(
             overflow = TextOverflow.Ellipsis,
         )
         Text(
-            "${candidate.sourceBadges.joinToString(" · ") { it.label }} · 匹配度 ${candidate.score.toInt()}%",
+            "${candidate.sourceBadges.joinToString(" · ") { it.label }} · Matching degree ${candidate.score.toInt()}%",
             color = colors.secondary,
             style = AppleTypography.labelLarge,
             maxLines = 2,
@@ -266,7 +266,7 @@ private fun CoverVariantStrip(
             .border(KireiElevation.strokeWidth, scope.colors.stroke, KireiShapes.lg).padding(vertical = KireiSpacing.sm),
     ) {
         Text(
-            "可选封面 · ${covers.size} 张",
+            "Optional cover · ${covers.size} sheets",
             color = scope.colors.secondary,
             style = AppleTypography.labelLarge,
             modifier = Modifier.padding(horizontal = KireiSpacing.sm),
@@ -295,7 +295,7 @@ private fun CoverVariantTile(
     Column(
         Modifier.width(VariantWidth)
             .selectable(selected, enabled = !scope.search.saving, role = Role.RadioButton) { scope.viewModel.selectCoverVariant(candidate.key, cover.url) }
-            .semantics(mergeDescendants = true) { contentDescription = "封面 ${index + 1}${if (caption.isEmpty()) "" else "，$caption"}" },
+            .semantics(mergeDescendants = true) { contentDescription = "Cover ${index + 1}${if (caption.isEmpty())"" else "，$caption"}" },
     ) {
         Box(Modifier.size(VariantWidth, VariantHeight)) {
             CoverThumbnail(preview, colors, progress, Modifier.matchParentSize())
@@ -315,7 +315,7 @@ private fun CoverResultsLoading(
 ) {
     Column(Modifier.fillMaxSize().clipToBounds(), verticalArrangement = Arrangement.spacedBy(KireiSpacing.sm)) {
         Text(
-            "正在查询全部来源…",
+            "Searching all sources…",
             color = scope.colors.secondary,
             style = AppleTypography.labelLarge,
             modifier = Modifier.padding(start = KireiSpacing.xxs).semantics { liveRegion = LiveRegionMode.Polite },

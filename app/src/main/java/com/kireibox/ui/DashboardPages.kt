@@ -107,7 +107,7 @@ internal fun EngineDefaultCover(
         if (showFallbackMetadata) {
             Column(Modifier.align(Alignment.BottomStart).padding(KireiSpacing.sm)) {
                 Icon(icon, null, tint = ink.copy(alpha = .9f), modifier = Modifier.size(26.dp))
-                Text(engine?.displayName ?: "游戏", color = ink, style = AppleTypography.labelLarge, modifier = Modifier.padding(top = KireiSpacing.xxs))
+                Text(engine?.displayName ?: "Games", color = ink, style = AppleTypography.labelLarge, modifier = Modifier.padding(top = KireiSpacing.xxs))
                 Text("KireiBox", color = ink.copy(alpha = .62f), style = AppleTypography.labelSmall)
             }
         } else {
@@ -284,7 +284,7 @@ internal fun HomeInsightRail(
                 horizontalArrangement = Arrangement.spacedBy(KireiSpacing.xs),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                listOf("游戏" to "$gameCount", "收藏" to "$favoriteCount", "时长" to playValue).forEach { (label, value) ->
+                listOf("Games" to "$gameCount", "collect" to "$favoriteCount", "Duration" to playValue).forEach { (label, value) ->
                     Column(
                         Modifier.weight(1f).fillMaxHeight().background(colors.surfaceRaised, KireiShapes.md)
                             .padding(horizontal = KireiSpacing.xs),
@@ -299,7 +299,7 @@ internal fun HomeInsightRail(
         } else if (styleKey == DashboardStyles.OVERVIEW_FOCUS) {
             Column(Modifier.fillMaxSize().padding(KireiSpacing.md), verticalArrangement = Arrangement.Center) {
                 HomeStatValue(playValue, colors, AppleTypography.numericLarge, numberColor = colors.accent)
-                Text("累计游玩 · $gameCount 款游戏 · $favoriteCount 款收藏", color = colors.secondary, style = AppleTypography.labelLarge, maxLines = 1)
+                Text("Cumulative games played · $gameCount games · $favoriteCount collections", color = colors.secondary, style = AppleTypography.labelLarge, maxLines = 1)
             }
         } else if (styleKey == DashboardStyles.OVERVIEW_RING) {
             Row(Modifier.fillMaxSize().padding(KireiSpacing.md), verticalAlignment = Alignment.CenterVertically) {
@@ -313,16 +313,16 @@ internal fun HomeInsightRail(
                     Text("$favoriteCount", color = colors.text, style = AppleTypography.numericMedium)
                 }
                 Column(Modifier.padding(start = KireiSpacing.sm).weight(1f)) {
-                    Text("累计游玩", color = colors.secondary, style = AppleTypography.labelLarge)
+                    Text("Total play", color = colors.secondary, style = AppleTypography.labelLarge)
                     HomeStatValue(playValue, colors, if (compact) AppleTypography.numericMedium else AppleTypography.numericLarge)
-                    Text("$gameCount 部游戏", color = colors.secondary, style = AppleTypography.labelLarge)
+                    Text("$gameCount games", color = colors.secondary, style = AppleTypography.labelLarge)
                 }
             }
         } else if (compact || styleKey == DashboardStyles.OVERVIEW_MINIMAL) {
             Column(Modifier.fillMaxSize().padding(KireiSpacing.md), verticalArrangement = Arrangement.Center) {
-                Text("累计游玩", color = colors.secondary, style = AppleTypography.labelLarge)
+                Text("Total play", color = colors.secondary, style = AppleTypography.labelLarge)
                 HomeStatValue(playValue, colors, AppleTypography.numericLarge)
-                Text("$gameCount 部游戏 · $favoriteCount 部收藏", color = colors.secondary, style = AppleTypography.labelLarge, maxLines = 2)
+                Text("$gameCount games · $favoriteCount collections", color = colors.secondary, style = AppleTypography.labelLarge, maxLines = 2)
             }
         } else {
             // Label on top, value on the bottom edge: the content fills the card instead of floating in it.
@@ -331,7 +331,7 @@ internal fun HomeInsightRail(
                     Modifier.weight(1.65f).fillMaxHeight().padding(end = KireiSpacing.md),
                     verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text("累计游玩", color = colors.secondary, style = AppleTypography.labelLarge)
+                    Text("Total play", color = colors.secondary, style = AppleTypography.labelLarge)
                     HomeStatValue(playValue, colors, AppleTypography.numericLarge)
                 }
                 Box(Modifier.width(KireiElevation.strokeWidth).fillMaxHeight().background(colors.stroke))
@@ -339,8 +339,8 @@ internal fun HomeInsightRail(
                     Modifier.weight(1f).fillMaxHeight().padding(start = KireiSpacing.md),
                     verticalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    HomeInsight("游戏", "$gameCount 部", colors)
-                    HomeInsight("收藏", "$favoriteCount 部", colors)
+                    HomeInsight("Games", "$gameCount Department", colors)
+                    HomeInsight("collect", "$favoriteCount Department", colors)
                 }
             }
         }

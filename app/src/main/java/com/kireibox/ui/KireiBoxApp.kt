@@ -379,11 +379,11 @@ fun KireiBoxApp(
                                 WinlatorGuideSheet(colors, onDone = viewModel::completeWinlatorGuide, onDismiss = viewModel::dismissWinlatorGuide)
                         }
                         state.undoRemoval?.let { undo ->
-                            UndoRemovalNotice(undo.game.title ?: "游戏", colors, haze, viewModel::undoLastRemoval, viewModel::dismissUndoRemoval)
+                            UndoRemovalNotice(undo.game.title ?: "Games", colors, haze, viewModel::undoLastRemoval, viewModel::dismissUndoRemoval)
                         }
                         state.undoScanRootRemoval?.let { undo ->
                             UndoRemovalNotice(
-                                "目录和 ${undo.gameIds.size} 部游戏",
+                                "Catalog and ${undo.gameIds.size} games",
                                 colors,
                                 haze,
                                 viewModel::undoScanRootRemoval,
@@ -465,10 +465,10 @@ fun KireiBoxApp(
                                 state.homeLoadError != null
                             ) {
                                 KireiPrompt(
-                                    title = "加载失败",
-                                    message = state.homeLoadError ?: "加载失败",
-                                    confirmLabel = "重试",
-                                    dismissLabel = "稍后",
+                                    title = "Loading failed",
+                                    message = state.homeLoadError ?: "Loading failed",
+                                    confirmLabel = "Retry",
+                                    dismissLabel = "Later",
                                     onConfirm = viewModel::reload,
                                     onDismiss = viewModel::dismissHomeLoadError,
                                 )

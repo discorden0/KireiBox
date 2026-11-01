@@ -48,10 +48,10 @@ internal class SecureCoverTokens(context: Context) {
                 updateAAD(source.toByteArray())
             }
         val encoded = Base64.encodeToString(cipher.iv + cipher.doFinal(value.toByteArray()), Base64.NO_WRAP)
-        check(prefs.edit().putString(source, encoded).commit()) { "无法安全保存账号，请重试" }
+        check(prefs.edit().putString(source, encoded).commit()) { "Unable to safely save account, please try again" }
     }
 
     @Synchronized fun remove(source: String) {
-        check(prefs.edit().remove(source).commit()) { "无法清除账号，请重试" }
+        check(prefs.edit().remove(source).commit()) { "Unable to clear account, please try again" }
     }
 }

@@ -87,14 +87,14 @@ internal fun SettingsOverviewCard(
                 horizontalArrangement = Arrangement.spacedBy(KireiSpacing.xs),
             ) {
                 // 游戏时长 opens the 游玩记录 ranking; 上次同步 opens the sync page.
-                OverviewStat("游戏时长", LibraryOverviewPolicy.summaryPlayTime(totalPlayTime), colors, Modifier.weight(1f).fillMaxHeight(), actions.onOpenPlayTime)
-                OverviewStat("游戏数", visibleGames.toString(), colors, Modifier.weight(1f).fillMaxHeight())
-                OverviewStat("上次同步", lastSyncLabel(sync.lastSyncAt, System.currentTimeMillis()), colors, Modifier.weight(1f).fillMaxHeight(), actions.onOpenSync)
+                OverviewStat("Game duration", LibraryOverviewPolicy.summaryPlayTime(totalPlayTime), colors, Modifier.weight(1f).fillMaxHeight(), actions.onOpenPlayTime)
+                OverviewStat("Number of games", visibleGames.toString(), colors, Modifier.weight(1f).fillMaxHeight())
+                OverviewStat("Last sync", lastSyncLabel(sync.lastSyncAt, System.currentTimeMillis()), colors, Modifier.weight(1f).fillMaxHeight(), actions.onOpenSync)
             }
         }
         if (pending > 0) {
             KireiButton(
-                label = "查看待确认封面（$pending）",
+                label = "View cover to be confirmed ($pending)",
                 colors = colors,
                 modifier = Modifier.fillMaxWidth(),
                 options =
@@ -108,7 +108,7 @@ internal fun SettingsOverviewCard(
         }
         if (syncAttention > 0) {
             KireiButton(
-                label = "确认游玩时长同步（$syncAttention）",
+                label = "Confirm play time synchronization ($syncAttention)",
                 colors = colors,
                 modifier = Modifier.fillMaxWidth(),
                 options = KireiButtonOptions(style = KireiButtonStyle.SECONDARY, size = KireiButtonSize.MEDIUM, icon = Icons.Rounded.Sync),

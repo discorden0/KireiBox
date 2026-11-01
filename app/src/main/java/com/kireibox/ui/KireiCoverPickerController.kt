@@ -76,7 +76,7 @@ internal class KireiCoverPickerController(host: KireiViewModel) : KireiViewModel
                     coverSearch =
                         mutableState.value.coverSearch?.copy(
                             loading = false,
-                            error = "请先连接至少一个封面来源账号",
+                            error = "Please connect at least one cover source account first",
                         ),
                 )
             return
@@ -149,7 +149,7 @@ internal class KireiCoverPickerController(host: KireiViewModel) : KireiViewModel
                         if (current.candidates.isEmpty()) {
                             mutableState.value =
                                 mutableState.value.copy(
-                                    coverSearch = current.copy(loading = false, error = "全部来源均未响应，请检查网络或稍后重试"),
+                                    coverSearch = current.copy(loading = false, error = "All sources are not responding, please check the network or try again later"),
                                 )
                         }
                     }
@@ -221,14 +221,14 @@ internal class KireiCoverPickerController(host: KireiViewModel) : KireiViewModel
                             ).copy(
                                 coverSearch = null,
                                 taskCenterOpen = CoverPickerNavigationPolicy.shouldRestoreTaskCenter(search.origin),
-                                notice = "封面已保存",
+                                notice = "Cover saved",
                             )
                         } else {
                             mutableState.value.copy(
                                 coverSearch =
                                     mutableState.value.coverSearch?.copy(
                                         saving = false,
-                                        error = result.exceptionOrNull()?.message ?: "封面下载失败"
+                                        error = result.exceptionOrNull()?.message ?: "Cover download failed"
                                     )
                             )
                         }
@@ -253,10 +253,10 @@ internal class KireiCoverPickerController(host: KireiViewModel) : KireiViewModel
                         ).copy(
                             coverSearch = null,
                             taskCenterOpen = CoverPickerNavigationPolicy.shouldRestoreTaskCenter(search.origin),
-                            notice = "已使用 ${game.engine?.displayName ?: "引擎"} 默认封面",
+                            notice = "Used ${game.engine?.displayName ?:"引擎"} Default cover",
                         )
                     } else {
-                        mutableState.value.copy(coverSearch = search.copy(error = result.exceptionOrNull()?.message ?: "默认封面设置失败"))
+                        mutableState.value.copy(coverSearch = search.copy(error = result.exceptionOrNull()?.message ?: "Default cover setting failed"))
                     }
             }
             if (result.isSuccess) reloadInternal()
@@ -278,7 +278,7 @@ internal class KireiCoverPickerController(host: KireiViewModel) : KireiViewModel
                     mutableState.value =
                         mutableState.value.copy(
                             coverSearch = null,
-                            notice = "已使用本地封面",
+                            notice = "Local cover used",
                         )
                 } else {
                     mutableState.value =
@@ -286,7 +286,7 @@ internal class KireiCoverPickerController(host: KireiViewModel) : KireiViewModel
                             coverSearch =
                                 mutableState.value.coverSearch?.copy(
                                     saving = false,
-                                    error = result.exceptionOrNull()?.message ?: "无法使用所选图片",
+                                    error = result.exceptionOrNull()?.message ?: "The selected image cannot be used",
                                 ),
                         )
                 }

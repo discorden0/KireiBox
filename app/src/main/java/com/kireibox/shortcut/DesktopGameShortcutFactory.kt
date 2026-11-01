@@ -44,24 +44,24 @@ object DesktopGameShortcutFactory {
         game: Game
     ): Result<PinOutcome> =
         runCatching {
-            require(game.id > 0L) { "游戏尚未保存，无法添加桌面快捷方式。" }
+            require(game.id > 0L) { "The game has not been saved and a desktop shortcut cannot be added." }
             val manager =
                 context.getSystemService(ShortcutManager::class.java)
-                    ?: error("系统不支持桌面快捷方式。")
-            check(manager.isRequestPinShortcutSupported) { "当前桌面不支持固定快捷方式。" }
+                    ?: error("The system does not support desktop shortcuts.")
+            check(manager.isRequestPinShortcutSupported) { "The current desktop does not support pinned shortcuts." }
             val id = shortcutId(game.id)
             val info =
                 ShortcutInfo.Builder(context, id)
-                    .setShortLabel(game.title?.trim().orEmpty().ifEmpty { "KireiBox 游戏" })
-                    .setLongLabel(game.title?.trim().orEmpty().ifEmpty { "KireiBox 游戏" })
+                    .setShortLabel(game.title?.trim().orEmpty().ifEmpty { "KireiBox Games" })
+                    .setLongLabel(game.title?.trim().orEmpty().ifEmpty { "KireiBox Games" })
                     .setIcon(coverIcon(context, game) ?: Icon.createWithResource(context, R.mipmap.ic_launcher))
                     .setIntent(launchIntent(context, game.id))
                     .build()
             if (manager.pinnedShortcuts.any { it.id == id }) {
-                check(manager.updateShortcuts(listOf(info))) { "桌面拒绝更新现有快捷方式。" }
+                check(manager.updateShortcuts(listOf(info))) { "The desktop refuses to update existing shortcuts." }
                 PinOutcome.UPDATED
             } else {
-                check(manager.requestPinShortcut(info, null)) { "桌面拒绝了固定快捷方式请求。" }
+                check(manager.requestPinShortcut(info, null)) { "The desktop rejected the pinned shortcut request." }
                 PinOutcome.REQUESTED
             }
         }

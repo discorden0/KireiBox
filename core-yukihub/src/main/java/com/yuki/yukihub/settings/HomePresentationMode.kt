@@ -1,8 +1,8 @@
 ﻿package com.yuki.yukihub.settings
 
 enum class HomePresentationMode(val storedValue: String, val displayName: String) {
-    IMMERSIVE("immersive", "沉浸式"),
-    COMPONENTS("components", "组件模式"),
+    IMMERSIVE("immersive", "Immersive"),
+    COMPONENTS("components", "Component pattern"),
     ;
 
     companion object {

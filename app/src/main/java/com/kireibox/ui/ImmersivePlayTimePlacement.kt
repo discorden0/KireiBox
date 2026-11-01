@@ -7,7 +7,7 @@ import kotlin.math.min
 /** The play-time label may wrap to this many lines before it is cut with "…". */
 internal const val IMMERSIVE_PLAY_TIME_MAX_LINES = 2
 
-private const val PLAYED_PREFIX = "已游玩 "
+private const val PLAYED_PREFIX = "Played"
 private const val NO_BREAK_SPACE = '\u00A0'
 private const val WORD_JOINER = "\u2060"
 private const val BREAK_OPPORTUNITY = '\u200B'

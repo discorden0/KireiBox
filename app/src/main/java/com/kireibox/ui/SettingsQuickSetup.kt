@@ -76,15 +76,15 @@ import com.yuki.yukihub.settings.ThemeMode
 // recolors live while choosing. Finishing, skipping or dismissing marks it done
 // (AppearanceSettings.KEY_QUICK_SETUP_DONE), which retires the one-time suggestion on the root.
 
-internal const val QUICK_SETUP_TITLE = "快速设置"
+internal const val QUICK_SETUP_TITLE = "Quick settings"
 
 /** The guide's steps in order, with the heading each step shows. */
 internal enum class QuickSetupStep(
     val title: String,
 ) {
-    THEME("选择主题"),
-    ACCENT("选择强调色"),
-    HOME("选择首页风格"),
+    THEME("Select theme"),
+    ACCENT("Choose an accent color"),
+    HOME("Choose homepage style"),
 }
 
 /** Pure navigation rules of the guide (unit-tested). */
@@ -95,16 +95,16 @@ internal object QuickSetupFlow {
 
     fun previous(step: QuickSetupStep): QuickSetupStep? = steps.getOrNull(step.ordinal - 1)
 
-    fun progressLabel(step: QuickSetupStep): String = "第 ${step.ordinal + 1} 步，共 ${steps.size} 步"
+    fun progressLabel(step: QuickSetupStep): String = "Step ${step.ordinal + 1} of ${steps.size}"
 
-    fun primaryLabel(step: QuickSetupStep): String = if (next(step) == null) "完成" else "下一步"
+    fun primaryLabel(step: QuickSetupStep): String = if (next(step) == null) "Done" else "Next"
 
     /** 跳过 only while there is something left to skip: on the last step it would just repeat 完成. */
     fun canSkip(step: QuickSetupStep): Boolean = next(step) != null
 }
 
 /** The 自定义 card's line in the guide: picking it keeps today's mix instead of overwriting it. */
-internal const val QUICK_SETUP_KEEP_CUSTOM = "保持现在的组合"
+internal const val QUICK_SETUP_KEEP_CUSTOM = "Keep the current combination"
 
 /**
  * One-time suggestion on the settings root for users who never finished the guide: accent-tinted
@@ -125,9 +125,9 @@ internal fun QuickSetupSuggestion(
     ) {
         KireiIconTile(Icons.Rounded.AutoAwesome, colors.accent, colors.onAccent, QuickSetupTileSize)
         Column(Modifier.weight(1f).padding(start = KireiSpacing.sm)) {
-            Text("用一分钟完成快速设置", color = colors.text, style = AppleTypography.bodyLarge, modifier = Modifier.semantics { heading() })
+            Text("Quick setup in one minute", color = colors.text, style = AppleTypography.bodyLarge, modifier = Modifier.semantics { heading() })
             KireiButton(
-                label = "开始",
+                label = "Start",
                 colors = colors,
                 modifier = Modifier.padding(top = KireiSpacing.xs),
                 options = KireiButtonOptions(size = KireiButtonSize.SMALL),
@@ -135,7 +135,7 @@ internal fun QuickSetupSuggestion(
             )
         }
         IconButton(onClick = onDismiss) {
-            Icon(Icons.Rounded.Close, contentDescription = "不再提示快速设置", tint = colors.secondary)
+            Icon(Icons.Rounded.Close, contentDescription = "Don’t prompt for quick settings again", tint = colors.secondary)
         }
     }
 }
@@ -208,7 +208,7 @@ private fun QuickSetupHeader(
             QuickSetupStepIndicator(step, colors, Modifier.weight(1f))
             if (QuickSetupFlow.canSkip(step)) {
                 KireiButton(
-                    label = "跳过",
+                    label = "Jump over",
                     colors = colors,
                     options = KireiButtonOptions(style = KireiButtonStyle.PLAIN, size = KireiButtonSize.SMALL),
                     onClick = onSkip,
@@ -301,13 +301,13 @@ private fun QuickSetupHomeStep(context: SettingsPageContext) {
     val colors = context.colors
     val mode = settings?.homePresentationMode ?: HomePresentationMode.IMMERSIVE
     KireiSegmented(
-        KireiSegmentedSpec("首页样式", HomePresentationMode.entries.map { KireiSegment(it, it.displayName) }, mode),
+        KireiSegmentedSpec("Home page style", HomePresentationMode.entries.map { KireiSegment(it, it.displayName) }, mode),
         context.viewModel::setHomePresentationMode,
         colors,
         Modifier.fillMaxWidth().padding(top = KireiSpacing.xxs, bottom = KireiSpacing.md),
     )
     if (mode == HomePresentationMode.IMMERSIVE) {
-        Text("视觉效果", color = colors.secondary, style = AppleTypography.labelLarge, modifier = Modifier.padding(start = KireiSpacing.xxs, bottom = KireiSpacing.xs))
+        Text("Visual effects", color = colors.secondary, style = AppleTypography.labelLarge, modifier = Modifier.padding(start = KireiSpacing.xxs, bottom = KireiSpacing.xs))
         // A custom mix shows as a selected 自定义 card that keeps it, so no tap silently overwrites it.
         val visual = settings?.immersiveVisual ?: ImmersiveVisualSettings()
         val presets = if (visual.preset == ImmersiveFxPreset.CUSTOM) ImmersivePresetSegments + ImmersiveFxPreset.CUSTOM else ImmersivePresetSegments
@@ -344,7 +344,7 @@ private fun QuickSetupNavigation(
         horizontalArrangement = Arrangement.spacedBy(KireiSpacing.sm),
     ) {
         if (QuickSetupFlow.previous(step) != null) {
-            KireiButton("上一步", colors, Modifier.weight(1f), KireiButtonOptions(style = KireiButtonStyle.SECONDARY), onBack)
+            KireiButton("Previous", colors, Modifier.weight(1f), KireiButtonOptions(style = KireiButtonStyle.SECONDARY), onBack)
         }
         KireiButton(QuickSetupFlow.primaryLabel(step), colors, Modifier.weight(1f), KireiButtonOptions(style = KireiButtonStyle.PRIMARY), onNext)
     }

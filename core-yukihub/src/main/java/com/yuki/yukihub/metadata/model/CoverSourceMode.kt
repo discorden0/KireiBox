@@ -10,8 +10,8 @@ enum class CoverSourceMode(val key: String, val label: String) {
     NEXTMOE("nextmoe", "NextMoe"),
     HIKARINAGI("hikarinagi", "Hikarinagi"),
     VNDB("vndb", "VNDB"),
-    BANGUMI_MIRROR("bangumi_mirror", "Bangumi镜像"),
-    YMGAL("ymgal", "月幕Gal"), // Historical cache identity only.
+    BANGUMI_MIRROR("bangumi_mirror", "Bangumi mirror"),
+    YMGAL("ymgal", "Moon Curtain Gal"), // Historical cache identity only.
     ;
 
     val isBangumiFamily: Boolean

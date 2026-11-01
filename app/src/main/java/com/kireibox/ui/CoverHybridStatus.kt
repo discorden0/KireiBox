@@ -18,11 +18,11 @@ internal object CoverHybridStatus {
         hits: Int,
     ): String =
         when {
-            failed -> "不可达"
-            attempted -> if (hits > 0) "$hits 条" else "无结果"
-            loading -> "查询中…"
-            !connected -> "未连接"
-            else -> "待查询"
+            failed -> "Not reachable"
+            attempted -> if (hits > 0) "$hits items" else "No result"
+            loading -> "Inquiring…"
+            !connected -> "Not connected"
+            else -> "To be queried"
         }
 
     /** True when a login-required source is idle only because it was never connected. */
@@ -38,7 +38,7 @@ internal object CoverHybridStatus {
     ): List<CoverSourceMode> = sources.filter { it.requiresLogin && !connected(it) }
 
     /** The picker's login action, which opens 来源账号: 「登录 NextMoe / Hikarinagi」. */
-    fun loginActionLabel(missing: List<CoverSourceMode>): String = "登录 ${missing.joinToString(" / ") { it.label }}"
+    fun loginActionLabel(missing: List<CoverSourceMode>): String = "Login ${missing.joinToString(" / ") { it.label }}"
 
     /**
      * Dot of the source's status chip (r5 · B, [KireiStatusTone]; the label always says the same in

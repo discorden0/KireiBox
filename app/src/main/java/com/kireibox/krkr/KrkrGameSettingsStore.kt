@@ -79,7 +79,7 @@ class KrkrGameSettingsStore(private val context: Context) {
             // Kept in the app's prefs, so it is saved even when the game folder cannot be written.
             saveStartupDialog(game, settings.skipStartupDialog)
             saveFontScale(game, settings.fontScale)
-            val file = preferenceFile(game, create = true) ?: error("无法访问游戏目录")
+            val file = preferenceFile(game, create = true) ?: error("Unable to access game directory")
             val values =
                 linkedMapOf(
                     "menu_handler_opa" to settings.menuOpacity.toString(),
@@ -110,7 +110,7 @@ class KrkrGameSettingsStore(private val context: Context) {
                     setOutputProperty(OutputKeys.ENCODING, "UTF-8")
                     setOutputProperty(OutputKeys.INDENT, "yes")
                 }.transform(DOMSource(doc), StreamResult(output))
-            } ?: error("无法写入 KRKR 设置")
+            } ?: error("Unable to write KRKR settings")
         }
 
     /** The multiplier is kept in the app's prefs, and written to (or removed from) the game's patch.tjs now; it also re-syncs at launch. */

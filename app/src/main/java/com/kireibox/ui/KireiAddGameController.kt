@@ -70,10 +70,10 @@ internal class KireiAddGameController(host: KireiViewModel) : KireiViewModelCont
                 for (folder in folders) {
                     val report = runCatching { core.scanUntilMatch(Uri.parse(folder.uri)) }
                     report.getOrNull()?.results?.mapTo(found) { AddGamePolicy.candidateFor(it).withLibraryState() }
-                    report.exceptionOrNull()?.let { failure = it.message ?: "识别失败" }
+                    report.exceptionOrNull()?.let { failure = it.message ?: "Recognition failed" }
                 }
                 val (queue, present) = AddGamePolicy.buildQueue(found)
-                finishDetection(queue, present, emptyMessage = failure ?: if (present > 0) "发现的游戏都已在游戏库中" else "没有发现游戏", backTo = AddGameStage.BATCH)
+                finishDetection(queue, present, emptyMessage = failure ?: if (present > 0) "The games found are all in the game library" else "No game found", backTo = AddGameStage.BATCH)
             }
     }
 
@@ -90,7 +90,7 @@ internal class KireiAddGameController(host: KireiViewModel) : KireiViewModelCont
             viewModelScope.launch(Dispatchers.IO) {
                 val root = runCatching { core.detectDirectory(uri) }.getOrNull()
                 if (root == null) {
-                    finishDetection(emptyList(), 0, emptyMessage = "无法读取所选目录", backTo = AddGameStage.SINGLE)
+                    finishDetection(emptyList(), 0, emptyMessage = "Unable to read selected directory", backTo = AddGameStage.SINGLE)
                     return@launch
                 }
                 val queue =
@@ -102,7 +102,7 @@ internal class KireiAddGameController(host: KireiViewModel) : KireiViewModelCont
                         val found = inside.map { AddGamePolicy.candidateFor(it).withLibraryState() }
                         if (found.isEmpty()) listOf(AddGamePolicy.candidateFor(root).withLibraryState()) else AddGamePolicy.buildQueue(found).first
                     }
-                finishDetection(queue, 0, emptyMessage = "没有发现游戏", backTo = AddGameStage.SINGLE)
+                finishDetection(queue, 0, emptyMessage = "No game found", backTo = AddGameStage.SINGLE)
             }
     }
 
@@ -122,7 +122,7 @@ internal class KireiAddGameController(host: KireiViewModel) : KireiViewModelCont
             withContext(Dispatchers.Main) {
                 val summary = result.getOrNull()
                 if (summary == null) {
-                    update { it.copy(saving = false, error = result.exceptionOrNull()?.message ?: "添加失败") }
+                    update { it.copy(saving = false, error = result.exceptionOrNull()?.message ?: "Add failed") }
                 } else {
                     val added = (items.size - summary.skippedCount).coerceAtLeast(0)
                     update { it.copy(addedCount = added, skippedCount = it.queue.size - added, saving = false, error = null) }
@@ -158,7 +158,7 @@ internal class KireiAddGameController(host: KireiViewModel) : KireiViewModelCont
 
     private fun folderName(uri: Uri): String =
         runCatching { StorageNodes.resolve(hostApplication, uri)?.name }.getOrNull()?.takeIf(String::isNotBlank)
-            ?: uri.lastPathSegment?.substringAfterLast('/')?.substringAfterLast(':').orEmpty().ifBlank { "文件夹" }
+            ?: uri.lastPathSegment?.substringAfterLast('/')?.substringAfterLast(':').orEmpty().ifBlank { "Folder" }
 
     /** No-op once the flow was closed, so a late result never reopens it. */
     private fun update(transform: (AddGameUi) -> AddGameUi) {

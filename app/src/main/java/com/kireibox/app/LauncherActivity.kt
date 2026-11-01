@@ -111,7 +111,7 @@ class LauncherActivity : AppCompatActivity() {
     internal val updateInstallLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode != android.app.Activity.RESULT_OK && !isFinishing && !isDestroyed) {
-                showMessage("安装未完成", "系统安装器未完成覆盖安装；更新文件仍已校验，可稍后再次安装。")
+                showMessage("Installation not completed", "The system installer has not completed the overlay installation; the update file has still been verified and can be installed again later.")
             }
         }
 
@@ -122,7 +122,7 @@ class LauncherActivity : AppCompatActivity() {
             if (uri != null && persist(uri)) {
                 // Re-scan the new grant. Yuki identity matching preserves existing IDs and history.
                 viewModel.replaceScanRoot(old, uri)
-                if (!old.isNullOrBlank()) showMessage("权限已更新", "目录授权已重新建立，游戏记录和封面不会删除。")
+                if (!old.isNullOrBlank()) showMessage("Permissions updated", "Directory authorization has been re-established and game records and covers will not be deleted.")
             }
         }
 

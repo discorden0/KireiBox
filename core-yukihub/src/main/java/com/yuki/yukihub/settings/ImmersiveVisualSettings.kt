@@ -13,10 +13,10 @@ enum class ImmersiveFxPreset(
     val storedValue: String,
     val displayName: String,
 ) {
-    MINIMAL("minimal", "简约"),
-    STANDARD("standard", "标准"),
-    RICH("rich", "华丽"),
-    CUSTOM("custom", "自定义"),
+    MINIMAL("minimal", "Simple"),
+    STANDARD("standard", "standard"),
+    RICH("rich", "Gorgeous"),
+    CUSTOM("custom", "Customize"),
     ;
 
     companion object {
@@ -42,13 +42,13 @@ enum class ImmersiveBackdropStyle(
     val storedValue: String,
     val displayName: String,
 ) {
-    COVER_ZOOM("cover_zoom", "封面氛围"),
-    BLUR_COVER("blur_cover", "封面虚化"),
-    AURORA("aurora", "流光极光"),
-    TONE("tone", "氛围色"),
+    COVER_ZOOM("cover_zoom", "Cover atmosphere"),
+    BLUR_COVER("blur_cover", "Cover blur"),
+    AURORA("aurora", "Streamer aurora"),
+    TONE("tone", "Atmospheric color"),
 
     /** Flat base plus vignette: true black in the dark theme, the light base in the light theme. */
-    SOLID("solid", "纯色"),
+    SOLID("solid", "Solid color"),
     ;
 
     companion object {
@@ -67,9 +67,9 @@ enum class FxLevel(
     val storedValue: String,
     val displayName: String,
 ) {
-    LOW("low", "低"),
-    MEDIUM("medium", "中"),
-    HIGH("high", "高"),
+    LOW("low", "Low"),
+    MEDIUM("medium", "Medium"),
+    HIGH("high", "High"),
     ;
 
     companion object {
@@ -89,10 +89,10 @@ enum class ImmersiveCardSwitch(
     val displayName: String,
 ) {
     /** Cards slide straight between their slots. */
-    SOFT("soft", "缓和"),
+    SOFT("soft", "Ease"),
 
     /** Cards swing apart as they pass and tuck back in. */
-    STAGGER("stagger", "交错"),
+    STAGGER("stagger", "Staggered"),
     ;
 
     companion object {
@@ -111,10 +111,10 @@ enum class ImmersiveAmbient(
     val storedValue: String,
     val displayName: String,
 ) {
-    NONE("none", "无"),
-    DUST("dust", "光尘"),
-    SAKURA("sakura", "樱花"),
-    SNOW("snow", "雪"),
+    NONE("none", "None"),
+    DUST("dust", "Light dust"),
+    SAKURA("sakura", "Cherry blossoms"),
+    SNOW("snow", "Snow"),
     ;
 
     companion object {

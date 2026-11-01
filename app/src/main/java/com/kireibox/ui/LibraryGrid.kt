@@ -107,7 +107,7 @@ private fun LazyGridScope.libraryReorderHintItem(
     if (customDraft != null) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             Text(
-                "依次点按卡片，设置 1、2、3… 顺序",
+                "Click the cards one by one to set the order of 1, 2, 3...",
                 color = colors.accent,
                 style = AppleTypography.bodySmall,
                 modifier = Modifier.padding(bottom = 4.dp),
@@ -128,9 +128,9 @@ private fun LazyGridScope.libraryGridSections(
         librarySectionHeader(
             title =
                 if (reorder.customDraft == null) {
-                    "收藏"
+                    "collect"
                 } else {
-                    "收藏 · 已选 ${selectedCount(reorder, true, model.visible)}/${favorites.size}"
+                    "Collection · Selected ${selectedCount(reorder, true, model.visible)}/${favorites.size}"
                 },
             colors = appearance.colors,
         )
@@ -142,9 +142,9 @@ private fun LazyGridScope.libraryGridSections(
             librarySectionHeader(
                 title =
                     if (reorder.customDraft == null) {
-                        "其他游戏"
+                        "Other games"
                     } else {
-                        "其他游戏 · 已选 ${selectedCount(reorder, false, model.visible)}/${others.size}"
+                        "Other games · Selected ${selectedCount(reorder, false, model.visible)}/${others.size}"
                     },
                 colors = appearance.colors,
             )

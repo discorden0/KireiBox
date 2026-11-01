@@ -21,10 +21,10 @@ object GameLocationPreflight {
         if (source.engine == EngineType.ANDROID_APP) return Result(source, false, "android package")
         val rootUri =
             source.rootUri?.takeIf(String::isNotBlank)
-                ?: return Result(null, false, "游戏目录为空")
+                ?: return Result(null, false, "Game directory is empty")
         val root =
             StorageNodes.resolve(context, rootUri)
-                ?: return Result(null, false, "无法读取游戏目录，请重新授权")
+                ?: return Result(null, false, "Unable to read the game directory, please authorize again")
         val target = source.launchTarget?.trim().orEmpty()
         if (target.isBlank() || target.startsWith("[")) return Result(source, false, "directory entry")
         if (source.engine == EngineType.KIRIKIRI && Xp3EntrySelector.isAssetTarget(target)) {
@@ -43,7 +43,7 @@ object GameLocationPreflight {
             } ?: return Result(
                 null,
                 false,
-                if (distinct.isEmpty()) "找不到启动文件 $target" else "找到多个 $target，请重新选择游戏目录",
+                if (distinct.isEmpty()) "Startup file $target not found" else "Multiple $target found, please reselect the game directory",
             )
 
         val repaired =
@@ -54,7 +54,7 @@ object GameLocationPreflight {
                 updatedAt = System.currentTimeMillis(),
             )
         repository.update(repaired)
-        return Result(repository.findById(source.id) ?: repaired, true, "已修复游戏目录：${selected.name.orEmpty()}")
+        return Result(repository.findById(source.id) ?: repaired, true, "Fixed game directory: ${selected.name.orEmpty()}")
     }
 
     private fun repairAssetXp3Target(
@@ -69,7 +69,7 @@ object GameLocationPreflight {
                 .map { Xp3EntrySelector.Entry(it.name, it.size) }
                 .toList()
         val selected = Xp3EntrySelector.select(entries, root.name, source.title)
-        val newTarget = selected ?: "[游戏目录]"
+        val newTarget = selected ?: "[Game Catalog]"
         val repaired =
             source.copy(
                 launchTarget = newTarget,
@@ -79,7 +79,7 @@ object GameLocationPreflight {
         return Result(
             repository.findById(source.id) ?: repaired,
             true,
-            if (selected != null) "已修正 XP3 启动文件：$selected" else "已改为目录模式启动",
+            if (selected != null) "Fixed XP3 startup file: $selected" else "Changed to directory mode startup",
         )
     }
 

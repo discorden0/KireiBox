@@ -218,9 +218,9 @@ object BangumiClient {
             if (score > 0) {
                 m.ratingText =
                     if (total > 0) {
-                        String.format(Locale.US, "评分：%.1f/10（%d人）", score, total)
+                        String.format(Locale.US, "Rating: %.1f/10 (%d people)", score, total)
                     } else {
-                        String.format(Locale.US, "评分：%.1f/10", score)
+                        String.format(Locale.US, "Rating: %.1f/10", score)
                     }
             }
         }
@@ -236,7 +236,7 @@ object BangumiClient {
             m.tagsText = MetadataUtils.join(names, "  ")
         }
 
-        m.lengthText = "游玩时长：-"
+        m.lengthText = "Play time:-"
         return m
     }
 

@@ -48,22 +48,22 @@ import dev.chrisbanes.haze.HazeState
 // (and 设置 › Windows 引擎设置) opens. KireiBox cannot see Winlator's containers, so the sheet is
 // the whole check: the user confirms with 「我已创建容器」.
 
-internal const val WINLATOR_GUIDE_TITLE = "创建 Winlator 容器"
+internal const val WINLATOR_GUIDE_TITLE = "Create a Winlator container"
 
 /** The steps the sheet lists, in order. The first one also shows whether Winlator is installed. */
 internal val WinlatorGuideSteps =
     listOf(
-        "安装 winlator-cn（v0.4.2.11.2 或更新版本）",
-        "打开 Winlator，等它完成首次初始化",
-        "新建一个容器，名称和选项保持默认即可",
-        "回到 KireiBox，点击游戏启动",
+        "Install winlator-cn (v0.4.2.11.2 or newer)",
+        "Open Winlator and wait for it to complete initialization",
+        "Create a new container and keep the name and options as default.",
+        "Return to KireiBox and click Game Start",
     )
 
 internal fun winlatorInstallLabel(availability: WinlatorAvailability): String =
     when (availability) {
-        WinlatorAvailability.READY -> "已安装"
-        WinlatorAvailability.NOT_INSTALLED -> "未安装"
-        WinlatorAvailability.UNSUPPORTED -> "版本过旧，需要更新"
+        WinlatorAvailability.READY -> "Installed"
+        WinlatorAvailability.NOT_INSTALLED -> "Not installed"
+        WinlatorAvailability.UNSUPPORTED -> "The version is too old and needs to be updated"
     }
 
 /** The installed Winlator's status, read again whenever the user comes back (after installing or updating it). */
@@ -101,7 +101,7 @@ internal fun WinlatorGuideNotice(
     val spec =
         ActionNoticeSpec(
             message = WinlatorGuidePolicy.noticeMessage(availability),
-            actionLabel = "查看教程",
+            actionLabel = "View tutorial",
             tone = if (availability == WinlatorAvailability.READY) NoticeTone.INFO else NoticeTone.WARNING,
             topOffset = if (stacked) NoticeStackOffset else 0.dp,
         )
@@ -127,12 +127,12 @@ internal fun WinlatorGuideSheet(
         }
         Column(Modifier.fillMaxWidth().padding(horizontal = KireiSpacing.lg, vertical = KireiSpacing.sm), verticalArrangement = Arrangement.spacedBy(KireiSpacing.xs)) {
             if (status.availability == WinlatorAvailability.READY) {
-                KireiButton("打开 Winlator", colors, Modifier.fillMaxWidth()) { openWinlatorApp(context, status) }
+                KireiButton("Open Winlator", colors, Modifier.fillMaxWidth()) { openWinlatorApp(context, status) }
             } else {
-                KireiButton("下载 Winlator-CN", colors, Modifier.fillMaxWidth()) { openKireiLink(context, WINLATOR_CN_RELEASES_URL) {} }
+                KireiButton("Download Winlator-CN", colors, Modifier.fillMaxWidth()) { openKireiLink(context, WINLATOR_CN_RELEASES_URL) {} }
             }
             KireiButton(
-                "我已创建容器",
+                "I have created the container",
                 colors,
                 Modifier.fillMaxWidth(),
                 KireiButtonOptions(style = KireiButtonStyle.SECONDARY),
@@ -171,7 +171,7 @@ private fun WinlatorGuideImageSlot(colors: KireiColors) {
             .border(KireiElevation.strokeWidth, colors.strokeStrong, KireiShapes.lg),
         contentAlignment = Alignment.Center,
     ) {
-        Text("图文教程", color = colors.secondary, style = AppleTypography.bodyMedium, textAlign = TextAlign.Center)
+        Text("Graphic tutorial", color = colors.secondary, style = AppleTypography.bodyMedium, textAlign = TextAlign.Center)
     }
 }
 
