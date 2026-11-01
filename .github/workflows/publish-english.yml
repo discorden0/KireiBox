@@ -63,6 +63,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
         run: |
+          gh release delete "$TAG" -R "${{ github.repository }}" --yes --cleanup-tag || true
           gh release create "$TAG" out/KireiBox-English-debug.apk \
             -R "${{ github.repository }}" \
             --title "KireiBox English build $TAG" \
